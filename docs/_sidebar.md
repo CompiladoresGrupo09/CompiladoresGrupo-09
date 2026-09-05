@@ -1,7 +1,9 @@
-* Documentação
-  * [Home](README.md)
-  * [Definição da Linguagem](definicao_linguagem.md)
-  * [Decisões Técnicas](decisoes_tecnicas.md)
-  * [Planejamento de Sprints](planejamento_sprints.md)
-  * [Problemas e Soluções](problemas_solucoes.md)
+* **Home**
+  * [Visão Geral](README.md)
+
+* **Documentação**
+  * [Definição da Linguagem](definicao-da-linguagem.md)
+  * [Decisões Técnicas](decisoes-tecnicas.md)
+  * [Planejamento das Sprints](planejamento-sprints.md)
+  * [Problemas e Soluções](problemas-e-solucoes.md)
   * [Glossário](glossario.md)
