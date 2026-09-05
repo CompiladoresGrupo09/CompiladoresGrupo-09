@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "docsify-cli": "^5.0.0"
+  }
+}
