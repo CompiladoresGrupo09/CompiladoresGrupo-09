@@ -15,7 +15,7 @@ Diferenciais (só se sobrar tempo, nesta ordem): mensagens de erro com linha/col
 
 Fora de escopo: otimizações, ponteiros, structs/unions, pré-processador, strings dinâmicas, arquivos.
 
-Ver `docs/definicao-da-linguagem.md` para detalhes e exemplos.
+Ver `docs/documentacao/definicao-da-linguagem.md` para detalhes e exemplos.
 
 ## Como compilar
 ```
@@ -40,4 +40,4 @@ Casos válidos em `tests/validos/`, casos inválidos em `tests/invalidos/`.
 Ver pasta `docs/`.
 
 ## Limitações conhecidas
-Ver seção "Fora de escopo" acima e `docs/definicao-da-linguagem.md`.
+Ver seção "Fora de escopo" acima e `docs/documentacao/definicao-da-linguagem.md`.
