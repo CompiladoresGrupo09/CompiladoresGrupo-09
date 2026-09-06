@@ -4,6 +4,7 @@
 
 * **Documentação**
   * [Definição da Linguagem](documentacao/definicao-da-linguagem.md)
+  * [Gramática](documentacao/gramatica.md)
   * [Decisões Técnicas](documentacao/decisoes-tecnicas.md)
   * [Planejamento das Sprints](documentacao/planejamento-sprints.md)
   * [Problemas e Soluções](documentacao/problemas-e-solucoes.md)

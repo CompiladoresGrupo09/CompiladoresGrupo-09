@@ -6,3 +6,4 @@ src/*.tab.c
 src/*.tab.h
 src/*.exe
 src/*.o
+src/parser.output
