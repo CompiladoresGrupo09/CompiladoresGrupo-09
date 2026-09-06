@@ -21,12 +21,16 @@ $(SCANNER_C): $(SCANNER_SRC)
 test: scanner
 	@for f in ../tests/validos/*.c; do \
 		echo "== valido: $$f =="; \
-		./$(SCANNER_BIN) $$f; \
+		if ! ./$(SCANNER_BIN) $$f; then \
+			echo "ERRO: esperado sucesso (sem erro lexico) para $$f"; exit 1; \
+		fi; \
 		echo; \
 	done
 	@for f in ../tests/invalidos/*.c; do \
 		echo "== invalido: $$f =="; \
-		./$(SCANNER_BIN) $$f; \
+		if ./$(SCANNER_BIN) $$f; then \
+			echo "ERRO: esperado falha (erro lexico) para $$f"; exit 1; \
+		fi; \
 		echo; \
 	done
 
