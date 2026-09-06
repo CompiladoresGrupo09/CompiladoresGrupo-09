@@ -8,6 +8,9 @@
 - Nome — Interpretação
 - Nome — Integração, testes, documentação e líder (formulários P1/P2)
 
+## Aplicação
+Organizador de compras no mercado: o programa recebe itens e preços via `scanf` em loop, soma o total gasto e avisa se o valor ultrapassou o orçamento informado.
+
 ## Escopo suportado
 Núcleo obrigatório: tipos `int`/`float`/`char`, variáveis, expressões aritméticas/relacionais/lógicas com precedência, `if`/`else`/`while`/`for`, blocos com escopo, funções com parâmetros/retorno/recursão, `printf`/`scanf` básicos (`%d %f %c %s`).
 
@@ -28,7 +31,7 @@ make
 ```
 
 ## Exemplos de entrada e saída
-[pelo menos 2-3 exemplos de programas .c e a saída esperada — adicionar conforme o núcleo for funcionando]
+Ver `docs/definicao-da-linguagem.md` para o exemplo completo do organizador de compras (entrada `.c` e saída esperada). Mais exemplos serão adicionados conforme o núcleo for funcionando.
 
 ## Arquitetura
 Fonte → léxico (Flex) → sintático (Bison, já construindo a AST) → semântico (tabela de símbolos, checagem de tipos/escopo) → interpretação recursiva da AST → resultado.
