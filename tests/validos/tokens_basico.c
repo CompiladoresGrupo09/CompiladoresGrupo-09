@@ -1,3 +1,4 @@
+#include <stdio.h>
 // Arquivo de teste: cobre palavras reservadas, identificadores, literais e operadores do nucleo
 int main() {
     int quantidade = 10;

@@ -32,12 +32,16 @@ $(PARSER_BIN): $(PARSER_C) $(SCANNER_C) $(AST_SRC)
 test: parser
 	@for f in ../tests/validos/*.c; do \
 		echo "== valido: $$f =="; \
-		./$(PARSER_BIN) $$f; \
+		if ! ./$(PARSER_BIN) $$f; then \
+			echo "ERRO: esperado sucesso (sem erro) para $$f"; exit 1; \
+		fi; \
 		echo; \
 	done
 	@for f in ../tests/invalidos/*.c; do \
 		echo "== invalido: $$f =="; \
-		./$(PARSER_BIN) $$f; \
+		if ./$(PARSER_BIN) $$f; then \
+			echo "ERRO: esperado falha (erro lexico ou sintatico) para $$f"; exit 1; \
+		fi; \
 		echo; \
 	done
 
