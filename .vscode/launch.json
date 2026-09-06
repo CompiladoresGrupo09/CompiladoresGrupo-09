@@ -9,7 +9,7 @@
       "stopAtEntry": false,
       "externalConsole": true,
       "cwd": "${workspaceFolder}/src",
-      "program": "${workspaceFolder}/src/build/Debug/outDebug",
+      "program": "${workspaceFolder}/src/parser_test",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

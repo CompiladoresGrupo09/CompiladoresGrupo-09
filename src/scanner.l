@@ -5,7 +5,7 @@
 #include "ast.h"
 #include "parser.tab.h"
 
-static int erros_lexicos = 0;
+int erros_lexicos = 0;
 
 static void erro_lexico(const char *msg, const char *lexema, int linha) {
     fprintf(stderr, "Erro lexico [linha %d]: %s '%s'\n", linha, msg, lexema);

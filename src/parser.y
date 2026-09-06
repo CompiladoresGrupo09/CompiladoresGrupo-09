@@ -6,6 +6,7 @@
 
 extern int yylineno;
 extern char *yytext;
+extern int erros_lexicos;
 int yylex(void);
 void yyerror(const char *msg);
 
@@ -90,9 +91,10 @@ lista_declaradores:
     ;
 
 declarador:
-      ID { $$ = criar_no_id($1, yylineno); }
+      ID { $$ = criar_no_id($1, yylineno); free($1); }
     | ID '=' expressao {
           ASTNode *id = criar_no_id($1, yylineno);
+          free($1);
           $$ = criar_no_binop("=", id, $3, yylineno);
       }
     ;
@@ -101,7 +103,7 @@ declaracao_funcao:
       tipo ID '(' lista_parametros ')' bloco {
           ASTNode *no = criar_no(NODE_FUNC_DECL, @$.first_line);
           no->intval = $1;
-          no->strval = strdup($2);
+          no->strval = $2;
           adicionar_filho(no, $4);
           adicionar_filho(no, $6);
           $$ = no;
@@ -125,7 +127,7 @@ parametro:
       tipo ID {
           ASTNode *no = criar_no(NODE_PARAM, yylineno);
           no->intval = $1;
-          no->strval = strdup($2);
+          no->strval = $2;
           $$ = no;
       }
     ;
@@ -213,6 +215,7 @@ expressao:
 atribuicao:
       ID '=' atribuicao {
           ASTNode *id = criar_no_id($1, yylineno);
+          free($1);
           $$ = criar_no_binop("=", id, $3, yylineno);
       }
     | expr_or { $$ = $1; }
@@ -265,11 +268,11 @@ expr_primaria:
       INT_LIT    { $$ = criar_no_int($1, yylineno); }
     | FLOAT_LIT  { $$ = criar_no_float($1, yylineno); }
     | CHAR_LIT   { $$ = criar_no_char($1, yylineno); }
-    | STRING_LIT { $$ = criar_no_string($1, yylineno); }
-    | ID         { $$ = criar_no_id($1, yylineno); }
+    | STRING_LIT { $$ = criar_no_string($1, yylineno); free($1); }
+    | ID         { $$ = criar_no_id($1, yylineno); free($1); }
     | ID '(' lista_argumentos ')' {
           $3->type = NODE_CALL;
-          $3->strval = strdup($1);
+          $3->strval = $1;
           $$ = $3;
       }
     | '(' expressao ')' { $$ = $2; }
@@ -290,7 +293,7 @@ lista_argumentos_ne:
 
 argumento:
       expressao { $$ = $1; }
-    | '&' ID    { $$ = criar_no_addr($2, yylineno); }
+    | '&' ID    { $$ = criar_no_addr($2, yylineno); free($2); }
     ;
 
 %%
@@ -318,12 +321,17 @@ int main(int argc, char **argv) {
         fclose(yyin);
     }
 
-    if (resultado == 0) {
+    if (resultado == 0 && erros_lexicos == 0) {
         printf("Analise sintatica concluida sem erros.\n\n");
         imprimir_ast(raiz_ast, 0);
         liberar_ast(raiz_ast);
+        return 0;
     }
 
-    return resultado;
+    if (erros_lexicos > 0) {
+        fprintf(stderr, "\nTotal de erros lexicos: %d\n", erros_lexicos);
+    }
+
+    return 1;
 }
 #endif
