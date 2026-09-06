@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/marti/CompiladoresGrupo-09/src",
-      "program": "c:/Users/marti/CompiladoresGrupo-09/src/build/Debug/outDebug",
+      "cwd": "${workspaceFolder}/src",
+      "program": "${workspaceFolder}/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

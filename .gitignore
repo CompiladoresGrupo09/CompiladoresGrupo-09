@@ -1,1 +1,8 @@
 node_modules/
+
+# Artefatos de build (Flex/Bison/GCC)
+src/lex.yy.c
+src/*.tab.c
+src/*.tab.h
+src/*.exe
+src/*.o
