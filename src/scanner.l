@@ -1,13 +1,43 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "ast.h"
+#include "parser.tab.h"
 
-static int erros_lexicos = 0;
+int erros_lexicos = 0;
 
 static void erro_lexico(const char *msg, const char *lexema, int linha) {
     fprintf(stderr, "Erro lexico [linha %d]: %s '%s'\n", linha, msg, lexema);
     erros_lexicos++;
 }
+
+/* texto inclui as aspas simples, ex.: 'a' ou '\n' */
+static char decodificar_char(const char *texto) {
+    if (texto[1] == '\\') {
+        switch (texto[2]) {
+            case 'n': return '\n';
+            case 't': return '\t';
+            case '0': return '\0';
+            case '\\': return '\\';
+            case '\'': return '\'';
+            case '"': return '"';
+            default: return texto[2];
+        }
+    }
+    return texto[1];
+}
+
+/* remove as aspas duplas; as sequencias de escape ficam literais e sao
+   decodificadas depois, na fase de interpretacao do printf/scanf */
+static char *extrair_string(const char *texto) {
+    int tam = strlen(texto);
+    char *resultado = malloc(tam - 1);
+    strncpy(resultado, texto + 1, tam - 2);
+    resultado[tam - 2] = '\0';
+    return resultado;
+}
+#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
 %}
 
 %option noyywrap
@@ -15,11 +45,11 @@ static void erro_lexico(const char *msg, const char *lexema, int linha) {
 
 DIGITO      [0-9]
 LETRA       [a-zA-Z_]
-INTEIRO     {DIGITO}+
-FLOAT       {DIGITO}+"."{DIGITO}+
-ID          {LETRA}({LETRA}|{DIGITO})*
-CHAR_LIT    '(\\.|[^\\'])'
-STRING_LIT  \"(\\.|[^"\\])*\"
+NUM_INT     {DIGITO}+
+NUM_FLOAT   {DIGITO}+"."{DIGITO}+
+IDENT       {LETRA}({LETRA}|{DIGITO})*
+LIT_CHAR    '(\\.|[^\\'])'
+LIT_STRING  \"(\\.|[^"\\])*\"
 
 %%
 
@@ -30,72 +60,47 @@ STRING_LIT  \"(\\.|[^"\\])*\"
 [ \t\r]+                        { /* espaco em branco: ignora */ }
 \n                               { /* nova linha: yylineno ja conta automaticamente */ }
 
-"int"                            { printf("PALAVRA_RESERVADA(int) linha %d\n", yylineno); }
-"float"                          { printf("PALAVRA_RESERVADA(float) linha %d\n", yylineno); }
-"char"                           { printf("PALAVRA_RESERVADA(char) linha %d\n", yylineno); }
-"void"                           { printf("PALAVRA_RESERVADA(void) linha %d\n", yylineno); }
-"if"                             { printf("PALAVRA_RESERVADA(if) linha %d\n", yylineno); }
-"else"                           { printf("PALAVRA_RESERVADA(else) linha %d\n", yylineno); }
-"while"                          { printf("PALAVRA_RESERVADA(while) linha %d\n", yylineno); }
-"for"                            { printf("PALAVRA_RESERVADA(for) linha %d\n", yylineno); }
-"return"                         { printf("PALAVRA_RESERVADA(return) linha %d\n", yylineno); }
+"int"                            { return INT; }
+"float"                          { return FLOAT; }
+"char"                           { return CHAR; }
+"void"                           { return VOID; }
+"if"                             { return IF; }
+"else"                           { return ELSE; }
+"while"                          { return WHILE; }
+"for"                            { return FOR; }
+"return"                         { return RETURN; }
 
-{FLOAT}                          { printf("FLOAT_LIT(%s) linha %d\n", yytext, yylineno); }
-{INTEIRO}                        { printf("INT_LIT(%s) linha %d\n", yytext, yylineno); }
-{CHAR_LIT}                       { printf("CHAR_LIT(%s) linha %d\n", yytext, yylineno); }
-{STRING_LIT}                     { printf("STRING_LIT(%s) linha %d\n", yytext, yylineno); }
-{ID}                             { printf("ID(%s) linha %d\n", yytext, yylineno); }
+{NUM_FLOAT}                      { yylval.floatval = atof(yytext); return FLOAT_LIT; }
+{NUM_INT}                        { yylval.intval = atoi(yytext); return INT_LIT; }
+{LIT_CHAR}                       { yylval.charval = decodificar_char(yytext); return CHAR_LIT; }
+{LIT_STRING}                     { yylval.strval = extrair_string(yytext); return STRING_LIT; }
+{IDENT}                          { yylval.strval = strdup(yytext); return ID; }
 
-"=="                             { printf("OP_REL(==) linha %d\n", yylineno); }
-"!="                             { printf("OP_REL(!=) linha %d\n", yylineno); }
-"<="                             { printf("OP_REL(<=) linha %d\n", yylineno); }
-">="                             { printf("OP_REL(>=) linha %d\n", yylineno); }
-"<"                              { printf("OP_REL(<) linha %d\n", yylineno); }
-">"                              { printf("OP_REL(>) linha %d\n", yylineno); }
-"&&"                             { printf("OP_LOG(&&) linha %d\n", yylineno); }
-"||"                             { printf("OP_LOG(||) linha %d\n", yylineno); }
-"!"                              { printf("OP_LOG(!) linha %d\n", yylineno); }
-"="                              { printf("OP_ATRIB(=) linha %d\n", yylineno); }
-"+"                              { printf("OP_ARIT(+) linha %d\n", yylineno); }
-"-"                              { printf("OP_ARIT(-) linha %d\n", yylineno); }
-"*"                              { printf("OP_ARIT(*) linha %d\n", yylineno); }
-"/"                              { printf("OP_ARIT(/) linha %d\n", yylineno); }
-"%"                              { printf("OP_ARIT(%%) linha %d\n", yylineno); }
+"=="                             { return EQ; }
+"!="                             { return NE; }
+"<="                             { return LE; }
+">="                             { return GE; }
+"&&"                             { return AND; }
+"||"                             { return OR; }
 
-"("                              { printf("DELIM(() linha %d\n", yylineno); }
-")"                              { printf("DELIM()) linha %d\n", yylineno); }
-"{"                              { printf("DELIM({) linha %d\n", yylineno); }
-"}"                              { printf("DELIM(}) linha %d\n", yylineno); }
-";"                              { printf("DELIM(;) linha %d\n", yylineno); }
-","                              { printf("DELIM(,) linha %d\n", yylineno); }
-"&"                              { printf("DELIM(&) linha %d\n", yylineno); }
+"<"                              { return '<'; }
+">"                              { return '>'; }
+"!"                              { return '!'; }
+"="                              { return '='; }
+"+"                              { return '+'; }
+"-"                              { return '-'; }
+"*"                              { return '*'; }
+"/"                              { return '/'; }
+"%"                              { return '%'; }
+
+"("                              { return '('; }
+")"                              { return ')'; }
+"{"                              { return '{'; }
+"}"                              { return '}'; }
+";"                              { return ';'; }
+","                              { return ','; }
+"&"                              { return '&'; }
 
 .                                { erro_lexico("caractere invalido", yytext, yylineno); }
 
 %%
-
-#ifdef SCANNER_TEST_MAIN
-int main(int argc, char **argv) {
-    if (argc > 1) {
-        FILE *f = fopen(argv[1], "r");
-        if (!f) {
-            fprintf(stderr, "Nao foi possivel abrir o arquivo: %s\n", argv[1]);
-            return 1;
-        }
-        yyin = f;
-    }
-
-    yylex();
-
-    if (argc > 1) {
-        fclose(yyin);
-    }
-
-    if (erros_lexicos > 0) {
-        fprintf(stderr, "\nTotal de erros lexicos: %d\n", erros_lexicos);
-        return 1;
-    }
-
-    return 0;
-}
-#endif
