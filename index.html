@@ -9,7 +9,7 @@
 
   <!-- Estilos e fontes -->
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
-  <link rel="stylesheet" href="docs/custom.css">
+  <link rel="stylesheet" href="docs/style.css">
 </head>
 <body>
   <div id="app">Carregando documentação...</div>
@@ -18,7 +18,8 @@
     window.$docsify = {
       name: 'Compiladores Grupo 09',
       repo: 'https://github.com/Marianamrts/CompiladoresGrupo-09',
-      loadSidebar: 'docs/_sidebar.md',
+      basePath: 'docs/',
+      loadSidebar: '_sidebar.md',
       subMaxLevel: 3
     }
   </script>
