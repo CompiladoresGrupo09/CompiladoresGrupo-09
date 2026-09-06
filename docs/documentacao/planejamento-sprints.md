@@ -5,7 +5,7 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 ## Sprint 1 — Ambiente, linguagem e léxico
 
 **Planejado:**
-- [x] Confirmar escopo por escrito em `docs/definicao-da-linguagem.md`
+- [x] Confirmar escopo por escrito em `docs/documentacao/definicao-da-linguagem.md`
 - [ ] Desenhar gramática em alto nível, definir tokens
 - [x] Criar repositório com estrutura `docs/` + `src/`
 - [x] Configurar ambiente em todas as máquinas
@@ -44,7 +44,7 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - [ ] Revisar o que falta, priorizar robustez do núcleo > diferencial opcional
 - [ ] Ajustes finais, revisão cruzada de módulos
 - [ ] Suíte de testes cobrindo o núcleo inteiro (casos válidos e de erro)
-- [ ] Fechar `docs/decisoes-tecnicas.md` e `docs/problemas-e-solucoes.md`; atualizar README com exemplos
+- [ ] Fechar `docs/documentacao/decisoes-tecnicas.md` e `docs/documentacao/problemas-e-solucoes.md`; atualizar README com exemplos
 - [ ] Ensaio da entrevista
 
 **Marco P2:** Interpretador completo (núcleo), testado, documentado; formulário P2 enviado pelo líder.
