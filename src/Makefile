@@ -1,38 +1,49 @@
 CC = gcc
 CFLAGS = -Wall
 LEX = flex
+YACC = bison
 
+PARSER_SRC = parser.y
+PARSER_C = parser.tab.c
+PARSER_H = parser.tab.h
 SCANNER_SRC = scanner.l
 SCANNER_C = lex.yy.c
-SCANNER_BIN = scanner_test
+AST_SRC = ast.c
+PARSER_BIN = parser_test
 
-.PHONY: all scanner test clean
+.PHONY: all parser test clean
 
-all: scanner
+all: parser
 
-scanner: $(SCANNER_BIN)
+parser: $(PARSER_BIN)
 
-$(SCANNER_BIN): $(SCANNER_C)
-	$(CC) $(CFLAGS) -DSCANNER_TEST_MAIN $(SCANNER_C) -o $(SCANNER_BIN)
+$(PARSER_C): $(PARSER_SRC)
+	$(YACC) -d $(PARSER_SRC)
 
-$(SCANNER_C): $(SCANNER_SRC)
+$(PARSER_H): $(PARSER_C)
+	@true
+
+$(SCANNER_C): $(SCANNER_SRC) $(PARSER_H)
 	$(LEX) $(SCANNER_SRC)
 
-test: scanner
+$(PARSER_BIN): $(PARSER_C) $(SCANNER_C) $(AST_SRC)
+	$(CC) $(CFLAGS) -DPARSER_TEST_MAIN $(PARSER_C) $(SCANNER_C) $(AST_SRC) -o $(PARSER_BIN)
+
+test: parser
 	@for f in ../tests/validos/*.c; do \
 		echo "== valido: $$f =="; \
-		if ! ./$(SCANNER_BIN) $$f; then \
-			echo "ERRO: esperado sucesso (sem erro lexico) para $$f"; exit 1; \
+		if ! ./$(PARSER_BIN) $$f; then \
+			echo "ERRO: esperado sucesso (sem erro) para $$f"; exit 1; \
 		fi; \
 		echo; \
 	done
 	@for f in ../tests/invalidos/*.c; do \
 		echo "== invalido: $$f =="; \
-		if ./$(SCANNER_BIN) $$f; then \
-			echo "ERRO: esperado falha (erro lexico) para $$f"; exit 1; \
+		if ./$(PARSER_BIN) $$f; then \
+			echo "ERRO: esperado falha (erro lexico ou sintatico) para $$f"; exit 1; \
 		fi; \
 		echo; \
 	done
 
 clean:
-	rm -f $(SCANNER_C) $(SCANNER_BIN)
+	rm -f $(SCANNER_C) $(PARSER_C) $(PARSER_H) parser.output $(PARSER_BIN)
