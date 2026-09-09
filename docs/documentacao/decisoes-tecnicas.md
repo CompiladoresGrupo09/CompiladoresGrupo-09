@@ -20,12 +20,21 @@ Alinhada ao padrão usado nos exemplos do professor (pastas `docs/`/`src/` por u
 ## Papéis fixos com pares cruzados
 Pipeline sequencial (léxico → sintático/AST → semântico → interpretação), mas com pareamento cruzado (P1+P2, depois P3+P4, P5 circulando) para evitar silos de conhecimento — necessário porque a entrevista final é individual e cobra justificativa de qualquer parte do projeto.
 
-## Acesso do professor ao repositório (PENDÊNCIA — confirmar com o professor)
-Existe uma divergência entre duas orientações recebidas:
-- Uma versão do planejamento indicava que o professor só acessaria o repositório na entrega final, 15 dias antes da entrevista.
-- O guia oficial de sprints instrui explicitamente adicionar o professor como colaborador do repositório já na Sprint 1 (usuário "sergioaafreitas" ou e-mail "sergiofreitas@unb.br").
+## Atribuição formal dos papéis técnicos P1–P4 (PENDÊNCIA — decidir em reunião com o time)
+O trabalho de dois módulos já foi implementado, mas a atribuição dos papéis ainda não foi formalizada em equipe:
 
-**Decisão provisória:** seguir a instrução mais recente e mais específica — adicionar o professor como colaborador desde já. Perguntar diretamente ao professor qual das duas orientações vale, e atualizar esta seção com a resposta.
+- `scanner.l` (entregável de **P1 — Léxico**) e `parser.y` com construção de AST (entregável de **P2 — Sintático/AST**) já foram implementados e mesclados, ambos pelo mesmo autor no repositório.
+- Isso é um fato sobre o histórico do repositório, não uma decisão de equipe: não está confirmado se o grupo formalizou essa pessoa como dona de P1+P2, ou se ela adiantou trabalho que ainda estava em aberto para qualquer pessoa.
+- **P3 (Semântico)** e **P4 (Interpretação)** ainda não têm dono definido. Os arquivos `semantic.c` e `interpreter.c` existem em `src/`, mas aparentam ser apenas esqueleto — nenhum PR próprio de implementação foi identificado para eles ainda.
+
+**Pontos a decidir na próxima reunião com o time:**
+1. Formalizar (ou não) a atribuição de P1 e P2 à pessoa que já entregou os dois módulos.
+2. Avaliar a carga já concentrada nessa pessoa e se algum ajuste é necessário.
+3. Definir quem assume P3 e quem assume P4 — considerando que os dois formam par (dependem da mesma AST e tabela de símbolos).
+4. Confirmar se as demais pessoas do time já estão alocadas em outras frentes visíveis no repositório (ex.: templates de issue/PR, workflow de deploy) ou ainda sem papel técnico definido.
+
+## Acesso do professor ao repositório (RESOLVIDO)
+Havia uma divergência entre duas orientações recebidas sobre quando dar acesso ao professor ao repositório. **Resolvido em conversa direta com o professor: ele não tem interesse em fazer parte do grupo/repositório neste momento.** Não é necessário adicioná-lo como colaborador por enquanto.
 
 ## Regras de branch
 `main` sempre compilável. Cada pessoa/par trabalha em branch de feature (`feat/scanner`, `feat/parser`, `feat/interpreter`...) e faz merge após revisão. `main` é protegida no GitHub, exigindo Pull Request com pelo menos 1 aprovação.
