@@ -11,6 +11,7 @@ int yylex(void);
 void yyerror(const char *msg);
 
 ASTNode *raiz_ast = NULL;
+int erros_sintaticos = 0;
 %}
 
 %union {
@@ -64,6 +65,7 @@ lista_declaracoes:
 declaracao:
       declaracao_funcao { $$ = $1; }
     | declaracao_variavel { $$ = $1; }
+    | error ';' { $$ = NULL; yyerrok; }
     ;
 
 tipo:
@@ -149,6 +151,7 @@ comando:
     | comando_for         { $$ = $1; }
     | comando_return      { $$ = $1; }
     | bloco               { $$ = $1; }
+    | error ';'           { $$ = NULL; yyerrok; }
     ;
 
 comando_expressao:
@@ -300,6 +303,7 @@ argumento:
 
 void yyerror(const char *msg) {
     fprintf(stderr, "Erro sintatico [linha %d]: %s (proximo a '%s')\n", yylineno, msg, yytext);
+    erros_sintaticos++;
 }
 
 #ifdef PARSER_TEST_MAIN
@@ -321,7 +325,7 @@ int main(int argc, char **argv) {
         fclose(yyin);
     }
 
-    if (resultado == 0 && erros_lexicos == 0) {
+    if (resultado == 0 && erros_lexicos == 0 && erros_sintaticos == 0) {
         printf("Analise sintatica concluida sem erros.\n\n");
         imprimir_ast(raiz_ast, 0);
         liberar_ast(raiz_ast);
@@ -331,6 +335,13 @@ int main(int argc, char **argv) {
     if (erros_lexicos > 0) {
         fprintf(stderr, "\nTotal de erros lexicos: %d\n", erros_lexicos);
     }
+
+    if (erros_sintaticos > 0) {
+        fprintf(stderr, "Total de erros sintaticos: %d\n", erros_sintaticos);
+    }
+
+    /* AST nao e usada (impressa/interpretada) quando houve erro sintatico */
+    liberar_ast(raiz_ast);
 
     return 1;
 }
