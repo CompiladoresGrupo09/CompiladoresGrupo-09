@@ -7,3 +7,5 @@ src/*.tab.h
 src/*.exe
 src/*.o
 src/parser.output
+src/interpretador
+src/parser_test
