@@ -20,15 +20,14 @@ Fora de escopo: otimizações, ponteiros, structs/unions, pré-processador, stri
 
 Ver `docs/documentacao/definicao-da-linguagem.md` para detalhes e exemplos.
 
-## Como compilar
+## Como compilar/executar
 ```
+cd src
 make
+./interpretador ../tests/validos/organizador_compras.c
 ```
+`make clean` remove o binário e os artefatos gerados por flex/bison (`lex.yy.c`, `parser.tab.c`, `parser.tab.h`, `parser.output`).
 
-## Como executar
-```
-./interpretador exemplo.c
-```
 
 ## Exemplos de entrada e saída
 Ver `docs/documentacao/definicao-da-linguagem.md` para o exemplo completo do organizador de compras (entrada `.c` e saída esperada). Mais exemplos serão adicionados conforme o núcleo for funcionando.

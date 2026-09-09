@@ -301,37 +301,3 @@ argumento:
 void yyerror(const char *msg) {
     fprintf(stderr, "Erro sintatico [linha %d]: %s (proximo a '%s')\n", yylineno, msg, yytext);
 }
-
-#ifdef PARSER_TEST_MAIN
-extern FILE *yyin;
-
-int main(int argc, char **argv) {
-    if (argc > 1) {
-        FILE *f = fopen(argv[1], "r");
-        if (!f) {
-            fprintf(stderr, "Nao foi possivel abrir o arquivo: %s\n", argv[1]);
-            return 1;
-        }
-        yyin = f;
-    }
-
-    int resultado = yyparse();
-
-    if (argc > 1) {
-        fclose(yyin);
-    }
-
-    if (resultado == 0 && erros_lexicos == 0) {
-        printf("Analise sintatica concluida sem erros.\n\n");
-        imprimir_ast(raiz_ast, 0);
-        liberar_ast(raiz_ast);
-        return 0;
-    }
-
-    if (erros_lexicos > 0) {
-        fprintf(stderr, "\nTotal de erros lexicos: %d\n", erros_lexicos);
-    }
-
-    return 1;
-}
-#endif
