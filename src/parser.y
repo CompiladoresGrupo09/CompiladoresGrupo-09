@@ -11,6 +11,7 @@ int yylex(void);
 void yyerror(const char *msg);
 
 ASTNode *raiz_ast = NULL;
+int erros_sintaticos = 0;
 %}
 
 %union {
@@ -64,6 +65,7 @@ lista_declaracoes:
 declaracao:
       declaracao_funcao { $$ = $1; }
     | declaracao_variavel { $$ = $1; }
+    | error ';' { $$ = NULL; yyerrok; }
     ;
 
 tipo:
@@ -149,6 +151,7 @@ comando:
     | comando_for         { $$ = $1; }
     | comando_return      { $$ = $1; }
     | bloco               { $$ = $1; }
+    | error ';'           { $$ = NULL; yyerrok; }
     ;
 
 comando_expressao:
@@ -300,4 +303,5 @@ argumento:
 
 void yyerror(const char *msg) {
     fprintf(stderr, "Erro sintatico [linha %d]: %s (proximo a '%s')\n", yylineno, msg, yytext);
+    erros_sintaticos++;
 }

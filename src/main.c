@@ -4,6 +4,7 @@
 extern FILE *yyin;
 extern ASTNode *raiz_ast;
 extern int erros_lexicos;
+extern int erros_sintaticos;
 int yyparse(void);
 
 /* codigos de saida: 0 sucesso, 1 erro de uso/arquivo, 2 erro sintatico, 3 erro lexico */
@@ -23,7 +24,10 @@ int main(int argc, char **argv) {
     int resultado_sintatico = yyparse();
     fclose(f);
 
-    if (resultado_sintatico != 0) {
+    if (resultado_sintatico != 0 || erros_sintaticos > 0) {
+        if (erros_sintaticos > 0) {
+            fprintf(stderr, "Total de erros sintaticos: %d\n", erros_sintaticos);
+        }
         liberar_ast(raiz_ast);
         return 2;
     }
