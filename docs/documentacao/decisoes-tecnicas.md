@@ -27,17 +27,15 @@ O conflito clássico de `if (a) if (b) x; else y;` — a quem o `else` pertence 
 
 - `scanner.l` (**P1 — Léxico**) e `parser.y` com construção de AST (**P2 — Sintático/AST**) já foram implementados e mesclados, ambos pelo mesmo autor no repositório. Ainda não está confirmado se o grupo formalizou essa pessoa como dona de P1+P2, ou se ela adiantou trabalho que estava em aberto para qualquer pessoa.
 - **Integração (`main.c`) — concluída:** implementada, revisada e mesclada (issue #18 / PR #39), com validação manual completa.
-- **P3 (Semântico / tabela de símbolos) — issue #22, com dois responsáveis já atribuídos:** inicialmente atribuída a três integrantes. Uma delas assumiu e entregou sozinha a integração (`main.c`, issue #18) — para isso, removeu as outras duas pessoas *daquela issue específica* (#18), não da #22. Posteriormente, uma das duas pessoas que continuavam na #22 removeu a terceira dessa issue. **Resultado: a issue #22 permanece com dois responsáveis atribuídos, sem atividade (branch/PR) visível até o momento.** Não está sem dono — só sem progresso visível.
+- **P3 (Semântico / tabela de símbolos) — issue #22, com dois responsáveis atribuídos:** inicialmente atribuída a três integrantes. Uma delas assumiu e entregou sozinha a integração (`main.c`, issue #18) — para isso, removeu as outras duas pessoas *daquela issue específica* (#18), não da #22. Posteriormente, uma das duas pessoas que continuavam na #22 removeu a terceira dessa issue. A issue #22 permanece com dois responsáveis atribuídos, sem atividade (branch/PR) visível até o momento.
 - **P4 (Interpretação) — pendente:** issue #31 já existe (esqueleto do interpretador, `interpretarNo`) e sugere pareamento com quem entregou a integração, mas ninguém está formalmente alocado.
-- **Interesse de Henrique em P3:** manifestado, mas condicionado a uma conversa prévia com as duas pessoas já atribuídas à issue #22, para entender se o trabalho já está em andamento silenciosamente, travado, ou genuinamente aberto para redistribuição.
 - **S2-05 (tabela de símbolos com escopos aninhados) e S2-07 (política de conversão implícita de tipos):** decisões técnicas ainda não tomadas, porque dependem de quem for de fato implementar P3.
 
 **Pontos a decidir na próxima reunião com o time:**
 1. Formalizar (ou não) a atribuição de P1 e P2 à pessoa que já entregou os dois módulos.
-2. Confirmar com as duas pessoas atribuídas à issue #22 o estado real do trabalho, antes de qualquer redistribuição.
-3. Só depois disso, avaliar se Henrique entra em P3 (substituindo, complementando, ou não entrando), e se isso exige ajuste na carga de quem já acumula múltiplos papéis.
-4. Definir quem assume P4 — considerando que P3 e P4 formam par.
-5. Só depois de P3 ter responsável(is) confirmado(s), decidir as políticas de S2-05 e S2-07 e registrá-las aqui.
+2. Acompanhar o andamento da issue #22 com as duas pessoas atribuídas.
+3. Definir quem assume P4 — considerando que P3 e P4 formam par.
+4. Só depois de P3 avançar, decidir as políticas de S2-05 e S2-07 e registrá-las aqui.
 
 ## Acesso do professor ao repositório (RESOLVIDO)
 Não houve uma decisão nova do professor: a política de não participar dos repositórios das equipes já era dele desde o início do semestre. Havia apenas uma dúvida remanescente no grupo sobre isso, esclarecida diretamente com ele em **01/09/2026** — ele confirmou que não tem interesse em fazer parte do repositório da equipe neste momento. Não é necessário adicioná-lo como colaborador.
