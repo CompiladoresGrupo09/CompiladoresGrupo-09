@@ -20,17 +20,19 @@ Alinhada ao padrão usado nos exemplos do professor (pastas `docs/`/`src/` por u
 ## Papéis fixos com pares cruzados
 Pipeline sequencial (léxico → sintático/AST → semântico → interpretação), mas com pareamento cruzado (P1+P2, depois P3+P4, P5 circulando) para evitar silos de conhecimento — necessário porque a entrevista final é individual e cobra justificativa de qualquer parte do projeto.
 
-## Atribuição formal dos papéis técnicos P1–P4 (PENDÊNCIA PARCIAL — só P4 falta decidir)
+## Atribuição formal dos papéis técnicos P1–P4 (PENDÊNCIA PARCIAL — P3 e P4 seguem em aberto)
 
 - `scanner.l` (**P1 — Léxico**) e `parser.y` com construção de AST (**P2 — Sintático/AST**) já foram implementados e mesclados, ambos pelo mesmo autor no repositório. Ainda não está confirmado se o grupo formalizou essa pessoa como dona de P1+P2, ou se ela adiantou trabalho que estava em aberto para qualquer pessoa.
-- **P3 (Semântico / tabela de símbolos) — resolvido:** issue própria (Sprint 02, prioridade alta), atribuída formalmente a dois integrantes do time. Um terceiro integrante que também estava atribuído foi removido da issue recentemente; o motivo dessa saída não está registrado e vale confirmar com o time.
+- **Integração (`main.c`) — concluída:** implementada, revisada e mesclada (issue #18 / PR #39), com validação manual completa (build limpo, execução nos casos de teste válidos e inválidos, `make test` passando). O binário `interpretador` já funciona conforme documentado no README.
+- **P3 (Semântico / tabela de símbolos) — parcialmente resolvido, com uma dúvida em aberto:** issue própria (Sprint 02, prioridade alta), inicialmente atribuída a três integrantes. Um deles se removeu da issue pouco antes de assumir e entregar sozinho(a) a implementação de `main.c` (issue #18), que estava marcada como a tarefa mais urgente do backlog e bloqueava outras três issues. **Hipótese a confirmar com o time:** a saída de P3 pode ter sido uma repriorização legítima (essa pessoa migrou para desbloquear `main.c` primeiro), não necessariamente um problema de alocação ou sobrecarga. Falta confirmar isso diretamente com ela antes de tratar como pendência resolvida ou como obstáculo a corrigir.
 - **P4 (Interpretação) — ainda pendente:** nenhuma issue ou branch de trabalho identificada até o momento. Precisa de responsável(is) definido(s).
 
 **Pontos a decidir na próxima reunião com o time:**
 1. Formalizar (ou não) a atribuição de P1 e P2 à pessoa que já entregou os dois módulos.
 2. Avaliar a carga já concentrada nessa pessoa e se algum ajuste é necessário.
-3. Definir quem assume P4 — considerando que P3 e P4 formam par (dependem da mesma AST e tabela de símbolos), o ideal é que quem entrar em P4 pareie com quem já está em P3.
-4. Entender o motivo da saída de um integrante da issue de P3, para identificar se há algum obstáculo recorrente de alocação que precise ser resolvido.
+3. Confirmar com quem saiu da issue de P3 se foi repriorização (para destravar `main.c`) ou outro motivo, e se ela retorna a P3 ou permanece em outra frente.
+4. Definir quem assume P3 (considerando a resposta do item 3) e quem assume P4 — os dois formam par (dependem da mesma AST e tabela de símbolos).
+5. Confirmar se as demais pessoas do time já estão alocadas em outras frentes visíveis no repositório (ex.: templates de issue/PR, workflow de deploy) ou ainda sem papel técnico definido.
 
 ## Acesso do professor ao repositório (RESOLVIDO)
 Havia uma divergência entre duas orientações recebidas sobre quando dar acesso ao professor ao repositório. **Resolvido em conversa direta com o professor: ele não tem interesse em fazer parte do grupo/repositório neste momento.** Não é necessário adicioná-lo como colaborador por enquanto.
