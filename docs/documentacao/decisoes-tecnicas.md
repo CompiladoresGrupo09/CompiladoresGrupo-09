@@ -20,12 +20,25 @@ Alinhada ao padrão usado nos exemplos do professor (pastas `docs/`/`src/` por u
 ## Papéis fixos com pares cruzados
 Pipeline sequencial (léxico → sintático/AST → semântico → interpretação), mas com pareamento cruzado (P1+P2, depois P3+P4, P5 circulando) para evitar silos de conhecimento — necessário porque a entrevista final é individual e cobra justificativa de qualquer parte do projeto.
 
-## Acesso do professor ao repositório (PENDÊNCIA — confirmar com o professor)
-Existe uma divergência entre duas orientações recebidas:
-- Uma versão do planejamento indicava que o professor só acessaria o repositório na entrega final, 15 dias antes da entrevista.
-- O guia oficial de sprints instrui explicitamente adicionar o professor como colaborador do repositório já na Sprint 1 (usuário "sergioaafreitas" ou e-mail "sergiofreitas@unb.br").
+## Tratamento do dangling else (S2-03)
+O conflito clássico de `if (a) if (b) x; else y;` — a quem o `else` pertence — é resolvido pela precedência natural do Bison, que prefere deslocar (`shift`) o `else` para o `if` mais próximo sem `else`. É o comportamento padrão do C e não exigiu regra extra na gramática; o Bison emite 1 aviso de conflito shift/reduce esperado para isso, documentado em `gramatica.md`. Nenhuma ação adicional foi necessária além de reconhecer e documentar esse comportamento padrão.
 
-**Decisão provisória:** seguir a instrução mais recente e mais específica — adicionar o professor como colaborador desde já. Perguntar diretamente ao professor qual das duas orientações vale, e atualizar esta seção com a resposta.
+## Atribuição formal dos papéis técnicos P1–P4
+
+- `scanner.l` (**P1 — Léxico**) e `parser.y` com construção de AST (**P2 — Sintático/AST**) já foram implementados e mesclados, ambos pelo mesmo autor no repositório. Ainda não está confirmado se o grupo formalizou essa pessoa como dona de P1+P2, ou se ela adiantou trabalho que estava em aberto para qualquer pessoa.
+- **Integração (`main.c`) — concluída:** implementada, revisada e mesclada (issue #18 / PR #39), com validação manual completa.
+- **P3 (Semântico / tabela de símbolos) — issue #22, com dois responsáveis atribuídos:** inicialmente atribuída a três integrantes. Uma delas assumiu e entregou sozinha a integração (`main.c`, issue #18) — para isso, removeu as outras duas pessoas *daquela issue específica* (#18), não da #22. Posteriormente, uma das duas pessoas que continuavam na #22 removeu a terceira dessa issue. A issue #22 permanece com dois responsáveis atribuídos, sem atividade (branch/PR) visível até o momento.
+- **P4 (Interpretação) — pendente:** issue #31 já existe (esqueleto do interpretador, `interpretarNo`) e sugere pareamento com quem entregou a integração, mas ninguém está formalmente alocado.
+- **S2-05 (tabela de símbolos com escopos aninhados) e S2-07 (política de conversão implícita de tipos):** decisões técnicas ainda não tomadas, porque dependem de quem for de fato implementar P3.
+
+**Pontos a decidir na próxima reunião com o time:**
+1. Formalizar (ou não) a atribuição de P1 e P2 à pessoa que já entregou os dois módulos.
+2. Acompanhar o andamento da issue #22 com as duas pessoas atribuídas.
+3. Definir quem assume P4 — considerando que P3 e P4 formam par.
+4. Só depois de P3 avançar, decidir as políticas de S2-05 e S2-07 e registrá-las aqui.
+
+## Acesso do professor ao repositório (RESOLVIDO)
+Não houve uma decisão nova do professor: a política de não participar dos repositórios das equipes já era dele desde o início do semestre. Havia apenas uma dúvida remanescente no grupo sobre isso, esclarecida diretamente com ele em **01/09/2026** — ele confirmou que não tem interesse em fazer parte do repositório da equipe neste momento. Não é necessário adicioná-lo como colaborador.
 
 ## Regras de branch
 `main` sempre compilável. Cada pessoa/par trabalha em branch de feature (`feat/scanner`, `feat/parser`, `feat/interpreter`...) e faz merge após revisão. `main` é protegida no GitHub, exigindo Pull Request com pelo menos 1 aprovação.
