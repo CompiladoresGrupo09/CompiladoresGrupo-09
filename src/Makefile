@@ -11,6 +11,8 @@ SCANNER_C = lex.yy.c
 AST_SRC = ast.c
 MAIN_SRC = main.c
 BIN = interpretador
+TABELA_SRC = tabela.c
+
 
 .PHONY: all test clean
 
@@ -25,8 +27,8 @@ $(PARSER_H): $(PARSER_C)
 $(SCANNER_C): $(SCANNER_SRC) $(PARSER_H)
 	$(LEX) $(SCANNER_SRC)
 
-$(BIN): $(MAIN_SRC) $(PARSER_C) $(SCANNER_C) $(AST_SRC)
-	$(CC) $(CFLAGS) $(MAIN_SRC) $(PARSER_C) $(SCANNER_C) $(AST_SRC) -o $(BIN)
+$(BIN): $(MAIN_SRC) $(PARSER_C) $(SCANNER_C) $(AST_SRC) $(TABELA_SRC)
+	$(CC) $(CFLAGS) $(MAIN_SRC) $(PARSER_C) $(SCANNER_C) $(AST_SRC) $(TABELA_SRC) -o $(BIN)
 
 test: $(BIN)
 	@for f in ../tests/validos/*.c; do \
