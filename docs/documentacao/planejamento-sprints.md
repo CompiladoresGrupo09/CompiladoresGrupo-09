@@ -12,8 +12,8 @@ Devido ao prazo real do formulário P1 (23/09) e à Semana Universitária no mei
 | P1 — Léxico | mesma pessoa que entregou P2 (autoria a confirmar formalmente) | ✅ Implementado |
 | P2 — Sintático/AST | idem acima | ✅ Implementado |
 | Integração (`main.c`) | Giovana Ferreira Santos | ✅ Implementado (issue #18 / PR #39) |
-| P3 — Semântico | proposta em avaliação: Henrique Fontenelle | ❌ Não iniciado |
-| P4 — Interpretação | sugestão pendente de confirmação: pareamento com a Giovana | ❌ Não iniciado |
+| P3 — Semântico | Eduardo Ribeiro Xavier e Mariana Martins (atribuídos à issue #22; sem atividade visível até o momento) | ❌ Não iniciado |
+| P4 — Interpretação | sem responsável definido (issue #31 sugere pareamento com quem entregou a integração) | ❌ Não iniciado |
 | Líder / P5 — Integração, Testes, Documentação | Brenda Beatriz | Ativo |
 | Scrum Master | Henrique Fontenelle | Ativo |
 
@@ -39,9 +39,9 @@ Devido ao prazo real do formulário P1 (23/09) e à Semana Universitária no mei
 - [ ] Iniciar tabela de símbolos e verificação de declaração/uso de variáveis (P3, par com P4)
 - [x] Testes de declarações, expressões, `if`/`while`; atualizar `docs/` e README
 
-**Marco P1:** Front-end (léxico + sintático/AST) compilando, versionado, com `docs/` atualizado — **atingido parcialmente**. O início do semântico previsto para esta sprint **não ocorreu**: a pessoa inicialmente envolvida em P3 priorizou a integração (`main.c`, issue #18), então marcada como a tarefa mais urgente do backlog e bloqueante de três outras issues. Formulário P1 ainda não enviado (a confirmar prazo com o replanejamento).
+**Marco P1:** Front-end (léxico + sintático/AST) compilando, versionado, com `docs/` atualizado — **atingido parcialmente**. O início do semântico previsto para esta sprint **não ocorreu**: a issue #22 (P3) permanece com Eduardo e Mariana atribuídos, mas sem atividade visível (nenhuma branch ou PR até o momento). Formulário P1 ainda não enviado (a confirmar prazo com o replanejamento).
 
-**Entregue:** `parser.y` completo com construção de AST (PR #16). Integração implementada além do previsto para esta sprint: `main.c` real e binário `interpretador` funcionando (issue #18 / PR #39, validado manualmente). Testes de tokens e estruturas de controle criados (`tokens_basico.c`, `organizador_compras.c`). README atualizado com o comando de build/execução real. Pendente: início da tabela de símbolos (P3) — sem responsável ativo no momento; lacuna identificada de testes para função com parâmetros/retorno/recursão (ver issue #25).
+**Entregue:** `parser.y` completo com construção de AST (PR #16). Integração implementada além do previsto para esta sprint: `main.c` real e binário `interpretador` funcionando (issue #18 / PR #39, validado manualmente). Testes de tokens e estruturas de controle criados (`tokens_basico.c`, `organizador_compras.c`). README atualizado com o comando de build/execução real. Pendente: início da tabela de símbolos (P3) — atribuída, mas sem progresso visível; lacuna identificada de testes para função com parâmetros/retorno/recursão (ver issue #25).
 
 ## Sprint 3 — Semântica completa e início da interpretação
 
