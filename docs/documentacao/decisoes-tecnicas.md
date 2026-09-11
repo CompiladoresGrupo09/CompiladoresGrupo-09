@@ -20,18 +20,17 @@ Alinhada ao padrão usado nos exemplos do professor (pastas `docs/`/`src/` por u
 ## Papéis fixos com pares cruzados
 Pipeline sequencial (léxico → sintático/AST → semântico → interpretação), mas com pareamento cruzado (P1+P2, depois P3+P4, P5 circulando) para evitar silos de conhecimento — necessário porque a entrevista final é individual e cobra justificativa de qualquer parte do projeto.
 
-## Atribuição formal dos papéis técnicos P1–P4 (PENDÊNCIA — decidir em reunião com o time)
-O trabalho de dois módulos já foi implementado, mas a atribuição dos papéis ainda não foi formalizada em equipe:
+## Atribuição formal dos papéis técnicos P1–P4 (PENDÊNCIA PARCIAL — só P4 falta decidir)
 
-- `scanner.l` (entregável de **P1 — Léxico**) e `parser.y` com construção de AST (entregável de **P2 — Sintático/AST**) já foram implementados e mesclados, ambos pelo mesmo autor no repositório.
-- Isso é um fato sobre o histórico do repositório, não uma decisão de equipe: não está confirmado se o grupo formalizou essa pessoa como dona de P1+P2, ou se ela adiantou trabalho que ainda estava em aberto para qualquer pessoa.
-- **P3 (Semântico)** e **P4 (Interpretação)** ainda não têm dono definido. Os arquivos `semantic.c` e `interpreter.c` existem em `src/`, mas aparentam ser apenas esqueleto — nenhum PR próprio de implementação foi identificado para eles ainda.
+- `scanner.l` (**P1 — Léxico**) e `parser.y` com construção de AST (**P2 — Sintático/AST**) já foram implementados e mesclados, ambos pelo mesmo autor no repositório. Ainda não está confirmado se o grupo formalizou essa pessoa como dona de P1+P2, ou se ela adiantou trabalho que estava em aberto para qualquer pessoa.
+- **P3 (Semântico / tabela de símbolos) — resolvido:** issue própria (Sprint 02, prioridade alta), atribuída formalmente a dois integrantes do time. Um terceiro integrante que também estava atribuído foi removido da issue recentemente; o motivo dessa saída não está registrado e vale confirmar com o time.
+- **P4 (Interpretação) — ainda pendente:** nenhuma issue ou branch de trabalho identificada até o momento. Precisa de responsável(is) definido(s).
 
 **Pontos a decidir na próxima reunião com o time:**
 1. Formalizar (ou não) a atribuição de P1 e P2 à pessoa que já entregou os dois módulos.
 2. Avaliar a carga já concentrada nessa pessoa e se algum ajuste é necessário.
-3. Definir quem assume P3 e quem assume P4 — considerando que os dois formam par (dependem da mesma AST e tabela de símbolos).
-4. Confirmar se as demais pessoas do time já estão alocadas em outras frentes visíveis no repositório (ex.: templates de issue/PR, workflow de deploy) ou ainda sem papel técnico definido.
+3. Definir quem assume P4 — considerando que P3 e P4 formam par (dependem da mesma AST e tabela de símbolos), o ideal é que quem entrar em P4 pareie com quem já está em P3.
+4. Entender o motivo da saída de um integrante da issue de P3, para identificar se há algum obstáculo recorrente de alocação que precise ser resolvido.
 
 ## Acesso do professor ao repositório (RESOLVIDO)
 Havia uma divergência entre duas orientações recebidas sobre quando dar acesso ao professor ao repositório. **Resolvido em conversa direta com o professor: ele não tem interesse em fazer parte do grupo/repositório neste momento.** Não é necessário adicioná-lo como colaborador por enquanto.
