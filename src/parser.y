@@ -59,7 +59,7 @@ programa:
 
 lista_declaracoes:
       lista_declaracoes declaracao { adicionar_filho($1, $2); $$ = $1; }
-    | /* vazio */ { $$ = criar_no(NODE_PROGRAM, yylineno); }
+    | /* vazio */ { $$ = criar_no(NODE_PROGRAM, @$.first_line); }
     ;
 
 declaracao:
@@ -87,17 +87,17 @@ declaracao_variavel:
 lista_declaradores:
       lista_declaradores ',' declarador { adicionar_filho($1, $3); $$ = $1; }
     | declarador {
-          $$ = criar_no(NODE_LIST, yylineno);
+          $$ = criar_no(NODE_LIST, @$.first_line);
           adicionar_filho($$, $1);
       }
     ;
 
 declarador:
-      ID { $$ = criar_no_id($1, yylineno); free($1); }
+      ID { $$ = criar_no_id($1, @$.first_line); free($1); }
     | ID '=' expressao {
-          ASTNode *id = criar_no_id($1, yylineno);
+          ASTNode *id = criar_no_id($1, @$.first_line);
           free($1);
-          $$ = criar_no_binop("=", id, $3, yylineno);
+          $$ = criar_no_binop("=", id, $3, @$.first_line);
       }
     ;
 
@@ -114,20 +114,20 @@ declaracao_funcao:
 
 lista_parametros:
       lista_parametros_ne { $$ = $1; }
-    | /* vazio */ { $$ = criar_no(NODE_LIST, yylineno); }
+    | /* vazio */ { $$ = criar_no(NODE_LIST, @$.first_line); }
     ;
 
 lista_parametros_ne:
       lista_parametros_ne ',' parametro { adicionar_filho($1, $3); $$ = $1; }
     | parametro {
-          $$ = criar_no(NODE_LIST, yylineno);
+          $$ = criar_no(NODE_LIST, @$.first_line);
           adicionar_filho($$, $1);
       }
     ;
 
 parametro:
       tipo ID {
-          ASTNode *no = criar_no(NODE_PARAM, yylineno);
+          ASTNode *no = criar_no(NODE_PARAM, @$.first_line);
           no->intval = $1;
           no->strval = $2;
           $$ = no;
@@ -140,7 +140,7 @@ bloco:
 
 lista_comandos:
       lista_comandos comando { adicionar_filho($1, $2); $$ = $1; }
-    | /* vazio */ { $$ = criar_no(NODE_BLOCK, yylineno); }
+    | /* vazio */ { $$ = criar_no(NODE_BLOCK, @$.first_line); }
     ;
 
 comando:
@@ -156,10 +156,10 @@ comando:
 
 comando_expressao:
       expressao ';' {
-          $$ = criar_no(NODE_EXPR_STMT, yylineno);
+          $$ = criar_no(NODE_EXPR_STMT, @$.first_line);
           adicionar_filho($$, $1);
       }
-    | ';' { $$ = criar_no(NODE_EXPR_STMT, yylineno); adicionar_filho($$, NULL); }
+    | ';' { $$ = criar_no(NODE_EXPR_STMT, @$.first_line); adicionar_filho($$, NULL); }
     ;
 
 comando_if:
@@ -202,11 +202,11 @@ expressao_opt:
 
 comando_return:
       RETURN expressao ';' {
-          $$ = criar_no(NODE_RETURN, yylineno);
+          $$ = criar_no(NODE_RETURN, @$.first_line);
           adicionar_filho($$, $2);
       }
     | RETURN ';' {
-          $$ = criar_no(NODE_RETURN, yylineno);
+          $$ = criar_no(NODE_RETURN, @$.first_line);
           adicionar_filho($$, NULL);
       }
     ;
@@ -217,62 +217,62 @@ expressao:
 
 atribuicao:
       ID '=' atribuicao {
-          ASTNode *id = criar_no_id($1, yylineno);
+          ASTNode *id = criar_no_id($1, @$.first_line);
           free($1);
-          $$ = criar_no_binop("=", id, $3, yylineno);
+          $$ = criar_no_binop("=", id, $3, @$.first_line);
       }
     | expr_or { $$ = $1; }
     ;
 
 expr_or:
-      expr_or OR expr_and { $$ = criar_no_binop("||", $1, $3, yylineno); }
+      expr_or OR expr_and { $$ = criar_no_binop("||", $1, $3, @$.first_line); }
     | expr_and { $$ = $1; }
     ;
 
 expr_and:
-      expr_and AND expr_eq { $$ = criar_no_binop("&&", $1, $3, yylineno); }
+      expr_and AND expr_eq { $$ = criar_no_binop("&&", $1, $3, @$.first_line); }
     | expr_eq { $$ = $1; }
     ;
 
 expr_eq:
-      expr_eq EQ expr_rel { $$ = criar_no_binop("==", $1, $3, yylineno); }
-    | expr_eq NE expr_rel { $$ = criar_no_binop("!=", $1, $3, yylineno); }
+      expr_eq EQ expr_rel { $$ = criar_no_binop("==", $1, $3, @$.first_line); }
+    | expr_eq NE expr_rel { $$ = criar_no_binop("!=", $1, $3, @$.first_line); }
     | expr_rel { $$ = $1; }
     ;
 
 expr_rel:
-      expr_rel '<' expr_add { $$ = criar_no_binop("<", $1, $3, yylineno); }
-    | expr_rel '>' expr_add { $$ = criar_no_binop(">", $1, $3, yylineno); }
-    | expr_rel LE expr_add  { $$ = criar_no_binop("<=", $1, $3, yylineno); }
-    | expr_rel GE expr_add  { $$ = criar_no_binop(">=", $1, $3, yylineno); }
+      expr_rel '<' expr_add { $$ = criar_no_binop("<", $1, $3, @$.first_line); }
+    | expr_rel '>' expr_add { $$ = criar_no_binop(">", $1, $3, @$.first_line); }
+    | expr_rel LE expr_add  { $$ = criar_no_binop("<=", $1, $3, @$.first_line); }
+    | expr_rel GE expr_add  { $$ = criar_no_binop(">=", $1, $3, @$.first_line); }
     | expr_add { $$ = $1; }
     ;
 
 expr_add:
-      expr_add '+' expr_mul { $$ = criar_no_binop("+", $1, $3, yylineno); }
-    | expr_add '-' expr_mul { $$ = criar_no_binop("-", $1, $3, yylineno); }
+      expr_add '+' expr_mul { $$ = criar_no_binop("+", $1, $3, @$.first_line); }
+    | expr_add '-' expr_mul { $$ = criar_no_binop("-", $1, $3, @$.first_line); }
     | expr_mul { $$ = $1; }
     ;
 
 expr_mul:
-      expr_mul '*' expr_unario { $$ = criar_no_binop("*", $1, $3, yylineno); }
-    | expr_mul '/' expr_unario { $$ = criar_no_binop("/", $1, $3, yylineno); }
-    | expr_mul '%' expr_unario { $$ = criar_no_binop("%", $1, $3, yylineno); }
+      expr_mul '*' expr_unario { $$ = criar_no_binop("*", $1, $3, @$.first_line); }
+    | expr_mul '/' expr_unario { $$ = criar_no_binop("/", $1, $3, @$.first_line); }
+    | expr_mul '%' expr_unario { $$ = criar_no_binop("%", $1, $3, @$.first_line); }
     | expr_unario { $$ = $1; }
     ;
 
 expr_unario:
-      '-' expr_unario %prec UMINUS { $$ = criar_no_unop("-", $2, yylineno); }
-    | '!' expr_unario %prec NOT    { $$ = criar_no_unop("!", $2, yylineno); }
+      '-' expr_unario %prec UMINUS { $$ = criar_no_unop("-", $2, @$.first_line); }
+    | '!' expr_unario %prec NOT    { $$ = criar_no_unop("!", $2, @$.first_line); }
     | expr_primaria { $$ = $1; }
     ;
 
 expr_primaria:
-      INT_LIT    { $$ = criar_no_int($1, yylineno); }
-    | FLOAT_LIT  { $$ = criar_no_float($1, yylineno); }
-    | CHAR_LIT   { $$ = criar_no_char($1, yylineno); }
-    | STRING_LIT { $$ = criar_no_string($1, yylineno); free($1); }
-    | ID         { $$ = criar_no_id($1, yylineno); free($1); }
+      INT_LIT    { $$ = criar_no_int($1, @$.first_line); }
+    | FLOAT_LIT  { $$ = criar_no_float($1, @$.first_line); }
+    | CHAR_LIT   { $$ = criar_no_char($1, @$.first_line); }
+    | STRING_LIT { $$ = criar_no_string($1, @$.first_line); free($1); }
+    | ID         { $$ = criar_no_id($1, @$.first_line); free($1); }
     | ID '(' lista_argumentos ')' {
           $3->type = NODE_CALL;
           $3->strval = $1;
@@ -283,20 +283,20 @@ expr_primaria:
 
 lista_argumentos:
       lista_argumentos_ne { $$ = $1; }
-    | /* vazio */ { $$ = criar_no(NODE_LIST, yylineno); }
+    | /* vazio */ { $$ = criar_no(NODE_LIST, @$.first_line); }
     ;
 
 lista_argumentos_ne:
       lista_argumentos_ne ',' argumento { adicionar_filho($1, $3); $$ = $1; }
     | argumento {
-          $$ = criar_no(NODE_LIST, yylineno);
+          $$ = criar_no(NODE_LIST, @$.first_line);
           adicionar_filho($$, $1);
       }
     ;
 
 argumento:
       expressao { $$ = $1; }
-    | '&' ID    { $$ = criar_no_addr($2, yylineno); free($2); }
+    | '&' ID    { $$ = criar_no_addr($2, @$.first_line); free($2); }
     ;
 
 %%
