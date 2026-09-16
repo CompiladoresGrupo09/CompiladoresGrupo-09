@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "ast.h"
+#include "semantic.h"
 
 extern FILE *yyin;
 extern ASTNode *raiz_ast;
@@ -38,7 +39,12 @@ int main(int argc, char **argv) {
         return 3;
     }
 
-    printf("Analise sintatica concluida sem erros.\n\n");
+    if (!analisar_semantica(raiz_ast)) {
+        liberar_ast(raiz_ast);
+        return 4;
+    }
+
+    printf("Analise lexica, sintatica e semantica concluida sem erros.\n\n");
     imprimir_ast(raiz_ast, 0);
     liberar_ast(raiz_ast);
     return 0;
