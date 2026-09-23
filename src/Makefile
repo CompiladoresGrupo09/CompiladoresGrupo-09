@@ -7,6 +7,7 @@ PARSER_SRC = parser.y
 PARSER_C = parser.tab.c
 PARSER_H = parser.tab.h
 SCANNER_SRC = scanner.l
+INTERPRETER_SRC = interpreter.c
 SCANNER_C = lex.yy.c
 AST_SRC = ast.c
 TABELA_SRC = tabela.c
@@ -27,8 +28,8 @@ $(PARSER_H): $(PARSER_C)
 $(SCANNER_C): $(SCANNER_SRC) $(PARSER_H)
 	$(LEX) $(SCANNER_SRC)
 
-$(BIN): $(MAIN_SRC) $(PARSER_C) $(SCANNER_C) $(AST_SRC) $(TABELA_SRC) $(SEMANTIC_SRC)
-	$(CC) $(CFLAGS) $(MAIN_SRC) $(PARSER_C) $(SCANNER_C) $(AST_SRC) $(TABELA_SRC) $(SEMANTIC_SRC) -o $(BIN)
+$(BIN): $(MAIN_SRC) $(PARSER_C) $(SCANNER_C) $(AST_SRC) $(TABELA_SRC) $(SEMANTIC_SRC) $(INTERPRETER_SRC)
+	$(CC) $(CFLAGS) $(MAIN_SRC) $(PARSER_C) $(SCANNER_C) $(AST_SRC) $(TABELA_SRC) $(SEMANTIC_SRC) $(INTERPRETER_SRC) -o $(BIN)
 
 test: $(BIN)
 	@for f in ../tests/validos/*.c; do \
