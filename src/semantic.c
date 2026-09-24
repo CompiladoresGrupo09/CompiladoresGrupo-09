@@ -151,5 +151,5 @@ int analisar_semantica(ASTNode *raiz) {
 	}
 
 	liberar_tabela();
-	return erros_semanticos > 0 ? 1 : 0; //código de saída diferente de 0 em caso de erro
+	return erros_semanticos == 0; // retorna 1 se sucesso, 0 se houver erros
 }
