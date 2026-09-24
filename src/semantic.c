@@ -230,53 +230,56 @@ static TipoDado inferir_tipo(ASTNode *no) {
 }
 
 static void visitar_no(ASTNode *no) {
-	if (no == NULL) {
-		return;
-	}
+    if (no == NULL) {
+        return;
+    }
 
-	switch (no->type) {
-		case NODE_VAR_DECL:
-			visitar_declaracao_variavel(no);
-			break;
+    switch (no->type) {
+        case NODE_VAR_DECL:
+            visitar_declaracao_variavel(no);
+            break;
 
-		case NODE_FUNC_DECL:
-			visitar_funcao(no);
-			break;
+        case NODE_FUNC_DECL:
+            visitar_funcao(no);
+            break;
 
-		case NODE_BLOCK:
-			visitar_bloco(no, 1);
-			break;
+        case NODE_BLOCK:
+            visitar_bloco(no, 1);
+            break;
 
-		case NODE_ID:
-		case NODE_ADDR:
-			if (buscar_simbolo(no->strval) == NULL) {
-				erro_simbolo(no, "identificador nao declarado:", no->strval);
-			}
-			break;
+        case NODE_EXPR_STMT:
+        case NODE_RETURN:
+            for (int i = 0; i < no->num_children; i++) {
+                inferir_tipo(no->children[i]);
+            }
+            break;
 
-		case NODE_CALL: {
-			Simbolo *simbolo = buscar_simbolo(no->strval);
-			if (simbolo == NULL) {
-				erro_simbolo(no, "funcao nao declarada:", no->strval);
-			} else if (!simbolo->e_funcao) {
-				erro_simbolo(no, "simbolo nao e uma funcao:", no->strval);
-			} else if (simbolo->aridade >= 0 && simbolo->aridade != no->num_children) {
-				fprintf(stderr, "Erro semantico [linha %d]: funcao '%s' esperava %d argumento(s), recebeu %d\n",
-						no->line, no->strval, simbolo->aridade, no->num_children);
-				erros_semanticos++;
-			}
-			for (int i = 0; i < no->num_children; i++) {
-				visitar_no(no->children[i]);
-			}
-			break;
-		}
+        case NODE_IF:
+        case NODE_WHILE:
+        case NODE_FOR:
+            // Avalia a condição e visita os blocos de comandos //
+            for (int i = 0; i < no->num_children; i++) {
+                visitar_no(no->children[i]);
+            }
+            break;
 
-		default:
-			for (int i = 0; i < no->num_children; i++) {
-				visitar_no(no->children[i]);
-			}
-			break;
-	}
+        case NODE_BINOP:
+        case NODE_UNOP:
+        case NODE_ID:
+        case NODE_ADDR:
+        case NODE_INT_LIT:
+        case NODE_FLOAT_LIT:
+        case NODE_CHAR_LIT:
+        case NODE_CALL:
+            inferir_tipo(no);
+            break;
+
+        default:
+            for (int i = 0; i < no->num_children; i++) {
+                visitar_no(no->children[i]);
+            }
+            break;
+    }
 }
 
 int analisar_semantica(ASTNode *raiz) {
