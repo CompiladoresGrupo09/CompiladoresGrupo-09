@@ -1,10 +1,10 @@
-# 🚀 Interpretador de C — Grupo 09
+# Interpretador de C — Grupo 09
 
 ## 1. A disciplina de Compiladores 1
 
 Este projeto foi realizado por alunos da Universidade de Brasília durante a disciplina de Compiladores 1 (FGA0003), orientada pelo Prof. Dr. Sergio Antônio Andrade de Freitas.
 
-A disciplina ensina a construção de um interpretador seguindo o pipeline léxico → sintático (com construção da AST) → semântico → interpretação recursiva da AST, usando Flex e Bison. Além do código, a proposta de trabalho exige que a equipe mantenha, ao longo de todo o desenvolvimento, um registro contínuo de decisões técnicas, planejamento de sprints e problemas/soluções — já que o professor só acessa o repositório na entrega final, e essa documentação é o que garante que o trabalho realizado seja visível e defensável na entrevista.
+A disciplina ensina a construção de um interpretador seguindo o pipeline léxico → sintático (com construção da AST) → semântico → interpretação recursiva da AST, usando Flex e Bison. Além do código, a proposta de trabalho exige que a equipe mantenha, ao longo de todo o desenvolvimento, um registro contínuo de decisões técnicas, planejamento de sprints e problemas/soluções.
 
 ## 2. O projeto: Organizador de Compras no Mercado
 
@@ -12,7 +12,7 @@ Como estudo de caso para exercitar o núcleo da linguagem, a equipe escolheu um 
 
 O interpretador cobre apenas o núcleo obrigatório da linguagem: tipos `int`/`float`/`char`, variáveis, expressões aritméticas/relacionais/lógicas com precedência, estruturas de controle (`if`/`else`, `while`, `for`), blocos com escopo, funções com parâmetros/retorno/recursão e entrada/saída básica (`printf`/`scanf`). Ponteiros, structs, pré-processador e otimizações ficam deliberadamente fora de escopo.
 
-Ver [Definição da Linguagem](definicao-da-linguagem.md) para o exemplo completo de código e saída esperada.
+Ver [Definição da Linguagem](documentacao/definicao-da-linguagem.md) para o exemplo completo de código e saída esperada.
 
 ## 3. Os Contribuidores
 
@@ -21,23 +21,23 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
 <div class="team-container">
 
   <div class="team-card">
-    <img src="docs/assets/Mariana_perfil.jpg" alt="Mariana Martins"/>
-    <h3>Mariana Martins</h3>
+    <img src="../assets/Brenda_perfil.jpg" alt="Brenda Beatriz"/>
+    <h3>Brenda Beatriz</h3>
     <div class="social-links">
-      <a href="https://github.com/Marianamrts" target="_blank">GitHub</a>
+      <a href="https://github.com/Brwnds" target="_blank">GitHub</a>
     </div>
   </div>
 
   <div class="team-card">
-    <img src="docs/assets/Eduardo_perfil.jpg" alt="Eduardo Ribeiro Xavier"/>
+    <img src="../assets/Eduardo_perfil.jpg" alt="Eduardo Ribeiro Xavier"/>
     <h3>Eduardo Ribeiro Xavier</h3>
     <div class="social-links">
       <a href="https://github.com/EduardoRibeiroXavier" target="_blank">GitHub</a>
     </div>
   </div>
 
-  <div class="team-card">
-    <img src="docs/assets/Giovana_perfil.jpg" alt="Giovana Ferreira"/>
+<div class="team-card">
+    <img src="../assets/Giovana_perfil.jpg" alt="Giovana Ferreira"/>
     <h3>Giovana Ferreira</h3>
     <div class="social-links">
       <a href="https://github.com/gih7915" target="_blank">GitHub</a>
@@ -45,7 +45,7 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
   </div>
 
   <div class="team-card">
-    <img src="docs/assets/Henrique_perfil.jpg" alt="Henrique Fontenelle"/>
+    <img src="../assets/Henrique_perfil.jpg" alt="Henrique Fontenelle"/>
     <h3>Henrique Fontenelle</h3>
     <div class="social-links">
       <a href="https://github.com/HenriqueFontenelle" target="_blank">GitHub</a>
@@ -53,13 +53,12 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
   </div>
 
   <div class="team-card">
-    <img src="docs/assets/Brenda_perfil.jpg" alt="Brenda Beatriz"/>
-    <h3>Brenda Beatriz</h3>
+    <img src="../assets/Mariana_perfil.jpg" alt="Mariana Martins"/>
+    <h3>Mariana Martins</h3>
     <div class="social-links">
-      <a href="https://github.com/Brwnds" target="_blank">GitHub</a>
+      <a href="https://github.com/Marianamrts" target="_blank">GitHub</a>
     </div>
   </div>
-
 </div>
 
 <style>
@@ -132,3 +131,4 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
 | Data | Versão | Descrição | Autor |
 |------|--------|-----------|-------|
 | 05/09/2026 | 1.0 | Criação da página de apresentação e equipe | Brenda |
+| 24/09/2026 | 1.1 | Concerta imagens quebradas em "Os contribuidores" e link quebrado | Mariana |

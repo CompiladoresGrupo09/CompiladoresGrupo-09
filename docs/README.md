@@ -1,12 +1,12 @@
 # Compiladores Grupo 09
-# Interpretador de C (subconjunto) — Equipe 09
+## Interpretador de C (subconjunto) — Equipe 09
 
 ## Integrantes e papéis
 - Nome — Léxico (scanner.l)
 - Nome — Sintático/AST (parser.y)
 - Nome — Semântico
 - Nome — Interpretação
-- Nome — Integração, testes, documentação e líder (formulários P1/P2)
+- Brenda — Integração, testes, documentação e líder (formulários P1/P2)
 
 ## Escopo suportado
 Núcleo obrigatório: tipos `int`/`float`/`char`, variáveis, expressões aritméticas/relacionais/lógicas com precedência, `if`/`else`/`while`/`for`, blocos com escopo, funções com parâmetros/retorno/recursão, `printf`/`scanf` básicos (`%d %f %c %s`).

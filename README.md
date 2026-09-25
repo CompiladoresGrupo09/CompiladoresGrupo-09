@@ -6,7 +6,7 @@
 - Nome — Sintático/AST (parser.y)
 - Nome — Semântico
 - Nome — Interpretação
-- Nome — Integração, testes, documentação e líder (formulários P1/P2)
+- Brenda — Integração, testes, documentação e líder (formulários P1/P2)
 
 ## Aplicação
 Organizador de compras no mercado: o programa recebe itens e preços via `scanf` em loop, soma o total gasto e avisa se o valor ultrapassou o orçamento informado.

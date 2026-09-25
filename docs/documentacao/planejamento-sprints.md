@@ -1,6 +1,6 @@
-# Planejamento de sprints
+# Planejamento de Sprints
 
-Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência de repositório).
+O projeto foi dividio em Sprints para garantir o acompanhamento da disciplina, além do Planejado × entregue, por sprint. 
 
 ## Sprint 1 — Ambiente, linguagem e léxico
 
@@ -9,11 +9,35 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - [ ] Desenhar gramática em alto nível, definir tokens
 - [x] Criar repositório com estrutura `docs/` + `src/`
 - [x] Configurar ambiente em todas as máquinas
-- [ ] Designar o líder para os formulários
+- [x] Designar o líder para os formulários
 - [ ] Iniciar `scanner.l` em par (P1 + P5); primeiros testes de tokens
 - [ ] Fechar `scanner.l` completo (tokens, reservadas, literais, erro léxico básico), testado com `flex`/`gcc -lfl`
 
-**Entregue:** _(preencher ao final da sprint)_
+**Entregue:**
+
+* **Escopo e Especificação da Linguagem:**
+  - [x] Documento inicial de especificação e regras léxicas consolidado em `docs/documentacao/definicao-da-linguagem.md`.
+  - [x] Levantamento e definição dos tokens da linguagem (palavras reservadas, operadores, delimitadores, identificadores e literais).
+
+* **Infraestrutura e Repositório:**
+  - [x] Inicialização do repositório Git com a estrutura modular de pastas (`docs/`, `src/`, `tests/`).
+  - [x] Configuração padronizada dos ambientes de desenvolvimento e compilação (`gcc`, `flex`, `make`) via WSL/Linux.
+  - [x] Definição de papéis da equipe e alinhamento dos fluxos de trabalho.
+
+* **Implementação Léxica (`scanner.l`):**
+  - [x] Criação do analisador léxico com Flex (`src/scanner.l`), cobrindo reconhecimento de palavras-chave, literais (`int`, `float`, `char`, `string`), operadores aritméticos/lógicos e tratamento de comentários.
+  - [x] Tratamento de erros léxicos básicos (caracteres inválidos e tokens não reconhecidos com contagem de linha).
+  - [x] Validação e compilação do scanner através de testes manuais e scripts de compilação com `flex` e `gcc -lfl`.
+
+
+#### Tabela 1 - Issues Fechadas na Sprint 01:
+
+| Issue | Descrição | Responsáveis / Par |
+| :--- | :--- | :--- |
+| [#01](link-da-issue) | Configuração do ambiente e estrutura inicial do repositório |  |
+| [#02](link-da-issue) | Definição da gramática em alto nível e tokens da linguagem |  |
+| [#03](link-da-issue) | Implementação e testes do analisador léxico (`scanner.l`) com Flex | |
+
 
 ## Sprint 2 — Sintático, AST e início do semântico
 
@@ -24,14 +48,16 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - [ ] Iniciar tabela de símbolos e verificação de declaração/uso de variáveis (P3, par com P4)
 - [ ] Testes de declarações, expressões, `if`/`while`; atualizar `docs/` e README
 
-## S2-07: Verificação de Tipos e Atribuição Implícita (Provisório)
-
-- **Decisão:** Recusar atribuições com perda de precisão (atribuir `float` a variáveis do tipo `int`, como em `int a; a = 1.5 + 2;`).
-- **Justificação:** Garantir tipagem segura na análise semântica e evitar truncamentos implícitos não declarados pelo programador. A promoção de `int` para `float` em operações mistas e a atribuição de `int` para variáveis `float` continuam válidas.
-
-**Marco P1:** Front-end (léxico + sintático/AST + início do semântico) compilando, versionado, com `docs/` atualizado e formulário P1 enviado pelo líder.
-
 **Entregue:** _(preencher ao final da sprint)_
+
+#### Tabela 2 - Issues Fechadas na Sprint 02:
+
+| Issue | Descrição | Responsáveis / Par |
+| :--- | :--- | :--- |
+| [#01](link-da-issue) | |  |
+| [#02](link-da-issue) | |  |
+| [#03](link-da-issue) | |  |
+
 
 ## Sprint 3 — Semântica completa e início da interpretação
 
@@ -42,6 +68,14 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - [ ] Checkpoint: rodar programas de teste ponta a ponta; decidir se cabe algum diferencial na sprint 4
 
 **Entregue:** _(preencher ao final da sprint)_
+
+#### Tabela 3 - Issues Fechadas na Sprint 03:
+
+| Issue | Descrição | Responsáveis / Par |
+| :--- | :--- | :--- |
+| [#01](link-da-issue) | |  |
+| [#02](link-da-issue) | |  |
+| [#03](link-da-issue) | |  |
 
 ## Sprint 4 — Robustez, testes, documentação
 
@@ -56,6 +90,14 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 
 **Entregue:** _(preencher ao final da sprint)_
 
+#### Tabela 4 - Issues Fechadas na Sprint 04:
+
+| Issue | Descrição | Responsáveis / Par |
+| :--- | :--- | :--- |
+| [#01](link-da-issue) | |  |
+| [#02](link-da-issue) | |  |
+| [#03](link-da-issue) | |  |
+
 ## Sprint 5 — Otimizações, recursos extras e testes integrados
 
 **Planejado:**
@@ -66,6 +108,14 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 
 **Entregue:** _(preencher ao final da sprint)_
 
+#### Tabela 5 - Issues Fechadas na Sprint 05:
+
+| Issue | Descrição | Responsáveis / Par |
+| :--- | :--- | :--- |
+| [#01](link-da-issue) | |  |
+| [#02](link-da-issue) | |  |
+| [#03](link-da-issue) | |  |
+
 ## Sprint 6 — Entrevistas finais e encerramento
 
 **Planejado:**
@@ -75,3 +125,18 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - [ ] Conferir datas de entrevista no plano de ensino — falta de comparecimento pode zerar a nota da apresentação final
 
 **Entregue:** _(preencher ao final da sprint)_
+
+#### Tabela 6 - Issues Fechadas na Sprint 06:
+
+| Issue | Descrição | Responsáveis / Par |
+| :--- | :--- | :--- |
+| [#01](link-da-issue) | |  |
+| [#02](link-da-issue) | |  |
+| [#03](link-da-issue) | |  |
+
+## Histórico de Versão 
+
+| Data | Versão | Descrição | Autor |
+|------|--------|-----------|-------|
+| 05/09/2026 | 1.0 | Criação da página | Brenda |
+| 25/09/2026 | 1.1 | Inserção das tabelas de Issues e descrição das entregas | Mariana |
