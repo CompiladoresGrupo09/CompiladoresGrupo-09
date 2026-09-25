@@ -29,3 +29,11 @@ Existe uma divergência entre duas orientações recebidas:
 
 ## Regras de branch
 `main` sempre compilável. Cada pessoa/par trabalha em branch de feature (`feat/scanner`, `feat/parser`, `feat/interpreter`...) e faz merge após revisão. `main` é protegida no GitHub, exigindo Pull Request com pelo menos 1 aprovação.
+
+# Decisões Técnicas do Projeto
+
+## S2-07: Verificação de Compatibilidade de Tipos e Conversão Implícita (Provisório)
+
+* **Decisão:** O compilador recusa conversões implícitas com perda de informação (como atribuir uma expressão do tipo `float` a uma variável do tipo `int`, por exemplo: `int a; a = 1.5 + 2;`).
+* **Comportamento adotado:** Emissão de erro semântico na linha correspondente da atribuição.
+* **Justificação:** Promover tipagem estrita e evitar truncamento silencioso de dados sem o consentimento explícito do utilizador via cast. A promoção implícita inversa (`int` para `float` em operações binárias mistas ou na atribuição para variáveis `float`) permanece suportada e válida.
