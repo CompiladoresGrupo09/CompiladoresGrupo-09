@@ -24,11 +24,6 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - [ ] Iniciar tabela de símbolos e verificação de declaração/uso de variáveis (P3, par com P4)
 - [ ] Testes de declarações, expressões, `if`/`while`; atualizar `docs/` e README
 
-## S2-07: Verificação de Tipos e Atribuição Implícita (Provisório)
-
-- **Decisão:** Recusar atribuições com perda de precisão (atribuir `float` a variáveis do tipo `int`, como em `int a; a = 1.5 + 2;`).
-- **Justificação:** Garantir tipagem segura na análise semântica e evitar truncamentos implícitos não declarados pelo programador. A promoção de `int` para `float` em operações mistas e a atribuição de `int` para variáveis `float` continuam válidas.
-
 **Marco P1:** Front-end (léxico + sintático/AST + início do semântico) compilando, versionado, com `docs/` atualizado e formulário P1 enviado pelo líder.
 
 **Entregue:** _(preencher ao final da sprint)_
