@@ -9,3 +9,7 @@
   * [Planejamento das Sprints](documentacao/planejamento-sprints.md)
   * [Problemas e Soluções](documentacao/problemas-e-solucoes.md)
   * [Glossário](documentacao/glossario.md)
+
+* **Gestão e Histórico**
+  * [Histórico de Sprints](documentacao/planejamento-sprints.md)
+  * [Apresentação P1](documentacao/apresentacao.md)
