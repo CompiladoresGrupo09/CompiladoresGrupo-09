@@ -2,36 +2,47 @@
 
 Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência de repositório).
 
+## Replanejamento (registrado em referência à issue #33)
+Devido ao prazo real do formulário P1 (23/09) e à Semana Universitária no meio do caminho, a Sprint 2 passou a ir até **16/09** e a Sprint 3 até **23/09**, em vez do fechamento original previsto. Datas exatas e motivo detalhado a confirmar com a Brenda para deixar o registro completo.
+
+## Tabela de papéis (status atual, sujeito a confirmação do time)
+
+| Papel | Responsável | Status |
+|---|---|---|
+| P1 — Léxico | mesma pessoa que entregou P2 (autoria a confirmar formalmente) | ✅ Implementado |
+| P2 — Sintático/AST | idem acima | ✅ Implementado |
+| Integração (`main.c`) | Giovana Ferreira Santos | ✅ Implementado (issue #18 / PR #39) |
+| P3 — Semântico | Eduardo Ribeiro Xavier e Mariana Martins (atribuídos à issue #22; sem atividade visível até o momento) | ❌ Não iniciado |
+| P4 — Interpretação | sem responsável definido (issue #31 sugere pareamento com quem entregou a integração) | ❌ Não iniciado |
+| Líder / P5 — Integração, Testes, Documentação | Brenda Beatriz | Ativo |
+| Scrum Master | Henrique Fontenelle | Ativo |
+
 ## Sprint 1 — Ambiente, linguagem e léxico
 
 **Planejado:**
 - [x] Confirmar escopo por escrito em `docs/documentacao/definicao-da-linguagem.md`
-- [ ] Desenhar gramática em alto nível, definir tokens
+- [x] Desenhar gramática em alto nível, definir tokens
 - [x] Criar repositório com estrutura `docs/` + `src/`
 - [x] Configurar ambiente em todas as máquinas
-- [ ] Designar o líder para os formulários
-- [ ] Iniciar `scanner.l` em par (P1 + P5); primeiros testes de tokens
-- [ ] Fechar `scanner.l` completo (tokens, reservadas, literais, erro léxico básico), testado com `flex`/`gcc -lfl`
+- [ ] Designar o líder para os formulários — combinado informalmente (Brenda), mas o registro formal por escrito com suplente ainda está em aberto (ver issue #30)
+- [x] Iniciar `scanner.l` em par (P1 + P5); primeiros testes de tokens
+- [x] Fechar `scanner.l` completo (tokens, reservadas, literais, erro léxico básico), testado com `flex`/`gcc -lfl`
 
-**Entregue:** _(preencher ao final da sprint)_
+**Entregue:** Ambiente configurado e testado em todas as máquinas. Repositório criado (estrutura reorganizada depois, na Sprint 2, para `docs/` + `src/` + `tests/` alinhados ao projeto). Escopo do núcleo documentado em `definicao-da-linguagem.md`. Gramática de alto nível definida em `gramatica.md`. `scanner.l` completo, testado e mesclado (PR #15). Pendente: registro formal por escrito do líder responsável pelos formulários e do suplente (issue #30, em aberto).
+
 
 ## Sprint 2 — Sintático, AST e início do semântico
 
 **Planejado:**
-- [ ] Revisar gramática, discutir estrutura dos nós da AST
-- [ ] Pair programming P1+P2: conectar scanner ao `parser.y`, gramática de expressões com precedência, primeiras ações semânticas construindo AST
-- [ ] Completar `parser.y` (comandos, blocos) construindo AST
-- [ ] Iniciar tabela de símbolos e verificação de declaração/uso de variáveis (P3, par com P4)
-- [ ] Testes de declarações, expressões, `if`/`while`; atualizar `docs/` e README
+- [x] Revisar gramática, discutir estrutura dos nós da AST
+- [x] Pair programming P1+P2: conectar scanner ao `parser.y`, gramática de expressões com precedência, primeiras ações semânticas construindo AST
+- [x] Completar `parser.y` (comandos, blocos) construindo AST
+- [x] Iniciar tabela de símbolos e verificação de declaração/uso de variáveis (P3, par com P4)
+- [x] Testes de declarações, expressões, `if`/`while`; atualizar `docs/` e README
 
-## S2-07: Verificação de Tipos e Atribuição Implícita (Provisório)
+**Marco P1:** Front-end (léxico + sintático/AST + início do semântico) compilando, versionado, com `docs/` atualizado — **atingido**. O início do semântico, que estava atrasado, foi concluído com a tabela de símbolos e a verificação de declaração/uso (issue #22 / PR #46; S2-06, issue #23, validada e encerrada em 24/09/2026). Formulário P1 enviado pela líder em 22/09/2026, dentro do prazo (23/09/2026).
 
-- **Decisão:** Recusar atribuições com perda de precisão (atribuir `float` a variáveis do tipo `int`, como em `int a; a = 1.5 + 2;`).
-- **Justificação:** Garantir tipagem segura na análise semântica e evitar truncamentos implícitos não declarados pelo programador. A promoção de `int` para `float` em operações mistas e a atribuição de `int` para variáveis `float` continuam válidas.
-
-**Marco P1:** Front-end (léxico + sintático/AST + início do semântico) compilando, versionado, com `docs/` atualizado e formulário P1 enviado pelo líder.
-
-**Entregue:** _(preencher ao final da sprint)_
+**Entregue:** `parser.y` completo com construção de AST (PR #16). Integração implementada além do previsto para esta sprint: `main.c` real e binário `interpretador` funcionando (issue #18 / PR #39, validado manualmente). Testes de tokens e estruturas de controle criados (`tokens_basico.c`, `organizador_compras.c`). README atualizado com o comando de build/execução real. Tabela de símbolos com escopos aninhados e verificação de declaração/uso integradas à análise semântica (PR #46), com testes de escopo, shadowing, redeclaração e variável não declarada. Pendente: lacuna de testes para função com parâmetros/retorno/recursão (ver issue #25).
 
 ## Sprint 3 — Semântica completa e início da interpretação
 
