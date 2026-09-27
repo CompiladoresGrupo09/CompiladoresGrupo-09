@@ -7,6 +7,7 @@ ASTNode *criar_no(NodeType tipo, int linha) {
     ASTNode *no = calloc(1, sizeof(ASTNode));
     no->type = tipo;
     no->line = linha;
+    no->tipo = TIPO_VOID; // nó ainda não passou pelo semântico //
     return no;
 }
 
@@ -80,6 +81,10 @@ const char *nome_tipo_no(NodeType tipo) {
     return nomes_tipo[tipo];
 }
 
+static const char *nomes_tipo_dado[] = {
+    "INT", "FLOAT", "CHAR", "VOID"
+};
+
 void imprimir_ast(const ASTNode *no, int nivel) {
     if (!no) {
         return;
@@ -105,13 +110,13 @@ void imprimir_ast(const ASTNode *no, int nivel) {
     if (no->type == NODE_VAR_DECL || no->type == NODE_PARAM) {
         printf(" (tipo=%d)", no->intval);
     }
-    printf(" [linha %d]\n", no->line);
+    // aqui eu mostro o tipo sintetizado no nó //
+    printf(" <tipo: %s> [linha %d]\n", nomes_tipo_dado[no->tipo], no->line);
 
     for (int i = 0; i < no->num_children; i++) {
         imprimir_ast(no->children[i], nivel + 1);
     }
 }
-
 void liberar_ast(ASTNode *no) {
     if (!no) {
         return;

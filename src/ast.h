@@ -33,6 +33,7 @@ typedef enum {
 
 typedef struct ASTNode {
     NodeType type;
+    TipoDado tipo;
     int line;
 
     char *strval;
