@@ -56,3 +56,14 @@ Não houve uma decisão nova do professor: a política de não participar dos re
 
 ## Regras de branch
 `main` sempre compilável. Cada pessoa/par trabalha em branch de feature (`feat/scanner`, `feat/parser`, `feat/interpreter`...) e faz merge após revisão. `main` é protegida no GitHub, exigindo Pull Request com pelo menos 1 aprovação.
+
+## Armazenamento de Variáveis no Interpretador
+
+**Decisão:**
+o interpretador de expressões usa uma lista própria e linear (`Variavel *variaveis` em `interpreter.c`), separada da `TabelaSimbolos` com escopos, que será decidido futuramente como iremos prosseguir.
+
+**Justificativa**
+o escopo é só avaliação de expressões e literais sobre um único `main()`, sem blocos, funções ou recursão. Reaproveitar `tabela.c` teria exigido decidir o mapeamento símbolo→valor sem os comandos (`if`/`while`/chamadas) que ainda não existem.
+
+**Limitação conhecida:**
+essa lista não tem noção de escopo. A Sprint 4 (blocos, funções) vai exigir migrar o armazenamento de valores para cima da `TabelaSimbolos` existente, para não duplicar a lógica de entrar/sair de escopo.
