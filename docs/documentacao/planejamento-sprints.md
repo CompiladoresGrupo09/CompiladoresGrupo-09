@@ -12,8 +12,8 @@ Devido ao prazo real do formulário P1 (23/09) e à Semana Universitária no mei
 | P1 — Léxico | mesma pessoa que entregou P2 (autoria a confirmar formalmente) | ✅ Implementado |
 | P2 — Sintático/AST | idem acima | ✅ Implementado |
 | Integração (`main.c`) | Giovana Ferreira Santos | ✅ Implementado (issue #18 / PR #39) |
-| P3 — Semântico | Eduardo Ribeiro Xavier e Mariana Martins (atribuídos à issue #22; sem atividade visível até o momento) | ❌ Não iniciado |
-| P4 — Interpretação | sem responsável definido (issue #31 sugere pareamento com quem entregou a integração) | ❌ Não iniciado |
+| P3 — Semântico | Giovana Ferreira Santos (implementou a tabela de símbolos, issue #22, PR #46); autoria formal a confirmar | ✅ Implementado (PR #46) |
+| P4 — Interpretação | Eduardo Ribeiro Xavier (esqueleto avaliando expressões, issue #31, PR #52); autoria formal a confirmar | ✅ Implementado (PR #52) |
 | Líder / P5 — Integração, Testes, Documentação | Brenda Beatriz | Ativo |
 | Scrum Master | Henrique Fontenelle | Ativo |
 
