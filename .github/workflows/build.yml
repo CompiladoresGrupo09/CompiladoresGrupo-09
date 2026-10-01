@@ -1,0 +1,31 @@
+name: Build e testes
+
+# Roda em todo PR (qualquer branch de destino) e em push nas branches principais,
+# garantindo que main e Dev continuem compilando e passando nos testes
+on:
+  push:
+    branches:
+      - main
+      - Dev
+  pull_request:
+
+jobs:
+  build-e-testes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout do codigo
+        uses: actions/checkout@v4
+
+      - name: Instalar flex, bison e build-essential
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y flex bison build-essential
+
+      - name: Compilar (make)
+        working-directory: src
+        run: make
+
+      - name: Rodar testes (make test)
+        working-directory: src
+        run: make test
