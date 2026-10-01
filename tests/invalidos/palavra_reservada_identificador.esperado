@@ -1,2 +1,7 @@
 Erro sintatico [linha 3]: syntax error (proximo a 'while')
-Total de erros sintaticos: 1
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  1 erro(s)
+Semantica  nao executada
+Execucao   nao executada

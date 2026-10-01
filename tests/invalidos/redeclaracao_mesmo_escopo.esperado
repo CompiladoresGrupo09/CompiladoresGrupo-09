@@ -1,1 +1,7 @@
 Erro semantico [linha 4]: simbolo 'x' ja declarado no escopo atual
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  1 erro(s)
+Execucao   nao executada

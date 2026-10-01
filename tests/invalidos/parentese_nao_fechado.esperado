@@ -1,4 +1,9 @@
 Erro sintatico [linha 4]: syntax error (proximo a '{')
 Erro sintatico [linha 7]: syntax error (proximo a 'return')
 Erro sintatico [linha 8]: syntax error (proximo a '}')
-Total de erros sintaticos: 3
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  3 erro(s)
+Semantica  nao executada
+Execucao   nao executada
