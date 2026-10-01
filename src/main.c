@@ -66,4 +66,4 @@ int main(int argc, char **argv)
 
     liberar_ast(raiz_ast);
     return 0;
-}
+}isto nao compila
