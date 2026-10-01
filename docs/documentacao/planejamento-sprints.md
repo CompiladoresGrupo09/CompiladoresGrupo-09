@@ -9,14 +9,14 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 | Sprint | Período | Foco |
 |---|---|---|
 | Sprint 2 | até **16/09** | Sintático, AST e início do semântico |
-| Sprint 3 | até **23/09** (prazo do formulário P1), com a apresentação do P1 em **30/09** | Semântica de tipos, início da interpretação, testes, integração e documentação do P1 |
+| Sprint 3 | até **23/09** (prazo do formulário P1), com a apresentação do P1 em **05/10** | Semântica de tipos, início da interpretação, testes, integração e documentação do P1 |
 
 **Por quê:** o prazo real do formulário P1 foi 23/09, e a Semana Universitária caiu no meio do período, reduzindo o tempo útil. Em vez de comprimir num único bloco o fechamento do front-end, a verificação semântica e a preparação do P1, a equipe separou o trabalho em duas sprints e deixou explícito o que precisava estar pronto em cada data.
 
 **Consequências:**
 - As sprints seguintes foram **renumeradas**: a Sprint 3 original (interpretação) passou a ser a Sprint 4, e assim por diante. O marco P2 passou da Sprint 4 para a Sprint 5.
 - A interpretação de comandos, funções e E/S, prevista para a Sprint 3 original, foi para a Sprint 4. A Sprint 3 priorizou o que o P1 cobra: front-end fechado, testes automatizados, pipeline integrado para a demonstração e documentação.
-- As entregas de testes, CI, pipeline e documentação da Sprint 3 foram concluídas entre 30/09 e 01/10, junto da apresentação do P1 (PRs #56 a #64).
+- As entregas de testes, CI, pipeline e documentação da Sprint 3 foram concluídas entre 30/09 e 01/10, antes da apresentação do P1 em 05/10 (a partir do PR #56).
 
 ## Tabela de papéis (status atual, sujeito a confirmação do time)
 
@@ -78,7 +78,7 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 | #22 | S2-05 — Tabela de símbolos com escopos aninhados | PR #46, testes no PR #50 | Giovana; testes de Henrique |
 | #23 | S2-06 — Variável não declarada e redeclaração no mesmo escopo | PR #46 (validada em 24/09) | Giovana; validação de Henrique |
 
-## Sprint 3 — Semântica de tipos, início da interpretação e preparação do P1 (até 23/09; P1 em 30/09)
+## Sprint 3 — Semântica de tipos, início da interpretação e preparação do P1 (até 23/09; apresentação do P1 em 05/10)
 
 **Planejado:**
 - [x] Campo de tipo na AST e verificação de compatibilidade de tipos (S2-07, issue #24, PR #53), com a padronização das mensagens e testes (issue #55, PR #57)
