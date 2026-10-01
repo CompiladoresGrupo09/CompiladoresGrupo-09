@@ -20,3 +20,4 @@ PROGRAM <tipo: VOID> [linha 1]
         INT_LIT 0 <tipo: INT> [linha 7]
 
 7
+linha que nao deveria existir
