@@ -1,0 +1,7 @@
+Erro semantico [linha 4]: atribuicao incompativel: conversao implicita de float para int nao permitida
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  1 erro(s)
+Execucao   nao executada

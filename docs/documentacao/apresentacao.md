@@ -23,6 +23,7 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
   <div class="team-card">
     <img src="docs/assets/Mariana_perfil.jpg" alt="Mariana Martins"/>
     <h3>Mariana Martins</h3>
+    <p class="papel">Semântico: tipos e compatibilidade</p>
     <div class="social-links">
       <a href="https://github.com/Marianamrts" target="_blank">GitHub</a>
     </div>
@@ -31,6 +32,7 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
   <div class="team-card">
     <img src="docs/assets/Eduardo_perfil.jpg" alt="Eduardo Ribeiro Xavier"/>
     <h3>Eduardo Ribeiro Xavier</h3>
+    <p class="papel">Interpretação</p>
     <div class="social-links">
       <a href="https://github.com/EduardoRibeiroXavier" target="_blank">GitHub</a>
     </div>
@@ -39,6 +41,7 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
   <div class="team-card">
     <img src="docs/assets/Giovana_perfil.jpg" alt="Giovana Ferreira"/>
     <h3>Giovana Ferreira</h3>
+    <p class="papel">Semântico: tabela de símbolos; integração (main.c)</p>
     <div class="social-links">
       <a href="https://github.com/gih7915" target="_blank">GitHub</a>
     </div>
@@ -47,6 +50,7 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
   <div class="team-card">
     <img src="docs/assets/Henrique_perfil.jpg" alt="Henrique Fontenelle"/>
     <h3>Henrique Fontenelle</h3>
+    <p class="papel">Scrum Master: revisão e integração; suplente do líder</p>
     <div class="social-links">
       <a href="https://github.com/HenriqueFontenelle" target="_blank">GitHub</a>
     </div>
@@ -55,6 +59,7 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
   <div class="team-card">
     <img src="docs/assets/Brenda_perfil.jpg" alt="Brenda Beatriz"/>
     <h3>Brenda Beatriz</h3>
+    <p class="papel">Léxico e Sintático/AST; integração, testes e documentação; líder</p>
     <div class="social-links">
       <a href="https://github.com/Brwnds" target="_blank">GitHub</a>
     </div>
@@ -94,6 +99,12 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
   font-size: 1.15em;
   color: #1f4e79;
   margin-bottom: 5px;
+}
+
+.team-card .papel {
+  font-size: 0.85em;
+  color: #334e68;
+  margin: 0 0 10px;
 }
 
 .team-card .social-links {

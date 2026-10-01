@@ -33,6 +33,7 @@ typedef enum {
 
 typedef struct ASTNode {
     NodeType type;
+    TipoDado tipo;
     int line;
 
     char *strval;
@@ -58,6 +59,7 @@ ASTNode *criar_no_unop(const char *op, ASTNode *operando, int linha);
 ASTNode *criar_no_addr(const char *nome, int linha);
 
 const char *nome_tipo_no(NodeType tipo);
+const char *nome_tipo_dado(TipoDado tipo);
 void imprimir_ast(const ASTNode *no, int nivel);
 void liberar_ast(ASTNode *no);
 

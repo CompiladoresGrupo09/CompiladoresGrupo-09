@@ -1,0 +1,7 @@
+Erro semantico [linha 4]: operador '%' invalido: esperado tipos inteiros
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  1 erro(s)
+Execucao   nao executada
