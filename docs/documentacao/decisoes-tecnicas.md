@@ -74,6 +74,13 @@ O conflito clássico de `if (a) if (b) x; else y;` — a quem o `else` pertence 
 3. Formalizar o responsável por P4, considerando que P3 e P4 formam par.
 4. Combinar o fluxo de branches: hoje há PRs de documentação indo para a `main` e de código indo para a `Dev`, e as duas estão divergindo. *Atualização (01/10/2026):* desde o PR #56, todos os PRs (código e documentação) vão para a `Dev`; falta o grupo confirmar esse fluxo e combinar quando a `Dev` é mesclada na `main` (ver "Regras de branch").
 
+## Líder dos formulários e suplente (S2-12)
+
+* **Líder:** **Brenda Beatriz** é a responsável por enviar os formulários de apresentação. Decisão tomada na issue #6, fechada em 07/09/2026, e registrada por escrito em 01/10/2026 (issue #30).
+* **Suplente:** **Henrique Fontenelle**. Se a líder não puder enviar, o suplente assume, **avisando o professor antes do envio**.
+* **Justificativa:** a Proposta de Trabalho determina que somente o líder da equipe envia o formulário, e o não envio no prazo zera a nota da apresentação para a equipe inteira. Com uma única pessoa responsável, qualquer imprevisto vira um ponto único de falha; o suplente é o plano B.
+* **Formulário P1:** `https://forms.office.com/r/MyKh4HiAAu`, prazo 23/09/2026 às 23h59 — **enviado pela líder em 22/09/2026**, dentro do prazo.
+
 ## Acesso do professor ao repositório (RESOLVIDO)
 Não houve uma decisão nova do professor: a política de não participar dos repositórios das equipes já era dele desde o início do semestre. Havia apenas uma dúvida remanescente no grupo sobre isso, esclarecida diretamente com ele em **01/09/2026** — ele confirmou que não tem interesse em fazer parte do repositório da equipe neste momento. Não é necessário adicioná-lo como colaborador.
 
