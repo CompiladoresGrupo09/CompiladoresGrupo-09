@@ -1,0 +1,8 @@
+0
+Erro de execucao [linha 5]: divisao por zero
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   1 erro(s)

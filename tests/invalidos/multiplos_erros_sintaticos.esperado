@@ -1,0 +1,9 @@
+Erro sintatico [linha 2]: syntax error (proximo a '123')
+Erro sintatico [linha 10]: syntax error (proximo a 'int')
+Erro sintatico [linha 12]: syntax error (proximo a 'return')
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  3 erro(s)
+Semantica  nao executada
+Execucao   nao executada

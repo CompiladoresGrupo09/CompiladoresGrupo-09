@@ -1,12 +1,18 @@
 # Compiladores Grupo 09
 # Interpretador de C (subconjunto) — Equipe 09
 
+[![Build e testes](https://github.com/CompiladoresGrupo09/CompiladoresGrupo-09/actions/workflows/build.yml/badge.svg?branch=Dev)](https://github.com/CompiladoresGrupo09/CompiladoresGrupo-09/actions/workflows/build.yml)
+
 ## Integrantes e papéis
-- Nome — Léxico (scanner.l)
-- Nome — Sintático/AST (parser.y)
-- Nome — Semântico
-- Nome — Interpretação
-- Nome — Integração, testes, documentação e líder (formulários P1/P2)
+| Integrante | GitHub | Papel |
+|---|---|---|
+| Brenda Beatriz | [@Brwnds](https://github.com/Brwnds) | Léxico (`scanner.l`) e Sintático/AST (`parser.y`); integração, testes e documentação; **líder** (envio dos formulários P1/P2) |
+| Giovana Ferreira | [@gih7915](https://github.com/gih7915) | Semântico: tabela de símbolos com escopos; integração (`main.c`) |
+| Mariana Martins | [@Marianamrts](https://github.com/Marianamrts) | Semântico: tipos na AST e verificação de compatibilidade |
+| Eduardo Ribeiro Xavier | [@EduardoRibeiroXavier](https://github.com/EduardoRibeiroXavier) | Interpretação |
+| Henrique Fontenelle | [@HenriqueFontenelle](https://github.com/HenriqueFontenelle) | Scrum Master: revisão, integração `Dev`/`main` e decisões técnicas; **suplente** do líder |
+
+Detalhes das entregas de cada um em `docs/documentacao/planejamento-sprints.md` (tabela de papéis).
 
 ## Aplicação
 Organizador de compras no mercado: o programa recebe itens e preços via `scanf` em loop, soma o total gasto e avisa se o valor ultrapassou o orçamento informado.
@@ -26,7 +32,9 @@ cd src
 make
 ./interpretador ../tests/validos/organizador_compras.c
 ```
-`make clean` remove o binário e os artefatos gerados por flex/bison (`lex.yy.c`, `parser.tab.c`, `parser.tab.h`, `parser.output`).
+Flags para inspecionar cada fase: `--tokens` (só o léxico), `--ast` (imprime a AST) e `--tabela` (imprime a tabela de símbolos). No fim, o programa sempre mostra um relatório com o total de erros por fase. Ver `docs/documentacao/demonstracao.md`.
+
+`make test` roda a suíte de testes. `make clean` remove o binário e os artefatos gerados por flex/bison (`lex.yy.c`, `parser.tab.c`, `parser.tab.h`, `parser.output`).
 
 
 ## Exemplos de entrada e saída

@@ -1,0 +1,4 @@
+# Scripts de shell e saidas esperadas sempre com quebra de linha LF,
+# para funcionarem igual no Windows, no macOS e no Linux da CI
+*.sh        text eol=lf
+*.esperado  text eol=lf
