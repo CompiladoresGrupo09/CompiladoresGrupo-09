@@ -4,11 +4,15 @@
 [![Build e testes](https://github.com/CompiladoresGrupo09/CompiladoresGrupo-09/actions/workflows/build.yml/badge.svg?branch=Dev)](https://github.com/CompiladoresGrupo09/CompiladoresGrupo-09/actions/workflows/build.yml)
 
 ## Integrantes e papéis
-- Nome — Léxico (scanner.l)
-- Nome — Sintático/AST (parser.y)
-- Nome — Semântico
-- Nome — Interpretação
-- Nome — Integração, testes, documentação e líder (formulários P1/P2)
+| Integrante | GitHub | Papel |
+|---|---|---|
+| Brenda Beatriz | [@Brwnds](https://github.com/Brwnds) | Léxico (`scanner.l`) e Sintático/AST (`parser.y`); integração, testes e documentação; **líder** (envio dos formulários P1/P2) |
+| Giovana Ferreira | [@gih7915](https://github.com/gih7915) | Semântico: tabela de símbolos com escopos; integração (`main.c`) |
+| Mariana Martins | [@Marianamrts](https://github.com/Marianamrts) | Semântico: tipos na AST e verificação de compatibilidade |
+| Eduardo Ribeiro Xavier | [@EduardoRibeiroXavier](https://github.com/EduardoRibeiroXavier) | Interpretação |
+| Henrique Fontenelle | [@HenriqueFontenelle](https://github.com/HenriqueFontenelle) | Scrum Master: revisão, integração `Dev`/`main` e decisões técnicas; **suplente** do líder |
+
+Detalhes das entregas de cada um em `docs/documentacao/planejamento-sprints.md` (tabela de papéis).
 
 ## Aplicação
 Organizador de compras no mercado: o programa recebe itens e preços via `scanf` em loop, soma o total gasto e avisa se o valor ultrapassou o orçamento informado.
