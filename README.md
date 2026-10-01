@@ -28,7 +28,9 @@ cd src
 make
 ./interpretador ../tests/validos/organizador_compras.c
 ```
-`make clean` remove o binário e os artefatos gerados por flex/bison (`lex.yy.c`, `parser.tab.c`, `parser.tab.h`, `parser.output`).
+Flags para inspecionar cada fase: `--tokens` (só o léxico), `--ast` (imprime a AST) e `--tabela` (imprime a tabela de símbolos). No fim, o programa sempre mostra um relatório com o total de erros por fase. Ver `docs/documentacao/demonstracao.md`.
+
+`make test` roda a suíte de testes. `make clean` remove o binário e os artefatos gerados por flex/bison (`lex.yy.c`, `parser.tab.c`, `parser.tab.h`, `parser.output`).
 
 
 ## Exemplos de entrada e saída
