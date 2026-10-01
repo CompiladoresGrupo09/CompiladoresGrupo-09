@@ -1,6 +1,8 @@
 # Compiladores Grupo 09
 # Interpretador de C (subconjunto) — Equipe 09
 
+[![Build e testes](https://github.com/CompiladoresGrupo09/CompiladoresGrupo-09/actions/workflows/build.yml/badge.svg?branch=Dev)](https://github.com/CompiladoresGrupo09/CompiladoresGrupo-09/actions/workflows/build.yml)
+
 ## Integrantes e papéis
 - Nome — Léxico (scanner.l)
 - Nome — Sintático/AST (parser.y)
