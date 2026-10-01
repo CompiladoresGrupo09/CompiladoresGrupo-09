@@ -1,0 +1,4 @@
+Erro sintatico [linha 4]: syntax error (proximo a '{')
+Erro sintatico [linha 7]: syntax error (proximo a 'return')
+Erro sintatico [linha 8]: syntax error (proximo a '}')
+Total de erros sintaticos: 3

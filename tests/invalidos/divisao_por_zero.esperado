@@ -1,0 +1,19 @@
+Analise lexica, sintatica e semantica concluida sem erros.
+
+PROGRAM <tipo: VOID> [linha 1]
+  FUNC_DECL 'main' <tipo: VOID> [linha 3]
+    LIST <tipo: VOID> [linha 3]
+    BLOCK <tipo: VOID> [linha 4]
+      EXPR_STMT <tipo: VOID> [linha 5]
+        CALL 'printf' <tipo: INT> [linha 5]
+          STRING_LIT '%d' <tipo: VOID> [linha 5]
+          BINOP '/' <tipo: INT> [linha 5]
+            INT_LIT 1 <tipo: INT> [linha 5]
+            INT_LIT 0 <tipo: INT> [linha 5]
+      RETURN <tipo: VOID> [linha 6]
+        INT_LIT 0 <tipo: INT> [linha 6]
+
+0
+Erro de execucao [linha 5]: divisao por zero
+
+Total de erros de execucao: 1
