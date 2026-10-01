@@ -6,6 +6,31 @@
 
 static TabelaSimbolos tabela = {0};
 
+typedef struct SimboloDeclarado {
+    Simbolo simbolo;
+    int escopo;
+} SimboloDeclarado;
+
+static SimboloDeclarado *declarados = NULL;
+static int num_declarados = 0;
+static int capacidade_declarados = 0;
+
+static void registrar_declarado(const Simbolo *simbolo, int escopo) {
+    if (num_declarados == capacidade_declarados) {
+        capacidade_declarados = capacidade_declarados == 0 ? 8 : capacidade_declarados * 2;
+        declarados = realloc(declarados, capacidade_declarados * sizeof(SimboloDeclarado));
+        if (!declarados) {
+            fprintf(stderr, "Erro: falha ao alocar historico da tabela de simbolos\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    declarados[num_declarados].simbolo = *simbolo;
+    declarados[num_declarados].simbolo.nome = strdup(simbolo->nome);
+    declarados[num_declarados].escopo = escopo;
+    num_declarados++;
+}
+
 static void garantir_capacidade_escopos(void) {
     if (tabela.numero_escopos < tabela.capacidade_escopos) {
         return;
@@ -39,6 +64,7 @@ static void garantir_capacidade_simbolos(Escopo *escopo) {
 }
 
 void inicializar_tabela(void) {
+    liberar_simbolos_declarados();
     tabela.numero_escopos = 0;
     tabela.capacidade_escopos = 0;
     tabela.escopos = NULL;
@@ -112,6 +138,7 @@ int inserir_simbolo(const char *nome, TipoDado tipo, int linha, int e_funcao, in
     simbolo->e_funcao = e_funcao;
     simbolo->aridade = aridade;
 
+    registrar_declarado(simbolo, tabela.numero_escopos - 1);
     return 1;
 }
 
@@ -166,4 +193,47 @@ void imprimir_tabela(void) {
                    simbolo->aridade);
         }
     }
+}
+
+void imprimir_simbolos_declarados(void) {
+    printf("Tabela de simbolos (na ordem de declaracao; escopo 0 = global)\n\n");
+    printf("%-7s %-20s %-6s %-9s %-6s %s\n", "ESCOPO", "NOME", "TIPO", "CATEGORIA", "LINHA", "PARAMETROS");
+
+    for (int i = 0; i < num_declarados; i++) {
+        const Simbolo *s = &declarados[i].simbolo;
+        char linha[16];
+        char parametros[16];
+
+        if (s->linha > 0) {
+            snprintf(linha, sizeof(linha), "%d", s->linha);
+        } else {
+            snprintf(linha, sizeof(linha), "-");
+        }
+
+        if (!s->e_funcao) {
+            snprintf(parametros, sizeof(parametros), "-");
+        } else if (s->aridade < 0) {
+            snprintf(parametros, sizeof(parametros), "variavel");
+        } else {
+            snprintf(parametros, sizeof(parametros), "%d", s->aridade);
+        }
+
+        printf("%-7d %-20s %-6s %-9s %-6s %s\n",
+               declarados[i].escopo,
+               s->nome,
+               nome_tipo_dado(s->tipo),
+               s->e_funcao ? "funcao" : "variavel",
+               linha,
+               parametros);
+    }
+}
+
+void liberar_simbolos_declarados(void) {
+    for (int i = 0; i < num_declarados; i++) {
+        free(declarados[i].simbolo.nome);
+    }
+    free(declarados);
+    declarados = NULL;
+    num_declarados = 0;
+    capacidade_declarados = 0;
 }

@@ -85,6 +85,10 @@ static const char *nomes_tipo_dado[] = {
     "INT", "FLOAT", "CHAR", "VOID"
 };
 
+const char *nome_tipo_dado(TipoDado tipo) {
+    return nomes_tipo_dado[tipo];
+}
+
 void imprimir_ast(const ASTNode *no, int nivel) {
     if (!no) {
         return;
