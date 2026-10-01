@@ -1,3 +1,4 @@
+// Cobre: interpretador respeitando a precedencia de * sobre + ao imprimir com printf
 #include <stdio.h>
 int main()
 {

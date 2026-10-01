@@ -1,3 +1,4 @@
+// Cobre: programa completo do nucleo (while, if/else, printf, scanf, float e int juntos)
 #include <stdio.h>
 
 int main() {

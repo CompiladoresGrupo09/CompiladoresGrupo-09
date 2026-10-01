@@ -1,3 +1,4 @@
+// Cobre: recuperacao de erros, com varios erros sintaticos reportados no mesmo arquivo
 int 123 invalido;
 
 int soma(int a, int b) {
