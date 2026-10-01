@@ -37,11 +37,11 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - [x] Desenhar gramática em alto nível, definir tokens
 - [x] Criar repositório com estrutura `docs/` + `src/`
 - [x] Configurar ambiente em todas as máquinas
-- [x] Designar o líder para os formulários — Brenda (issue #6, fechada em 07/09); o registro formal por escrito, com suplente, segue em aberto na issue #30
+- [x] Designar o líder para os formulários — Brenda (issue #6, fechada em 07/09); registro formal por escrito, com Henrique como suplente, feito em 01/10 (issue #30, ver `decisoes-tecnicas.md`)
 - [x] Iniciar `scanner.l` em par (P1 + P5); primeiros testes de tokens
 - [x] Fechar `scanner.l` completo (tokens, reservadas, literais, erro léxico básico), testado com `flex`/`gcc -lfl`
 
-**Entregue:** Ambiente configurado e testado em todas as máquinas. Repositório criado (estrutura reorganizada depois, na Sprint 2, para `docs/` + `src/` + `tests/` alinhados ao projeto). Escopo do núcleo documentado em `definicao-da-linguagem.md`. Gramática de alto nível definida em `gramatica.md`. `scanner.l` completo, testado e mesclado (PR #15). Padrão de commits definido e site da documentação publicado no GitHub Pages. Pendente: registro formal por escrito do líder responsável pelos formulários e do suplente (issue #30, em aberto).
+**Entregue:** Ambiente configurado e testado em todas as máquinas. Repositório criado (estrutura reorganizada depois, na Sprint 2, para `docs/` + `src/` + `tests/` alinhados ao projeto). Escopo do núcleo documentado em `definicao-da-linguagem.md`. Gramática de alto nível definida em `gramatica.md`. `scanner.l` completo, testado e mesclado (PR #15). Padrão de commits definido e site da documentação publicado no GitHub Pages. Pendente: registro formal por escrito do líder responsável pelos formulários e do suplente (issue #30, concluído em 01/10).
 
 **Issues fechadas:**
 
@@ -64,7 +64,7 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - [x] Iniciar tabela de símbolos e verificação de declaração/uso de variáveis (P3, par com P4)
 - [x] Testes de declarações, expressões, `if`/`while`; atualizar `docs/` e README
 
-**Entregue:** `parser.y` completo com construção de AST (PR #16), recuperação de erros sintáticos (PR #40) e linha correta nos nós de expressão (PR #42). Integração implementada além do previsto para esta sprint: `main.c` real e binário `interpretador` funcionando (issue #18 / PR #39, validado manualmente). Testes de tokens e estruturas de controle criados (`tokens_basico.c`, `organizador_compras.c`). README atualizado com o comando de build/execução real. Tabela de símbolos com escopos aninhados e verificação de declaração/uso integradas à análise semântica (PR #46), com testes de escopo, shadowing, redeclaração e variável não declarada (PR #50). Pendente na época: lacuna de testes para função com parâmetros/retorno/recursão (issue #25) — resolvida na Sprint 3 pelo PR #56. Continuam abertas desta sprint: README com os integrantes e papéis reais (S2-11, issue #28 — o README ainda mostra "Nome — ...") e registro por escrito do líder e do suplente (S2-12, issue #30).
+**Entregue:** `parser.y` completo com construção de AST (PR #16), recuperação de erros sintáticos (PR #40) e linha correta nos nós de expressão (PR #42). Integração implementada além do previsto para esta sprint: `main.c` real e binário `interpretador` funcionando (issue #18 / PR #39, validado manualmente). Testes de tokens e estruturas de controle criados (`tokens_basico.c`, `organizador_compras.c`). README atualizado com o comando de build/execução real. Tabela de símbolos com escopos aninhados e verificação de declaração/uso integradas à análise semântica (PR #46), com testes de escopo, shadowing, redeclaração e variável não declarada (PR #50). Pendente na época: lacuna de testes para função com parâmetros/retorno/recursão (issue #25) — resolvida na Sprint 3 pelo PR #56. Continuam abertas desta sprint: README com os integrantes e papéis reais (S2-11, issue #28 — o README ainda mostra "Nome — ...") e registro por escrito do líder e do suplente (S2-12, issue #30, concluído em 01/10).
 
 **Issues fechadas:**
 
@@ -94,7 +94,7 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - [ ] Ensaio da apresentação e da entrevista do P1 (P1-01, issue #37)
 - [ ] Atualizar o site da documentação no GitHub Pages (S3-07, issue #51) — movida para a Sprint 4
 - [ ] Congelar a `main` e criar a tag `v0.1-p1` (S3-06, issue #36)
-- [ ] Registrar por escrito o líder dos formulários e o suplente (S2-12, issue #30)
+- [x] Registrar por escrito o líder dos formulários e o suplente (S2-12, issue #30) — Brenda líder, Henrique suplente
 
 **Marco P1:** Front-end (léxico + sintático/AST + início do semântico) compilando, versionado, com `docs/` atualizado — **atingido**. O início do semântico, que estava atrasado, foi concluído com a tabela de símbolos e a verificação de declaração/uso (issue #22 / PR #46; S2-06, issue #23, validada e encerrada em 24/09/2026). Formulário P1 enviado pela líder em 22/09/2026, dentro do prazo (23/09/2026).
 
@@ -109,7 +109,7 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - **Execução de comandos, funções e E/S no interpretador** (`if`/`while`/`for`/`return`, chamadas, `scanf`): era da Sprint 3 original e foi para a Sprint 4 no replanejamento, porque a Sprint 3 encurtada priorizou o que o P1 avalia.
 - **Tag `v0.1-p1` (S3-06):** é o último passo, depende de todos os PRs do P1 estarem mesclados na `Dev` para então mesclar a `Dev` na `main`. A `main` não recebe a `Dev` desde 15/09 (PR #48), então esse merge vai trazer tudo o que foi feito depois disso.
 - **GitHub Pages (S3-07):** movida para a Sprint 4 por decisão da equipe. O site deve publicar a documentação já atualizada desta sprint (problemas, decisões, planejamento e roteiro de demonstração), então faz mais sentido fazê-lo depois que esses documentos forem mesclados e a `Dev` chegar à `main`.
-- **Líder e suplente por escrito (S2-12) e ensaio (P1-01):** dependem de reunião do grupo.
+- **Ensaio (P1-01):** depende de reunião do grupo.
 - **Aprovação dos PRs:** os PRs #56 a #64 foram mesclados sem revisão de outro integrante, contrariando a regra da equipe; ver processo na Sprint 4.
 
 **Issues fechadas:**
@@ -139,7 +139,7 @@ As issues S2-03 a S2-10 eram da Sprint 2 no planejamento original e foram conclu
 - [ ] Mensagem de erro léxico específica para string não fechada
 - [ ] Novos casos de teste com saída esperada para programas que dependem de comandos (fatorial, organizador de compras com entrada)
 - [ ] Atualizar o site da documentação no GitHub Pages com os documentos da Sprint 3 e o histórico de sprints (S3-07, issue #51, vinda da Sprint 3)
-- [ ] Concluir as pendências do P1: tag `v0.1-p1` (S3-06), líder e suplente por escrito (S2-12), README com integrantes e papéis reais (S2-11)
+- [ ] Concluir as pendências do P1: tag `v0.1-p1` (S3-06) e README com integrantes e papéis reais (S2-11)
 - [ ] Confirmar em reunião as decisões provisórias: conversão implícita (S2-07), papéis P1/P2/P4 e fluxo de branches
 - [ ] Cada integrante conferir o próprio registro em `problemas-e-solucoes.md`
 - [ ] Processo: exigir aprovação antes do merge e ativar *Require status checks* (`build-e-testes`) nas regras de branch
