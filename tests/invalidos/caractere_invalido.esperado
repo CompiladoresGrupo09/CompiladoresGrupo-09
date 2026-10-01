@@ -1,3 +1,8 @@
 Erro lexico [linha 4]: caractere invalido '@'
 Erro sintatico [linha 4]: syntax error (proximo a '1')
-Total de erros sintaticos: 1
+
+==== Relatorio de erros ====
+Lexica     1 erro(s)
+Sintatica  1 erro(s)
+Semantica  nao executada
+Execucao   nao executada

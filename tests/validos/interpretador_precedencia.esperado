@@ -1,22 +1,7 @@
-Analise lexica, sintatica e semantica concluida sem erros.
-
-PROGRAM <tipo: VOID> [linha 1]
-  FUNC_DECL 'main' <tipo: VOID> [linha 3]
-    LIST <tipo: VOID> [linha 3]
-    BLOCK <tipo: VOID> [linha 4]
-      VAR_DECL (tipo=0) <tipo: VOID> [linha 5]
-        BINOP '=' <tipo: VOID> [linha 5]
-          ID 'a' <tipo: VOID> [linha 5]
-          INT_LIT 2 <tipo: INT> [linha 5]
-      EXPR_STMT <tipo: VOID> [linha 6]
-        CALL 'printf' <tipo: INT> [linha 6]
-          STRING_LIT '%d' <tipo: VOID> [linha 6]
-          BINOP '+' <tipo: INT> [linha 6]
-            INT_LIT 1 <tipo: INT> [linha 6]
-            BINOP '*' <tipo: INT> [linha 6]
-              ID 'a' <tipo: INT> [linha 6]
-              INT_LIT 3 <tipo: INT> [linha 6]
-      RETURN <tipo: VOID> [linha 7]
-        INT_LIT 0 <tipo: INT> [linha 7]
-
 7
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
