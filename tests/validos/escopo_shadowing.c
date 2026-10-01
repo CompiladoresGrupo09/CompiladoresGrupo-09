@@ -1,3 +1,4 @@
+// Cobre: blocos aninhados com shadowing de variavel global, de parametro e de bloco interno
 int contador;
 
 void processar(int contador) {

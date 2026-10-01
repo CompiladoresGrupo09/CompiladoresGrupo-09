@@ -1,3 +1,4 @@
+// Cobre: erro de execucao por divisao inteira por zero
 #include <stdio.h>
 int main()
 {
