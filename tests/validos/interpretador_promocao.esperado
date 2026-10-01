@@ -1,0 +1,16 @@
+Analise lexica, sintatica e semantica concluida sem erros.
+
+PROGRAM <tipo: VOID> [linha 1]
+  FUNC_DECL 'main' <tipo: VOID> [linha 3]
+    LIST <tipo: VOID> [linha 3]
+    BLOCK <tipo: VOID> [linha 4]
+      EXPR_STMT <tipo: VOID> [linha 5]
+        CALL 'printf' <tipo: INT> [linha 5]
+          STRING_LIT '%f' <tipo: VOID> [linha 5]
+          BINOP '/' <tipo: FLOAT> [linha 5]
+            INT_LIT 7 <tipo: INT> [linha 5]
+            FLOAT_LIT 2.000000 <tipo: FLOAT> [linha 5]
+      RETURN <tipo: VOID> [linha 6]
+        INT_LIT 0 <tipo: INT> [linha 6]
+
+3.500000

@@ -1,0 +1,4 @@
+Erro sintatico [linha 2]: syntax error (proximo a '123')
+Erro sintatico [linha 10]: syntax error (proximo a 'int')
+Erro sintatico [linha 12]: syntax error (proximo a 'return')
+Total de erros sintaticos: 3

@@ -32,20 +32,7 @@ $(BIN): $(MAIN_SRC) $(PARSER_C) $(SCANNER_C) $(AST_SRC) $(TABELA_SRC) $(SEMANTIC
 	$(CC) $(CFLAGS) $(MAIN_SRC) $(PARSER_C) $(SCANNER_C) $(AST_SRC) $(TABELA_SRC) $(SEMANTIC_SRC) $(INTERPRETER_SRC) -o $(BIN)
 
 test: $(BIN)
-	@for f in ../tests/validos/*.c; do \
-		echo "== valido: $$f =="; \
-		if ! ./$(BIN) $$f; then \
-			echo "ERRO: esperado sucesso (sem erro) para $$f"; exit 1; \
-		fi; \
-		echo; \
-	done
-	@for f in ../tests/invalidos/*.c; do \
-		echo "== invalido: $$f =="; \
-		if ./$(BIN) $$f; then \
-			echo "ERRO: esperado falha (erro lexico ou sintatico) para $$f"; exit 1; \
-		fi; \
-		echo; \
-	done
+	@bash run_tests.sh
 
 clean:
 	rm -f $(SCANNER_C) $(PARSER_C) $(PARSER_H) parser.output $(BIN)
