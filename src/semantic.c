@@ -53,7 +53,7 @@ static void visitar_declaracao_variavel(ASTNode *declaracao) {
 			TipoDado tipo_expr = inferir_tipo(declarador->children[1]);
 
 			if (tipo_var == TIPO_INT && tipo_expr == TIPO_FLOAT) {
-				erro_semantico(declarador->line, "atribuicao incompativel: conversao implicita de float para int não permitida");
+				erro_semantico(declarador->line, "atribuicao incompativel: conversao implicita de float para int nao permitida");
 			}
 		}
 	}
@@ -183,7 +183,7 @@ static TipoDado inferir_tipo(ASTNode *no) {
 
                 // recusar float para int //
                 if (t_esq == TIPO_INT && t_dir == TIPO_FLOAT) {
-                    erro_semantico(no->line, "atribuicao incompativel: conversao de float para int recusada");
+                    erro_semantico(no->line, "atribuicao incompativel: conversao implicita de float para int nao permitida");
                 }
                 no->tipo = t_esq;
                 return no->tipo;
