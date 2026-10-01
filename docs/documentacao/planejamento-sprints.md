@@ -18,15 +18,15 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 - A interpretação de comandos, funções e E/S, prevista para a Sprint 3 original, foi para a Sprint 4. A Sprint 3 priorizou o que o P1 cobra: front-end fechado, testes automatizados, pipeline integrado para a demonstração e documentação.
 - As entregas de testes, CI, pipeline e documentação da Sprint 3 foram concluídas entre 30/09 e 01/10, antes da apresentação do P1 em 05/10 (a partir do PR #56).
 
-## Tabela de papéis (status atual, sujeito a confirmação do time)
+## Tabela de papéis (confirmada pelo grupo em 01/10/2026, issue #28)
 
 | Papel | Responsável | Status |
 |---|---|---|
-| P1 — Léxico | Brenda Beatriz implementou `scanner.l` (PR #15); atribuição formal a confirmar | ✅ Implementado |
-| P2 — Sintático/AST | Brenda Beatriz implementou `parser.y` e a AST (PRs #16 e #42); atribuição formal a confirmar | ✅ Implementado |
+| P1 — Léxico | Brenda Beatriz implementou `scanner.l` (PR #15) | ✅ Implementado |
+| P2 — Sintático/AST | Brenda Beatriz implementou `parser.y` e a AST (PRs #16 e #42) | ✅ Implementado |
 | Integração (`main.c`) | Giovana Ferreira Santos (issue #18 / PR #39); pipeline com flags e relatório por Brenda Beatriz (S3-01, PR #62) | ✅ Implementado |
-| P3 — Semântico | Giovana Ferreira Santos (tabela de símbolos, issue #22, PR #46; recuperação de erros sintáticos, PR #40); Mariana Martins (tipos na AST e compatibilidade, PR #53); autoria formal a confirmar | ✅ Implementado (PRs #46 e #53) |
-| P4 — Interpretação | Eduardo Ribeiro Xavier (esqueleto avaliando expressões, issue #31, PR #52); autoria formal a confirmar | 🟡 Expressões implementadas; comandos e funções na Sprint 4 |
+| P3 — Semântico | Giovana Ferreira Santos (tabela de símbolos, issue #22, PR #46; recuperação de erros sintáticos, PR #40); Mariana Martins (tipos na AST e compatibilidade, PR #53) | ✅ Implementado (PRs #46 e #53) |
+| P4 — Interpretação | Eduardo Ribeiro Xavier (esqueleto avaliando expressões, issue #31, PR #52) | 🟡 Expressões implementadas; comandos e funções na Sprint 4 |
 | Líder / P5 — Integração, Testes, Documentação | Brenda Beatriz (testes, CI e documentação do P1: PRs #56–#64) | Ativo |
 | Scrum Master | Henrique Fontenelle (revisão e integração, decisões técnicas, sincronização `Dev`/`main`) | Ativo |
 

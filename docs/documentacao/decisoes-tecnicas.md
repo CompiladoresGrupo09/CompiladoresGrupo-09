@@ -55,7 +55,22 @@ O conflito clássico de `if (a) if (b) x; else y;` — a quem o `else` pertence 
 
 ## Atribuição formal dos papéis técnicos P1–P4
 
-- `scanner.l` (**P1 — Léxico**) e `parser.y` com construção de AST (**P2 — Sintático/AST**) já foram implementados e mesclados, ambos pelo mesmo autor no repositório. A formalização dessa pessoa como dona de P1+P2 será confirmada na próxima reunião.
+**Papéis confirmados pelo grupo em 01/10/2026 (S2-11, issue #28),** com base no que cada integrante de fato entregou:
+
+| Papel | Responsável |
+|---|---|
+| P1 — Léxico e P2 — Sintático/AST | Brenda Beatriz |
+| P3 — Semântico | Giovana Ferreira (tabela de símbolos) e Mariana Martins (tipos e compatibilidade) |
+| P4 — Interpretação | Eduardo Ribeiro Xavier |
+| Integração (`main.c`) | Giovana Ferreira; pipeline integrado por Brenda Beatriz |
+| P5 — Integração, testes e documentação; líder dos formulários | Brenda Beatriz |
+| Scrum Master; suplente do líder | Henrique Fontenelle |
+
+**Justificativa:** a divisão original previa uma pessoa por papel, com pares cruzados (P1+P2, P3+P4). Na prática, P1 e P2 foram entregues pela mesma pessoa e P3 foi dividido entre duas, por tipo de verificação. Formalizar a divisão real, em vez da planejada, deixa claro o que cada um defende na entrevista.
+
+Histórico do andamento de cada papel até a formalização:
+
+- `scanner.l` (**P1 — Léxico**) e `parser.y` com construção de AST (**P2 — Sintático/AST**) já foram implementados e mesclados, ambos pelo mesmo autor no repositório (Brenda Beatriz).
 - **Integração (`main.c`) — concluída:** implementada, revisada e mesclada (issue #18 / PR #39), com validação manual completa.
 - **P3 (Semântico / tabela de símbolos) — em andamento avançado:**
   - Tabela de símbolos (issue #22) implementada e mesclada na `Dev` pelo PR #46, com testes de escopo, shadowing, redeclaração e variável não declarada (`tests/validos/escopo_shadowing.c`, `tests/invalidos/redeclaracao_mesmo_escopo.c`, `tests/invalidos/variavel_nao_declarada.c`).
@@ -63,15 +78,15 @@ O conflito clássico de `if (a) if (b) x; else y;` — a quem o `else` pertence 
   - Verificação de declaração e uso (S2-06, issue #23): implementada pelo PR #46 e validada pelos testes `variavel_nao_declarada.c`, `redeclaracao_mesmo_escopo.c` e `escopo_shadowing.c` (make test em 24/09/2026); issue encerrada.
 
   - Campo de tipo na AST e verificação de compatibilidade de tipos (S2-07, issue #24): concluída e mesclada na `Dev` pelo PR #53, trabalho em par (AST + semântico).
-- **P4 (Interpretação) — iniciada:** issue #31 (esqueleto do interpretador, `interpretarNo`); avaliação de expressões mesclada na `Dev` pelo PR #52, de @EduardoRibeiroXavier. A alocação formal de P4 será confirmada na próxima reunião.
+- **P4 (Interpretação) — iniciada:** issue #31 (esqueleto do interpretador, `interpretarNo`); avaliação de expressões mesclada na `Dev` pelo PR #52, de @EduardoRibeiroXavier.
 - **Integração ponta a ponta (S3-01, issue #32):** `main.c` encadeando as fases, com as flags `--tokens`/`--ast`/`--tabela` e o relatório de erros, mesclado pelo PR #62 (ver seção própria abaixo).
 - **S2-05 (tabela de símbolos com escopos aninhados):** política registrada na seção própria acima.
 - **S2-07 (política de conversão implícita de tipos):** decisão registrada na seção própria acima, aguardando confirmação do grupo.
 
 **Pontos a decidir na próxima reunião com o time:**
-1. Formalizar (ou não) a atribuição de P1 e P2 à pessoa que já entregou os dois módulos.
+1. ~~Formalizar (ou não) a atribuição de P1 e P2 à pessoa que já entregou os dois módulos.~~ Resolvido em 01/10/2026: Brenda Beatriz (tabela acima).
 2. Confirmar a política de escopos da S2-05 e a de conversão implícita da S2-07, retirando o "Provisório".
-3. Formalizar o responsável por P4, considerando que P3 e P4 formam par.
+3. ~~Formalizar o responsável por P4, considerando que P3 e P4 formam par.~~ Resolvido em 01/10/2026: Eduardo Ribeiro Xavier (tabela acima).
 4. Combinar o fluxo de branches: hoje há PRs de documentação indo para a `main` e de código indo para a `Dev`, e as duas estão divergindo. *Atualização (01/10/2026):* desde o PR #56, todos os PRs (código e documentação) vão para a `Dev`; falta o grupo confirmar esse fluxo e combinar quando a `Dev` é mesclada na `main` (ver "Regras de branch").
 
 ## Líder dos formulários e suplente (S2-12)
