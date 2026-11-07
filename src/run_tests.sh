@@ -29,7 +29,15 @@ trap 'rm -f "$ERR_TMP"' EXIT
 # Executa um caso e guarda em $saida (stdout seguido de stderr, sem \r) e $codigo
 executar() {
     local out err
-    out=$("$BIN" "$1" < /dev/null 2> "$ERR_TMP")
+    local arquivo_entrada="${1%.c}.entrada"
+
+    # Aqui estou injetando o arquivo .entrada se ele existir
+    if [ -f "$arquivo_entrada" ]; then
+        out=$("$BIN" "$1" < "$arquivo_entrada" 2> "$ERR_TMP")
+    else
+        out=$("$BIN" "$1" < /dev/null 2> "$ERR_TMP")
+    fi
+
     codigo=$?
     err=$(cat "$ERR_TMP")
     if [ -n "$out" ] && [ -n "$err" ]; then
@@ -58,8 +66,16 @@ falhas=()
 verificar() {
     local arquivo=$1 deve_passar=$2
     local nome=${arquivo#"$TESTS"/}
+    local nome_base=$(basename "$arquivo") 
     local esperado=${arquivo%.c}.esperado
     local motivo="" detalhe=""
+
+    # Verifico se o teste está listado em pendentes.txt
+    if [ -f "$PENDENTES" ] && grep -v '^\s*$' "$PENDENTES" | tr -d '\r' | grep -qxF "$nome"; then
+        pendentes_count=$((pendentes_count + 1))
+        echo "[PENDENTE] $nome (ignorado propositalmente)"
+        return 0
+    fi
 
     executar "$arquivo"
 
