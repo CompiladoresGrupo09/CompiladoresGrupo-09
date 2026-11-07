@@ -12,5 +12,6 @@ int main() {
     r = a + b > c && b * c != a || !(a == b);
     r = a < b == b < c;
     r = a >= b || b <= c && c > a;
+    printf("Resultado: %d/n", r); //Adicionando saída no terminal para teste de Resultado -> teste silencioso
     return 0;
 }

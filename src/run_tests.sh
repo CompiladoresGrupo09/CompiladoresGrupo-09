@@ -16,6 +16,7 @@ cd "$(dirname "$0")" || exit 1
 
 BIN=./interpretador
 TESTS=../tests
+PENDENTES="$TESTS/pendentes.txt"
 
 if [ ! -f "$BIN" ] && [ ! -f "$BIN.exe" ]; then
     echo "Binario $BIN nao encontrado. Rode 'make' antes." >&2

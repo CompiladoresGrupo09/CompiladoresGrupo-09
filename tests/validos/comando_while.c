@@ -22,5 +22,6 @@ int main() {
         }
         i = i + 1;
     }
+    printf("Soma: %d/n", soma); //Adicionado saída no terminal -> teste silencioso
     return 0;
 }
