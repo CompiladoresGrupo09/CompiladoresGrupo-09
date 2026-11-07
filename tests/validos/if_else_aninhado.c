@@ -24,6 +24,6 @@ int main() {
     }
 
     if (r != 0) r = 0; else r = 1;
-    printf("Resultado: %d/n", r); //Adicionando saída no terminal -> teste silencioso.
+    printf("Resultado: %d\n", r); //Adicionando saída no terminal -> teste silencioso.
     return 0;
 }

@@ -15,7 +15,7 @@ int main() {
     int f;
     f = fatorial(5);
     f = fibonacci(10);
-    printf("Fatorial: %d/n", fatorial(5)); //Adicionando saída no terminal para teste de Fatorial -> teste silencioso
-    printf("Fibonacci: %d/n", fibonacci(10)); //Adicionando saída no terminal para teste de Fibonacci -> teste silencioso
+    printf("Fatorial: %d\n", fatorial(5)); //Adicionando saída no terminal para teste de Fatorial -> teste silencioso
+    printf("Fibonacci: %d\n", fibonacci(10)); //Adicionando saída no terminal para teste de Fibonacci -> teste silencioso
     return 0;
 }
