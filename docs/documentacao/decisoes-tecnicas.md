@@ -108,6 +108,21 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Verificação automática:** o workflow `build.yml` (S2-10) roda `make` e `make test` em todo PR. O motivo é transformar a regra "`main` sempre compilável" em verificação automática, em vez de depender só da revisão manual.
 * **Fechamento de issues:** o `Closes #N` só fecha a issue quando o PR é mesclado na branch padrão (`main`). Como os PRs vão para a `Dev`, a issue é fechada manualmente depois do merge, com um comentário citando o PR.
 
+## Testes com saida esperada e entrada redirecionada para todos os casos validos (S4-01)
+
+* **Decisão:** Arquitetura e Validação Rigorosa da Suíte de Testes (Sprint 4)
+
+* **Contexto:** A revisão inicial da suíte de testes (run_tests.sh) revelou que o sistema de validação avaliava apenas o código de final, permitindo que blocos essenciais de execução, sendo elses: atribuições, condicionais (if/else) e laços de repetição pudessem ser ignorados pelo interpretador sem gerar falhas.
+
+- Validação de Saída: ".esperado" escritos manualmente com base no comportamento legítimo da linguagem C para todos os casos válidos.
+
+- Redirecionamento de Entrada (.entrada): ".entrada" para simular fluxos interativos de leitura via scanf, substituindo o comportamento anterior que fixava a entrada em /dev/null.
+
+- Isolamento de Pendências: Utilização de um arquivo "tests/pendentes.txt" para isolar temporariamente os casos dependentes de construções complexas ainda em desenvolvimento, mantendo a pipeline de CI transparente.
+
+- Compatibilidade Multiplataforma (Windows/Linux): Inclusão de rotinas automáticas de normalização de finais de linha (tr -d '\r') no script de execução para evitar conflitos entre o ambiente de desenvolvimento local em Windows da equipe e o servidor de CI baseado em Linux.
+
+- Consequências: A suíte de testes transformou-se numa verdadeira rede de segurança para o núcleo do interpretador, fornecendo feedback transparente sobre o progresso das Sprints 4 e 5.
 
 ## Ambiente de execução do interpretador (S4-03)
 
