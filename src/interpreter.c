@@ -23,7 +23,7 @@ typedef struct EscopoExec
 static EscopoExec *escopos = NULL;
 static int numero_escopos = 0;
 static int capacidade_escopos = 0;
-
+static int retornou = 0;
 static void garantir_capacidade_escopos_exec(void)
 {
     if (numero_escopos < capacidade_escopos)
@@ -125,6 +125,13 @@ static int valor_como_int(Valor v)
     return v.como.i;
 }
 
+static int valor_verdadeiro(Valor v)
+{
+    if (v.tipo == TIPO_FLOAT)
+        return v.como.f != 0.0f;
+    return valor_como_int(v) != 0;
+}
+
 static Valor converter_para_tipo(Valor v, TipoDado tipo)
 {
     Valor convertido = {0};
@@ -214,23 +221,25 @@ Valor interpretarNo(ASTNode *no)
             break;
         }
 
+        if (strcmp(no->strval, "&&") == 0)
+        {
+            resultado.tipo = TIPO_INT;
+            resultado.como.i = valor_verdadeiro(interpretarNo(no->children[0])) &&
+                               valor_verdadeiro(interpretarNo(no->children[1]));
+            break;
+        }
+
+        if (strcmp(no->strval, "||") == 0)
+        {
+            resultado.tipo = TIPO_INT;
+            resultado.como.i = valor_verdadeiro(interpretarNo(no->children[0])) ||
+                               valor_verdadeiro(interpretarNo(no->children[1]));
+            break;
+        }
         Valor esquerda = interpretarNo(no->children[0]);
         Valor direita = interpretarNo(no->children[1]);
         const char *op = no->strval;
         int usa_float = esquerda.tipo == TIPO_FLOAT || direita.tipo == TIPO_FLOAT;
-
-        if (strcmp(op, "&&") == 0)
-        {
-            resultado.tipo = TIPO_INT;
-            resultado.como.i = (valor_como_int(esquerda) != 0) && (valor_como_int(direita) != 0);
-            break;
-        }
-        if (strcmp(op, "||") == 0)
-        {
-            resultado.tipo = TIPO_INT;
-            resultado.como.i = (valor_como_int(esquerda) != 0) || (valor_como_int(direita) != 0);
-            break;
-        }
 
         if (usa_float)
         {
@@ -350,6 +359,10 @@ Valor interpretarNo(ASTNode *no)
     }
 
     default:
+        fprintf(stderr, "Erro interno [linha %d]: no %s nao suportado na execucao\n",
+                no->line, nome_tipo_no(no->type));
+        erros_execucao++;
+        retornou = 1;
         break;
     }
 
@@ -421,9 +434,29 @@ static void executar_declaracao_variavel(ASTNode *declaracao)
     }
 }
 
+static long limite_iteracoes(void)
+{
+    const char *valor = getenv("INTERPRETADOR_LIMITE_ITERACOES");
+    if (valor != NULL && atol(valor) > 0)
+        return atol(valor);
+    return 1000000;
+}
+
+static int passou_do_limite(long *voltas, int linha)
+{
+    (*voltas)++;
+    if (*voltas <= limite_iteracoes())
+        return 0;
+    fprintf(stderr, "Erro de execucao [linha %d]: limite de %ld iteracoes excedido\n",
+            linha, limite_iteracoes());
+    erros_execucao++;
+    retornou = 1;
+    return 1;
+}
+
 static void executar_comando(ASTNode *comando)
 {
-    if (comando == NULL)
+    if (comando == NULL || retornou)
         return;
 
     switch (comando->type)
@@ -452,7 +485,53 @@ static void executar_comando(ASTNode *comando)
         sair_escopo_exec();
         break;
 
+    case NODE_IF:
+        if (valor_verdadeiro(interpretarNo(comando->children[0])))
+            executar_comando(comando->children[1]);
+        else
+            executar_comando(comando->children[2]);
+        break;
+
+    case NODE_WHILE:
+    {
+        long voltas = 0;
+        while (!retornou && valor_verdadeiro(interpretarNo(comando->children[0])))
+        {
+            if (passou_do_limite(&voltas, comando->line))
+                break;
+            executar_comando(comando->children[1]);
+        }
+        break;
+    }
+
+    case NODE_FOR:
+    {
+        long voltas = 0;
+        if (comando->children[0] != NULL)
+            interpretarNo(comando->children[0]);
+        while (!retornou && (comando->children[1] == NULL ||
+                             valor_verdadeiro(interpretarNo(comando->children[1]))))
+        {
+            if (passou_do_limite(&voltas, comando->line))
+                break;
+            executar_comando(comando->children[3]);
+            if (!retornou && comando->children[2] != NULL)
+                interpretarNo(comando->children[2]);
+        }
+        break;
+    }
+
+    case NODE_RETURN:
+        if (comando->children[0] != NULL)
+            interpretarNo(comando->children[0]);
+        retornou = 1;
+        break;
+
     default:
+        fprintf(stderr, "Erro interno [linha %d]: no %s nao suportado na execucao\n",
+                comando->line, nome_tipo_no(comando->type));
+        erros_execucao++;
+        retornou = 1;
         break;
     }
 }
@@ -462,6 +541,7 @@ void interpretar(ASTNode *raiz)
         return;
 
     entrar_escopo_exec();
+    retornou = 0;
 
     for (int i = 0; i < raiz->num_children; i++)
     {
