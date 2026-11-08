@@ -366,6 +366,24 @@ static void executar_printf(ASTNode *chamada)
 
     for (const char *p = formato; *p != '\0'; p++)
     {
+        if (*p == '\\')
+        {
+            p++;
+            if (*p == '\0') break;
+            
+            if (*p == 'n') putchar('\n');
+            else if (*p == 't') putchar('\t');
+            else if (*p == '\\') putchar('\\');
+            else if (*p == '"') putchar('"');
+            else if (*p == '0') putchar('\0');
+            else
+            {
+                putchar('\\');
+                putchar(*p);
+            }
+            continue;
+        }
+
         if (*p != '%')
         {
             putchar(*p);
@@ -373,18 +391,39 @@ static void executar_printf(ASTNode *chamada)
         }
 
         p++;
+        if (*p == '\0')
+        {
+            putchar('%');
+            break;
+        }
+
         if (*p == 'd')
         {
+            if (indice_arg >= chamada->num_children)
+            {
+                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->linha);
+                exit(5);
+            }
             Valor v = interpretarNo(chamada->children[indice_arg++]);
             printf("%d", valor_como_int(v));
         }
         else if (*p == 'f')
         {
+            if (indice_arg >= chamada->num_children)
+            {
+                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->linha);
+                exit(5);
+            }
             Valor v = interpretarNo(chamada->children[indice_arg++]);
             printf("%f", valor_como_float(v));
         }
         else if (*p == 'c')
         {
+            if (indice_arg >= chamada->num_children)
+            {
+                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->linha);
+                exit(5);
+            }
             Valor v = interpretarNo(chamada->children[indice_arg++]);
             putchar((char)valor_como_int(v));
         }
