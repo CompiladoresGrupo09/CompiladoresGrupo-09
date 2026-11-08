@@ -27,6 +27,13 @@ Mesmo com cerca de um mês de prazo, C completo (ponteiros, structs, pré-proces
 - Strings dinâmicas
 - Arquivos
 
+## Restrições semânticas do núcleo
+
+- Todo programa deve declarar uma função `main`.
+- `void` é permitido como tipo de retorno de função, mas não como tipo de variável ou parâmetro.
+- `return` deve respeitar o tipo de retorno da função; funções `void` não retornam valor e funções não `void` exigem valor.
+- O operador `&` não é um operador geral de endereço: só é aceito em argumentos de `scanf`.
+
 ## Aplicação escolhida: organizador de compras no mercado
 
 Para exercitar o núcleo da linguagem, a equipe escolheu como estudo de caso um **organizador de compras de mercado**: o programa lê, em loop via `scanf`, o preço de cada item comprado, soma o total gasto e avisa se o valor ultrapassou o orçamento informado pelo usuário. O tema usa apenas recursos do núcleo obrigatório (variáveis `float`/`int`, laço `while`, `if`/`else`, `scanf`/`printf`) — não depende de nenhum diferencial (arrays, strings dinâmicas etc.), o que é proposital, já que esses ficam fora de escopo.

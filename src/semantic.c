@@ -5,6 +5,7 @@
 #include "tabela.h"
 
 int erros_semanticos = 0;
+static TipoDado tipo_retorno_funcao = TIPO_VOID;
 
 static void erro_semantico(int linha, const char *mensagem) {
     fprintf(stderr, "Erro semantico [linha %d]: %s\n", linha, mensagem);
@@ -43,6 +44,10 @@ static void visitar_declaracao_variavel(ASTNode *declaracao) {
 			continue;
 		}
 
+		if (tipo_var == TIPO_VOID) {
+			erro_simbolo(declarador, "variavel declarada com tipo void:", nome);
+		}
+
 		if (!inserir_simbolo(nome, tipo_var,
 							 declarador->line, 0, 0)) {
 			erros_semanticos++;
@@ -77,6 +82,7 @@ static void visitar_funcao(ASTNode *funcao) {
 	ASTNode *parametros = funcao->num_children > 0 ? funcao->children[0] : NULL;
 	ASTNode *bloco = funcao->num_children > 1 ? funcao->children[1] : NULL;
 	int aridade = parametros == NULL ? 0 : parametros->num_children;
+	TipoDado tipo_retorno_anterior = tipo_retorno_funcao;
 
 	if (!inserir_simbolo(funcao->strval, (TipoDado)funcao->intval,
 						 funcao->line, 1, aridade)) {
@@ -84,10 +90,14 @@ static void visitar_funcao(ASTNode *funcao) {
 	}
 
 	entrar_escopo();
+	tipo_retorno_funcao = (TipoDado)funcao->intval;
 
 	if (parametros != NULL) {
 		for (int i = 0; i < parametros->num_children; i++) {
 			ASTNode *parametro = parametros->children[i];
+			if ((TipoDado)parametro->intval == TIPO_VOID) {
+				erro_simbolo(parametro, "parametro declarado com tipo void:", parametro->strval);
+			}
 			if (!inserir_simbolo(parametro->strval, (TipoDado)parametro->intval,
 								 parametro->line, 0, 0)) {
 				erros_semanticos++;
@@ -100,6 +110,7 @@ static void visitar_funcao(ASTNode *funcao) {
 	}
 
 	sair_escopo();
+	tipo_retorno_funcao = tipo_retorno_anterior;
 }
 
 static TipoDado inferir_tipo(ASTNode *no) {
@@ -147,7 +158,14 @@ static TipoDado inferir_tipo(ASTNode *no) {
                     erros_semanticos++;
                 }
             }
-            // tipos de arguentos //
+            if (no->strval == NULL || strcmp(no->strval, "scanf") != 0) {
+                for (int i = 0; i < no->num_children; i++) {
+                    if (no->children[i] != NULL && no->children[i]->type == NODE_ADDR) {
+                        erro_semantico(no->children[i]->line,
+                                       "operador '&' permitido apenas em argumento de scanf");
+                    }
+                }
+            }
             for (int i = 0; i < no->num_children; i++) {
                 inferir_tipo(no->children[i]);
             }
@@ -248,11 +266,32 @@ static void visitar_no(ASTNode *no) {
             break;
 
         case NODE_EXPR_STMT:
-        case NODE_RETURN:
             for (int i = 0; i < no->num_children; i++) {
                 inferir_tipo(no->children[i]);
             }
             break;
+
+        case NODE_RETURN: {
+            ASTNode *expressao = no->num_children > 0 ? no->children[0] : NULL;
+            if (expressao == NULL) {
+                if (tipo_retorno_funcao != TIPO_VOID) {
+                    erro_semantico(no->line, "return sem valor em funcao nao void");
+                }
+                break;
+            }
+
+            TipoDado tipo_expr = inferir_tipo(expressao);
+            if (tipo_retorno_funcao == TIPO_VOID) {
+                erro_semantico(no->line, "funcao void nao pode retornar um valor");
+            } else if (tipo_expr != tipo_retorno_funcao &&
+                       !(tipo_retorno_funcao == TIPO_FLOAT && tipo_expr == TIPO_INT)) {
+                fprintf(stderr,
+                        "Erro semantico [linha %d]: tipo de retorno incompativel: esperado %s, recebido %s\n",
+                        no->line, nome_tipo_dado(tipo_retorno_funcao), nome_tipo_dado(tipo_expr));
+                erros_semanticos++;
+            }
+            break;
+        }
 
         case NODE_IF:
         case NODE_WHILE:
@@ -284,6 +323,7 @@ static void visitar_no(ASTNode *no) {
 
 int analisar_semantica(ASTNode *raiz) {
 	erros_semanticos = 0;
+	tipo_retorno_funcao = TIPO_VOID;
 	inicializar_tabela();
 	inserir_simbolo("printf", TIPO_INT, 0, 1, -1);
 	inserir_simbolo("scanf", TIPO_INT, 0, 1, -1);
@@ -292,6 +332,22 @@ int analisar_semantica(ASTNode *raiz) {
 		for (int i = 0; i < raiz->num_children; i++) {
 			visitar_no(raiz->children[i]);
 		}
+	}
+
+	int encontrou_main = 0;
+	if (raiz != NULL) {
+		for (int i = 0; i < raiz->num_children; i++) {
+			ASTNode *declaracao = raiz->children[i];
+			if (declaracao != NULL && declaracao->type == NODE_FUNC_DECL &&
+				declaracao->strval != NULL && strcmp(declaracao->strval, "main") == 0) {
+				encontrou_main = 1;
+				break;
+			}
+		}
+	}
+	if (!encontrou_main) {
+		int linha = raiz == NULL ? 1 : raiz->line;
+		erro_semantico(linha, "programa sem funcao main");
 	}
 
 	liberar_tabela();

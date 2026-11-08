@@ -1,0 +1,7 @@
+Erro semantico [linha 2]: variavel declarada com tipo void: 'x'
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  1 erro(s)
+Execucao   nao executada
