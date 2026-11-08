@@ -1,0 +1,7 @@
+Erro semantico [linha 7]: operador '&' permitido apenas em argumento de scanf
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  1 erro(s)
+Execucao   nao executada

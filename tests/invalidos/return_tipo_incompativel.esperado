@@ -1,0 +1,7 @@
+Erro semantico [linha 2]: tipo de retorno incompativel: esperado INT, recebido FLOAT
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  1 erro(s)
+Execucao   nao executada
