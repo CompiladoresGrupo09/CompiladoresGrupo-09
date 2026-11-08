@@ -108,16 +108,18 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Verificação automática:** o workflow `build.yml` (S2-10) roda `make` e `make test` em todo PR. O motivo é transformar a regra "`main` sempre compilável" em verificação automática, em vez de depender só da revisão manual.
 * **Fechamento de issues:** o `Closes #N` só fecha a issue quando o PR é mesclado na branch padrão (`main`). Como os PRs vão para a `Dev`, a issue é fechada manualmente depois do merge, com um comentário citando o PR.
 
-## Armazenamento de Variáveis no Interpretador
 
-**Decisão:**
-o interpretador de expressões usa uma lista própria e linear (`Variavel *variaveis` em `interpreter.c`), separada da `TabelaSimbolos` com escopos, que será decidido futuramente como iremos prosseguir.
+## Ambiente de execução do interpretador (S4-03)
 
-**Justificativa**
-o escopo é só avaliação de expressões e literais sobre um único `main()`, sem blocos, funções ou recursão. Reaproveitar `tabela.c` teria exigido decidir o mapeamento símbolo→valor sem os comandos (`if`/`while`/chamadas) que ainda não existem.
+* **Decisão:** o interpretador tem um **ambiente de execução próprio**, separado da `TabelaSimbolos`: uma pilha de escopos (`EscopoExec`) em `interpreter.c`, em que cada variável guarda nome e valor (o `Valor` já carrega o tipo). Substitui a lista linear `Variavel *variaveis` usada até a Sprint 3.
+* **Regras adotadas:**
+  * `interpretar()` abre o escopo global; cada `NODE_BLOCK` abre um escopo ao entrar e o fecha ao sair, liberando as variáveis dele;
+  * `definir_variavel()` cria sempre no escopo atual; `ler_variavel()` e `atribuir_variavel()` procuram do escopo mais interno para fora (*shadowing*, como no semântico);
+  * o `=` é executado como expressão: guarda o valor e devolve o valor guardado, o que permite `a = b = 3`;
+  * o valor é sempre convertido para o tipo declarado da variável, na declaração e na atribuição (`float x = 5;` guarda `5.0`).
+* **Justificativa:** a tabela de símbolos guarda informação de análise (tipo, linha, aridade) e é liberada ao final da semântica (`analisar_semantica`). O ambiente guarda informação de execução (valores), que muda a cada comando e precisa de escopos novos toda vez que um bloco é executado, por exemplo a cada volta de um laço e, na S5-01, a cada chamada de função. Por isso a previsão anterior de migrar os valores para a `TabelaSimbolos` foi revista: separar as duas estruturas mantém uma responsabilidade por fase, e a lógica de pilha segue o mesmo padrão da `tabela.c`.
+* **Implementação:** issue #72; verificado com os critérios de aceitação da issue e com `make test`.
 
-**Limitação conhecida:**
-essa lista não tem noção de escopo. A Sprint 4 (blocos, funções) vai exigir migrar o armazenamento de valores para cima da `TabelaSimbolos` existente, para não duplicar a lógica de entrar/sair de escopo.
 
 ## Pipeline com parada na primeira fase que falhar (S3-01)
 
