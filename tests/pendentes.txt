@@ -5,3 +5,5 @@ validos/expressao_multilinha.c
 validos/funcao_parametros_retorno.c
 validos/funcao_recursiva.c
 validos/precedencia_operadores.c
+validos/organizador_compras.c
+validos/printf_scanf_formatos.c
