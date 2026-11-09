@@ -124,6 +124,19 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 
 - Consequências: A suíte de testes transformou-se numa verdadeira rede de segurança para o núcleo do interpretador, fornecendo feedback transparente sobre o progresso das Sprints 4 e 5.
 
+## Correção de robustez e escapes no printf (S4-02)
+
+* **Decisão:** Correção de três defeitos críticos na função `executar_printf` em `src/interpreter.c`:
+  1. **Validação rigorosa de argumentos:** Validação do índice de argumentos (`indice_arg < num_children`) para impedir leituras fora do vetor da AST, emitindo o erro padronizado `Erro de execucao [linha N]: printf com menos argumentos do que especificadores` com código de saída `5`.
+
+  2. **Tratamento de `%` final:** Ajuste no avanço do ponteiro de formato para suportar strings terminadas com `%` literal (como `printf("100%");`) sem aceder a memória inválida após o terminador nulo (`\0`).
+  
+  3. **Decodificação de sequências de escape:** Implementação de rotina para traduzir sequências literais como `\n`, `\t`, `\\`, `\"` e `\0` para os carateres de controlo reais no momento da impressão.
+
+* **Justificativa:** Garantir a estabilidade do interpretador em tempo de execução e alinhar o comportamento do `printf` às especificações do núcleo da linguagem.
+
+* **Testes associados:** Criação de testes dedicados em `tests/invalidos/printf_argumentos_insuficientes.c` (validando o erro de execução) e em `tests/validos/printf_escape.c` e `printf_porcentagem_final.c` (validando a saída correta com `make test`).
+
 ## Ambiente de execução do interpretador (S4-03)
 
 * **Decisão:** o interpretador tem um **ambiente de execução próprio**, separado da `TabelaSimbolos`: uma pilha de escopos (`EscopoExec`) em `interpreter.c`, em que cada variável guarda nome e valor (o `Valor` já carrega o tipo). Substitui a lista linear `Variavel *variaveis` usada até a Sprint 3.
