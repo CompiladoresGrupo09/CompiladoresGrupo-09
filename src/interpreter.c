@@ -401,7 +401,7 @@ static void executar_printf(ASTNode *chamada)
         {
             if (indice_arg >= chamada->num_children)
             {
-                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->linha);
+                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->line);
                 exit(5);
             }
             Valor v = interpretarNo(chamada->children[indice_arg++]);
@@ -411,7 +411,7 @@ static void executar_printf(ASTNode *chamada)
         {
             if (indice_arg >= chamada->num_children)
             {
-                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->linha);
+                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->line);
                 exit(5);
             }
             Valor v = interpretarNo(chamada->children[indice_arg++]);
@@ -421,7 +421,7 @@ static void executar_printf(ASTNode *chamada)
         {
             if (indice_arg >= chamada->num_children)
             {
-                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->linha);
+                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->line);
                 exit(5);
             }
             Valor v = interpretarNo(chamada->children[indice_arg++]);
