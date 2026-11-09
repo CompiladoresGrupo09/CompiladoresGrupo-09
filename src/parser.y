@@ -12,6 +12,12 @@ void yyerror(const char *msg);
 
 ASTNode *raiz_ast = NULL;
 int erros_sintaticos = 0;
+
+static void erro_fora_escopo(int linha, const char *construcao) {
+    fprintf(stderr, "Erro sintatico [linha %d]: construcao fora do escopo: %s\n",
+            linha, construcao);
+    erros_sintaticos++;
+}
 %}
 
 %union {
@@ -28,25 +34,18 @@ int erros_sintaticos = 0;
 %token <strval> STRING_LIT
 %token <strval> ID
 
-%token INT FLOAT CHAR VOID IF ELSE WHILE FOR RETURN
+%token INT FLOAT CHAR VOID IF ELSE WHILE FOR RETURN STRUCT UNION
 %token EQ NE LE GE AND OR
 
 %locations
 
-%type <node> programa lista_declaracoes declaracao declaracao_funcao declaracao_variavel
+%type <node> programa lista_declaracoes declaracao declaracao_fora_escopo declaracao_funcao declaracao_variavel
 %type <node> lista_declaradores declarador lista_parametros lista_parametros_ne parametro
 %type <node> bloco lista_comandos comando comando_expressao comando_if comando_while comando_for comando_return
 %type <node> expressao_opt expressao atribuicao expr_or expr_and expr_eq expr_rel expr_add expr_mul expr_unario expr_primaria
 %type <node> lista_argumentos lista_argumentos_ne argumento
 %type <intval> tipo
 
-%right '='
-%left OR
-%left AND
-%left EQ NE
-%left '<' '>' LE GE
-%left '+' '-'
-%left '*' '/' '%'
 %right UMINUS NOT
 
 %start programa
@@ -65,7 +64,41 @@ lista_declaracoes:
 declaracao:
       declaracao_funcao { $$ = $1; }
     | declaracao_variavel { $$ = $1; }
+    | declaracao_fora_escopo { $$ = $1; }
     | error ';' { $$ = NULL; yyerrok; }
+    ;
+
+declaracao_fora_escopo:
+      tipo '*' ID ';' {
+          erro_fora_escopo(@1.first_line, "ponteiros");
+          free($3);
+          $$ = NULL;
+      }
+    | tipo ID '[' INT_LIT ']' ';' {
+          erro_fora_escopo(@1.first_line, "vetores/arrays");
+          free($2);
+          $$ = NULL;
+      }
+    | STRUCT ID '{' '}' ';' {
+          erro_fora_escopo(@1.first_line, "structs/unions");
+          free($2);
+          $$ = NULL;
+      }
+    | STRUCT error ';' {
+          erro_fora_escopo(@1.first_line, "structs/unions");
+          $$ = NULL;
+          yyerrok;
+      }
+    | UNION ID '{' '}' ';' {
+          erro_fora_escopo(@1.first_line, "structs/unions");
+          free($2);
+          $$ = NULL;
+      }
+    | UNION error ';' {
+          erro_fora_escopo(@1.first_line, "structs/unions");
+          $$ = NULL;
+          yyerrok;
+      }
     ;
 
 tipo:
@@ -145,6 +178,7 @@ lista_comandos:
 
 comando:
       declaracao_variavel { $$ = $1; }
+    | declaracao_fora_escopo { $$ = $1; }
     | comando_expressao   { $$ = $1; }
     | comando_if          { $$ = $1; }
     | comando_while       { $$ = $1; }
@@ -192,6 +226,12 @@ comando_for:
           adicionar_filho($$, $5);
           adicionar_filho($$, $7);
           adicionar_filho($$, $9);
+      }
+    | FOR '(' tipo lista_declaradores ';' expressao_opt ';' expressao_opt ')' comando {
+          erro_fora_escopo(@1.first_line,
+                           "declaracao no inicializador de for (regra C89); declare a variavel antes do for");
+          liberar_ast($4);
+          $$ = NULL;
       }
     ;
 

@@ -12,94 +12,94 @@ static void erro_semantico(int linha, const char *mensagem) {
 }
 
 static void erro_simbolo(const ASTNode *no, const char *mensagem, const char *nome) {
-	fprintf(stderr, "Erro semantico [linha %d]: %s '%s'\n", no->line, mensagem, nome);
-	erros_semanticos++;
+    fprintf(stderr, "Erro semantico [linha %d]: %s '%s'\n", no->line, mensagem, nome);
+    erros_semanticos++;
 }
 
 static TipoDado inferir_tipo(ASTNode *no);
 static void visitar_no(ASTNode *no);
 
 static const char *nome_declarado(ASTNode *declarador) {
-	if (declarador->type == NODE_ID) {
-		return declarador->strval;
-	}
+    if (declarador->type == NODE_ID) {
+        return declarador->strval;
+    }
 
-	if (declarador->type == NODE_BINOP && declarador->num_children > 0 &&
-		declarador->children[0] != NULL && declarador->children[0]->type == NODE_ID) {
-		return declarador->children[0]->strval;
-	}
+    if (declarador->type == NODE_BINOP && declarador->num_children > 0 &&
+        declarador->children[0] != NULL && declarador->children[0]->type == NODE_ID) {
+        return declarador->children[0]->strval;
+    }
 
-	return NULL;
+    return NULL;
 }
 
 static void visitar_declaracao_variavel(ASTNode *declaracao) {
-	TipoDado tipo_var = (TipoDado)declaracao->intval;
+    TipoDado tipo_var = (TipoDado)declaracao->intval;
 
-	for (int i = 0; i < declaracao->num_children; i++) {
-		ASTNode *declarador = declaracao->children[i];
-		const char *nome = nome_declarado(declarador);
+    for (int i = 0; i < declaracao->num_children; i++) {
+        ASTNode *declarador = declaracao->children[i];
+        const char *nome = nome_declarado(declarador);
 
-		if (nome == NULL) {
-			continue;
-		}
+        if (nome == NULL) {
+            continue;
+        }
 
-		if (!inserir_simbolo(nome, tipo_var,
-							 declarador->line, 0, 0)) {
-			erros_semanticos++;
-		}
+        if (!inserir_simbolo(nome, tipo_var,
+                             declarador->line, 0, 0)) {
+            erros_semanticos++;
+        }
         
-		// caso haja iniciialização na declaração//
-		if (declarador->type == NODE_BINOP && declarador->num_children > 1) {
-			TipoDado tipo_expr = inferir_tipo(declarador->children[1]);
+        // Verifica incompatibilidade de tipo na inicializacao declarada.
+        if (declarador->type == NODE_BINOP && declarador->num_children > 1) {
+            TipoDado tipo_expr = inferir_tipo(declarador->children[1]);
 
-			if (tipo_var == TIPO_INT && tipo_expr == TIPO_FLOAT) {
-				erro_semantico(declarador->line, "atribuicao incompativel: conversao implicita de float para int nao permitida");
-			}
-		}
-	}
+            if (tipo_var == TIPO_INT && tipo_expr == TIPO_FLOAT) {
+                erro_semantico(declarador->line, "atribuicao incompativel: conversao implicita de float para int nao permitida");
+            }
+        }
+    }
 }
 
 static void visitar_bloco(ASTNode *bloco, int criar_escopo) {
-	if (criar_escopo) {
-		entrar_escopo();
-	}
+    if (criar_escopo) {
+        entrar_escopo();
+    }
 
-	for (int i = 0; i < bloco->num_children; i++) {
-		visitar_no(bloco->children[i]);
-	}
+    for (int i = 0; i < bloco->num_children; i++) {
+        visitar_no(bloco->children[i]);
+    }
 
-	if (criar_escopo) {
-		sair_escopo();
-	}
+    if (criar_escopo) {
+        sair_escopo();
+    }
 }
 
 static void visitar_funcao(ASTNode *funcao) {
-	ASTNode *parametros = funcao->num_children > 0 ? funcao->children[0] : NULL;
-	ASTNode *bloco = funcao->num_children > 1 ? funcao->children[1] : NULL;
-	int aridade = parametros == NULL ? 0 : parametros->num_children;
+    ASTNode *parametros = funcao->num_children > 0 ? funcao->children[0] : NULL;
+    ASTNode *bloco = funcao->num_children > 1 ? funcao->children[1] : NULL;
+    int aridade = parametros == NULL ? 0 : parametros->num_children;
 
-	if (!inserir_simbolo(funcao->strval, (TipoDado)funcao->intval,
-						 funcao->line, 1, aridade)) {
-		erros_semanticos++;
-	}
+    if (!inserir_simbolo(funcao->strval, (TipoDado)funcao->intval,
+                         funcao->line, 1, aridade)) {
+        erros_semanticos++;
+    }
 
-	entrar_escopo();
+    entrar_escopo();
 
-	if (parametros != NULL) {
-		for (int i = 0; i < parametros->num_children; i++) {
-			ASTNode *parametro = parametros->children[i];
-			if (!inserir_simbolo(parametro->strval, (TipoDado)parametro->intval,
-								 parametro->line, 0, 0)) {
-				erros_semanticos++;
-			}
-		}
-	}
+    if (parametros != NULL) {
+        for (int i = 0; i < parametros->num_children; i++) {
+            ASTNode *parametro = parametros->children[i];
+            if (!inserir_simbolo(parametro->strval, (TipoDado)parametro->intval,
+                                 parametro->line, 0, 0)) {
+                erros_semanticos++;
+            }
+        }
+    }
 
-	if (bloco != NULL) {
-		visitar_bloco(bloco, 0);
-	}
+    if (bloco != NULL) {
+        visitar_bloco(bloco, 0);
+    }
 
-	sair_escopo();
+    sair_escopo();
 }
 
 static TipoDado inferir_tipo(ASTNode *no) {
@@ -147,7 +147,7 @@ static TipoDado inferir_tipo(ASTNode *no) {
                     erros_semanticos++;
                 }
             }
-            // tipos de arguentos //
+            // Infere o tipo dos argumentos.
             for (int i = 0; i < no->num_children; i++) {
                 inferir_tipo(no->children[i]);
             }
@@ -157,7 +157,7 @@ static TipoDado inferir_tipo(ASTNode *no) {
         case NODE_UNOP: {
             if (no->num_children > 0) {
                 TipoDado t_op = inferir_tipo(no->children[0]);
-                // negação, sem´pre 1 ou 0 //
+                // A negacao logica produz um inteiro.
                 if (no->strval != NULL && strcmp(no->strval, "!") == 0) {
                     no->tipo = TIPO_INT;
                 } else {
@@ -181,7 +181,7 @@ static TipoDado inferir_tipo(ASTNode *no) {
                 TipoDado t_esq = inferir_tipo(no->children[0]);
                 TipoDado t_dir = inferir_tipo(no->children[1]);
 
-                // recusar float para int //
+                // Recusa conversao implicita de float para int.
                 if (t_esq == TIPO_INT && t_dir == TIPO_FLOAT) {
                     erro_semantico(no->line, "atribuicao incompativel: conversao implicita de float para int nao permitida");
                 }
@@ -192,7 +192,7 @@ static TipoDado inferir_tipo(ASTNode *no) {
             TipoDado t_esq = inferir_tipo(no->children[0]);
             TipoDado t_dir = inferir_tipo(no->children[1]);
 
-            // resto da divisão apenas para inteiros //
+            // O operador modulo e restrito a inteiros.
             if (op != NULL && strcmp(op, "%") == 0) {
                 if (t_esq != TIPO_INT || t_dir != TIPO_INT) {
                     erro_semantico(no->line, "operador '%' invalido: esperado tipos inteiros");
@@ -257,7 +257,7 @@ static void visitar_no(ASTNode *no) {
         case NODE_IF:
         case NODE_WHILE:
         case NODE_FOR:
-            // Avalia a condição e visita os blocos de comandos //
+            // Visita a condicao e os comandos associados.
             for (int i = 0; i < no->num_children; i++) {
                 visitar_no(no->children[i]);
             }
@@ -283,17 +283,17 @@ static void visitar_no(ASTNode *no) {
 }
 
 int analisar_semantica(ASTNode *raiz) {
-	erros_semanticos = 0;
-	inicializar_tabela();
-	inserir_simbolo("printf", TIPO_INT, 0, 1, -1);
-	inserir_simbolo("scanf", TIPO_INT, 0, 1, -1);
+    erros_semanticos = 0;
+    inicializar_tabela();
+    inserir_simbolo("printf", TIPO_INT, 0, 1, -1);
+    inserir_simbolo("scanf", TIPO_INT, 0, 1, -1);
 
-	if (raiz != NULL) {
-		for (int i = 0; i < raiz->num_children; i++) {
-			visitar_no(raiz->children[i]);
-		}
-	}
+    if (raiz != NULL) {
+        for (int i = 0; i < raiz->num_children; i++) {
+            visitar_no(raiz->children[i]);
+        }
+    }
 
-	liberar_tabela();
-	return erros_semanticos == 0;
+    liberar_tabela();
+    return erros_semanticos == 0;
 }
