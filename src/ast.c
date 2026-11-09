@@ -112,9 +112,11 @@ void imprimir_ast(const ASTNode *no, int nivel) {
         printf(" '%c'", no->charval);
     }
     if (no->type == NODE_VAR_DECL || no->type == NODE_PARAM) {
-        printf(" (tipo=%d)", no->intval);
+        printf(" (tipo=%s)", nome_tipo_dado((TipoDado)no->intval));
     }
-    // aqui eu mostro o tipo sintetizado no nó //
+    if (no->type == NODE_FUNC_DECL) {
+        printf(" (retorno=%s)", nome_tipo_dado((TipoDado)no->intval));
+    }
     printf(" <tipo: %s> [linha %d]\n", nomes_tipo_dado[no->tipo], no->line);
 
     for (int i = 0; i < no->num_children; i++) {

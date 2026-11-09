@@ -64,6 +64,8 @@ LIT_STRING  \"(\\.|[^"\\])*\"
 "float"                          { return FLOAT; }
 "char"                           { return CHAR; }
 "void"                           { return VOID; }
+"struct"                         { return STRUCT; }
+"union"                          { return UNION; }
 "if"                             { return IF; }
 "else"                           { return ELSE; }
 "while"                          { return WHILE; }
