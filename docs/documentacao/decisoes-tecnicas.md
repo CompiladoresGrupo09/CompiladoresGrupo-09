@@ -108,16 +108,46 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Verificação automática:** o workflow `build.yml` (S2-10) roda `make` e `make test` em todo PR. O motivo é transformar a regra "`main` sempre compilável" em verificação automática, em vez de depender só da revisão manual.
 * **Fechamento de issues:** o `Closes #N` só fecha a issue quando o PR é mesclado na branch padrão (`main`). Como os PRs vão para a `Dev`, a issue é fechada manualmente depois do merge, com um comentário citando o PR.
 
-## Armazenamento de Variáveis no Interpretador
+## Testes com saida esperada e entrada redirecionada para todos os casos validos (S4-01)
 
-**Decisão:**
-o interpretador de expressões usa uma lista própria e linear (`Variavel *variaveis` em `interpreter.c`), separada da `TabelaSimbolos` com escopos, que será decidido futuramente como iremos prosseguir.
+* **Decisão:** Arquitetura e Validação Rigorosa da Suíte de Testes (Sprint 4)
 
-**Justificativa**
-o escopo é só avaliação de expressões e literais sobre um único `main()`, sem blocos, funções ou recursão. Reaproveitar `tabela.c` teria exigido decidir o mapeamento símbolo→valor sem os comandos (`if`/`while`/chamadas) que ainda não existem.
+* **Contexto:** A revisão inicial da suíte de testes (run_tests.sh) revelou que o sistema de validação avaliava apenas o código de final, permitindo que blocos essenciais de execução, sendo elses: atribuições, condicionais (if/else) e laços de repetição pudessem ser ignorados pelo interpretador sem gerar falhas.
 
-**Limitação conhecida:**
-essa lista não tem noção de escopo. A Sprint 4 (blocos, funções) vai exigir migrar o armazenamento de valores para cima da `TabelaSimbolos` existente, para não duplicar a lógica de entrar/sair de escopo.
+- Validação de Saída: ".esperado" escritos manualmente com base no comportamento legítimo da linguagem C para todos os casos válidos.
+
+- Redirecionamento de Entrada (.entrada): ".entrada" para simular fluxos interativos de leitura via scanf, substituindo o comportamento anterior que fixava a entrada em /dev/null.
+
+- Isolamento de Pendências: Utilização de um arquivo "tests/pendentes.txt" para isolar temporariamente os casos dependentes de construções complexas ainda em desenvolvimento, mantendo a pipeline de CI transparente.
+
+- Compatibilidade Multiplataforma (Windows/Linux): Inclusão de rotinas automáticas de normalização de finais de linha (tr -d '\r') no script de execução para evitar conflitos entre o ambiente de desenvolvimento local em Windows da equipe e o servidor de CI baseado em Linux.
+
+- Consequências: A suíte de testes transformou-se numa verdadeira rede de segurança para o núcleo do interpretador, fornecendo feedback transparente sobre o progresso das Sprints 4 e 5.
+
+## Correção de robustez e escapes no printf (S4-02)
+
+* **Decisão:** Correção de três defeitos críticos na função `executar_printf` em `src/interpreter.c`:
+  1. **Validação rigorosa de argumentos:** Validação do índice de argumentos (`indice_arg < num_children`) para impedir leituras fora do vetor da AST, emitindo o erro padronizado `Erro de execucao [linha N]: printf com menos argumentos do que especificadores` com código de saída `5`.
+
+  2. **Tratamento de `%` final:** Ajuste no avanço do ponteiro de formato para suportar strings terminadas com `%` literal (como `printf("100%");`) sem aceder a memória inválida após o terminador nulo (`\0`).
+  
+  3. **Decodificação de sequências de escape:** Implementação de rotina para traduzir sequências literais como `\n`, `\t`, `\\`, `\"` e `\0` para os carateres de controlo reais no momento da impressão.
+
+* **Justificativa:** Garantir a estabilidade do interpretador em tempo de execução e alinhar o comportamento do `printf` às especificações do núcleo da linguagem.
+
+* **Testes associados:** Criação de testes dedicados em `tests/invalidos/printf_argumentos_insuficientes.c` (validando o erro de execução) e em `tests/validos/printf_escape.c` e `printf_porcentagem_final.c` (validando a saída correta com `make test`).
+
+## Ambiente de execução do interpretador (S4-03)
+
+* **Decisão:** o interpretador tem um **ambiente de execução próprio**, separado da `TabelaSimbolos`: uma pilha de escopos (`EscopoExec`) em `interpreter.c`, em que cada variável guarda nome e valor (o `Valor` já carrega o tipo). Substitui a lista linear `Variavel *variaveis` usada até a Sprint 3.
+* **Regras adotadas:**
+  * `interpretar()` abre o escopo global; cada `NODE_BLOCK` abre um escopo ao entrar e o fecha ao sair, liberando as variáveis dele;
+  * `definir_variavel()` cria sempre no escopo atual; `ler_variavel()` e `atribuir_variavel()` procuram do escopo mais interno para fora (*shadowing*, como no semântico);
+  * o `=` é executado como expressão: guarda o valor e devolve o valor guardado, o que permite `a = b = 3`;
+  * o valor é sempre convertido para o tipo declarado da variável, na declaração e na atribuição (`float x = 5;` guarda `5.0`).
+* **Justificativa:** a tabela de símbolos guarda informação de análise (tipo, linha, aridade) e é liberada ao final da semântica (`analisar_semantica`). O ambiente guarda informação de execução (valores), que muda a cada comando e precisa de escopos novos toda vez que um bloco é executado, por exemplo a cada volta de um laço e, na S5-01, a cada chamada de função. Por isso a previsão anterior de migrar os valores para a `TabelaSimbolos` foi revista: separar as duas estruturas mantém uma responsabilidade por fase, e a lógica de pilha segue o mesmo padrão da `tabela.c`.
+* **Implementação:** issue #72; verificado com os critérios de aceitação da issue e com `make test`.
+
 
 ## Pipeline com parada na primeira fase que falhar (S3-01)
 
