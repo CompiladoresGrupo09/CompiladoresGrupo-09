@@ -157,3 +157,14 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Decisão:** toda mensagem de erro segue o formato `Erro <fase> [linha N]: <descricao>` — por exemplo, `Erro semantico [linha 4]: ...` — e é escrita **sem acentos**.
 * **Justificativa:** o formato único deixa claro em que fase e em que linha o problema está, e permite que os testes comparem as mensagens nos arquivos `.esperado`. Sem acentos, a saída aparece igual em qualquer terminal, independentemente da codificação configurada.
 * **Implementação:** mensagens em `scanner.l`, `parser.y`, `semantic.c`, `tabela.c` e `interpreter.c`; a última mensagem com acento foi corrigida no PR #57.
+
+## Código de saída vindo do `return` do `main` (S4-08)
+
+* **Decisão:** quando nenhuma fase tem erro, o processo sai com o valor do `return` do `main` interpretado, como um programa C compilado. A flag `--no-run` roda todas as análises e não executa.
+* **Regras adotadas:**
+  * o interpretador guarda o valor do `return` (convertido para `int`) e `interpretar()` o devolve ao `main.c`;
+  * `return;` sem valor, ou um `main` que termina sem `return`, resulta em 0;
+  * havendo erro em qualquer fase, vale o código da fase (2 sintático, 3 léxico, 4 semântico, 5 execução), e não o `return`;
+  * `--no-run` usa o mesmo desvio do `--ast` e do `--tabela`: qualquer modo diferente do completo encerra antes da execução.
+* **Limitação conhecida:** se o `main` retornar 1, 2, 3, 4 ou 5, o código de saída é igual ao de uma categoria de erro. Para diferenciar, basta olhar o relatório de erros no fim da saída, que mostra 0 erro em todas as fases. É a mesma limitação de qualquer interpretador que repassa o código de saída do programa.
+* **Implementação:** issue #77.
