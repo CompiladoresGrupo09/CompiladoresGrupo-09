@@ -27,5 +27,6 @@ int main() {
         i = i - 2;
 
     soma = contar();
+    printf("%d\n%d\n" , soma, i); //Adicionando saída no terminal para teste de Soma -> teste silencioso
     return 0;
 }

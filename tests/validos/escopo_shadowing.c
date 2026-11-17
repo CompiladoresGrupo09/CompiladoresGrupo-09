@@ -14,5 +14,6 @@ void processar(int contador) {
 
 int main() {
     processar(3);
+    printf("Contador: %d\n", contador); //Adicioanando saída no terminal para teste de contador -> teste silencioso
     return 0;
 }
