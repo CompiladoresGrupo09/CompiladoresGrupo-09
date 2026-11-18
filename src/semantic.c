@@ -180,6 +180,7 @@ static TipoDado inferir_tipo(ASTNode *no) {
                     erros_semanticos++;
                 }
             }
+            return no->tipo;
         }
 
         case NODE_UNOP: {
