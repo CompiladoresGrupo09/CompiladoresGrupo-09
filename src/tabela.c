@@ -137,8 +137,28 @@ int inserir_simbolo(const char *nome, TipoDado tipo, int linha, int e_funcao, in
     simbolo->linha = linha;
     simbolo->e_funcao = e_funcao;
     simbolo->aridade = aridade;
+    simbolo->tipos_parametros = NULL;
+
 
     registrar_declarado(simbolo, tabela.numero_escopos - 1);
+    return 1;
+}
+int inserir_funcao(const char *nome, TipoDado tipo, int linha, int aridade, const TipoDado *tipos_parametros) {
+    if (!inserir_simbolo(nome, tipo, linha, 1, aridade)) {
+        return 0;
+    }
+
+    if (aridade > 0) {
+        TipoDado *copia = malloc(aridade * sizeof(TipoDado));
+        if (!copia) {
+            fprintf(stderr, "Erro: falha ao alocar tipos dos parametros\n");
+            exit(EXIT_FAILURE);
+        }
+        memcpy(copia, tipos_parametros, aridade * sizeof(TipoDado));
+        buscar_no_escopo_atual(nome)->tipos_parametros = copia;
+        declarados[num_declarados - 1].simbolo.tipos_parametros = copia;
+    }
+
     return 1;
 }
 
@@ -202,7 +222,7 @@ void imprimir_simbolos_declarados(void) {
     for (int i = 0; i < num_declarados; i++) {
         const Simbolo *s = &declarados[i].simbolo;
         char linha[16];
-        char parametros[16];
+        char parametros[128];
 
         if (s->linha > 0) {
             snprintf(linha, sizeof(linha), "%d", s->linha);
@@ -214,8 +234,16 @@ void imprimir_simbolos_declarados(void) {
             snprintf(parametros, sizeof(parametros), "-");
         } else if (s->aridade < 0) {
             snprintf(parametros, sizeof(parametros), "variavel");
+        } else if (s->aridade == 0) {
+            snprintf(parametros, sizeof(parametros), "0");
         } else {
-            snprintf(parametros, sizeof(parametros), "%d", s->aridade);
+            parametros[0] = '\0';
+            for (int p = 0; p < s->aridade; p++) {
+                if (p > 0) {
+                    strncat(parametros, ",", sizeof(parametros) - strlen(parametros) - 1);
+                }
+                strncat(parametros, nome_tipo_dado(s->tipos_parametros[p]), sizeof(parametros) - strlen(parametros) - 1);
+            }
         }
 
         printf("%-7d %-20s %-6s %-9s %-6s %s\n",
@@ -226,11 +254,13 @@ void imprimir_simbolos_declarados(void) {
                linha,
                parametros);
     }
+
 }
 
 void liberar_simbolos_declarados(void) {
     for (int i = 0; i < num_declarados; i++) {
         free(declarados[i].simbolo.nome);
+        free(declarados[i].simbolo.tipos_parametros);
     }
     free(declarados);
     declarados = NULL;
