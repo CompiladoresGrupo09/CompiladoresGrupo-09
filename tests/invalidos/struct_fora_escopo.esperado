@@ -1,0 +1,7 @@
+Erro sintatico [linha 1]: construcao fora do escopo: structs/unions
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  1 erro(s)
+Semantica  nao executada
+Execucao   nao executada

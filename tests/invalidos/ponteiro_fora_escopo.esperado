@@ -1,0 +1,7 @@
+Erro sintatico [linha 2]: construcao fora do escopo: ponteiros
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  1 erro(s)
+Semantica  nao executada
+Execucao   nao executada

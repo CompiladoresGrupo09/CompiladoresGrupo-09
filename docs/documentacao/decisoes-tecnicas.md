@@ -8,6 +8,10 @@ Recomendação oficial da disciplina. Cronograma organizado em Sprints (Planning
 ## AST construída diretamente no parser
 Diferente de um compilador (que gera código intermediário separado), o interpretador constrói a AST diretamente nas ações semânticas do `parser.y` (Bison). É essa AST que alimenta a análise semântica e a interpretação.
 
+## Uso de `&` restrito ao `scanf`
+**Decisão:** o operador `&` só é aceito como argumento de `scanf`; usos em argumentos de outras funções são erro semântico.
+**Justificativa:** a gramática representa `& ID` apenas na regra `argumento: '&' ID`, para permitir leitura por referência no `scanf`. Como ponteiros estão fora do escopo da linguagem, essa sintaxe não deve ser interpretada como passagem geral de endereço para funções.
+
 ## Interpretação por percurso recursivo da AST
 Em vez de gerar código final, a execução acontece percorrendo a AST recursivamente (função `interpretarNo()`, definida na issue #31). É o que diferencia o módulo de execução de um compilador tradicional.
 
@@ -122,7 +126,7 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 
 - Compatibilidade Multiplataforma (Windows/Linux): Inclusão de rotinas automáticas de normalização de finais de linha (tr -d '\r') no script de execução para evitar conflitos entre o ambiente de desenvolvimento local em Windows da equipe e o servidor de CI baseado em Linux.
 
-- Consequências: A suíte de testes transformou-se numa verdadeira rede de segurança para o núcleo do interpretador, fornecendo feedback transparente sobre o progresso das Sprints 4 e 5.
+* **Consequências:** A suíte de testes transformou-se numa verdadeira rede de segurança para o núcleo do interpretador, fornecendo feedback transparente sobre o progresso das Sprints 4 e 5.
 
 ## Correção de robustez e escapes no printf (S4-02)
 
@@ -170,3 +174,14 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Decisão:** toda mensagem de erro segue o formato `Erro <fase> [linha N]: <descricao>` — por exemplo, `Erro semantico [linha 4]: ...` — e é escrita **sem acentos**.
 * **Justificativa:** o formato único deixa claro em que fase e em que linha o problema está, e permite que os testes comparem as mensagens nos arquivos `.esperado`. Sem acentos, a saída aparece igual em qualquer terminal, independentemente da codificação configurada.
 * **Implementação:** mensagens em `scanner.l`, `parser.y`, `semantic.c`, `tabela.c` e `interpreter.c`; a última mensagem com acento foi corrigida no PR #57.
+
+## Código de saída vindo do `return` do `main` (S4-08)
+
+* **Decisão:** quando nenhuma fase tem erro, o processo sai com o valor do `return` do `main` interpretado, como um programa C compilado. A flag `--no-run` roda todas as análises e não executa.
+* **Regras adotadas:**
+  * o interpretador guarda o valor do `return` (convertido para `int`) e `interpretar()` o devolve ao `main.c`;
+  * `return;` sem valor, ou um `main` que termina sem `return`, resulta em 0;
+  * havendo erro em qualquer fase, vale o código da fase (2 sintático, 3 léxico, 4 semântico, 5 execução), e não o `return`;
+  * `--no-run` usa o mesmo desvio do `--ast` e do `--tabela`: qualquer modo diferente do completo encerra antes da execução.
+* **Limitação conhecida:** se o `main` retornar 1, 2, 3, 4 ou 5, o código de saída é igual ao de uma categoria de erro. Para diferenciar, basta olhar o relatório de erros no fim da saída, que mostra 0 erro em todas as fases. É a mesma limitação de qualquer interpretador que repassa o código de saída do programa.
+* **Implementação:** issue #77.

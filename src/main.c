@@ -28,12 +28,20 @@ typedef enum
     MODO_COMPLETO,
     MODO_TOKENS,
     MODO_AST,
-    MODO_TABELA
+    MODO_TABELA,
+    MODO_NO_RUN,
 } Modo;
 
 /* Erros por fase; NAO_EXECUTADA marca as fases que o pipeline nao chegou a rodar */
 #define NAO_EXECUTADA -1
-enum { FASE_LEXICA, FASE_SINTATICA, FASE_SEMANTICA, FASE_EXECUCAO, NUM_FASES };
+enum
+{
+    FASE_LEXICA,
+    FASE_SINTATICA,
+    FASE_SEMANTICA,
+    FASE_EXECUCAO,
+    NUM_FASES
+};
 
 static const char *nomes_fases[NUM_FASES] = {"Lexica", "Sintatica", "Semantica", "Execucao"};
 static int erros_fase[NUM_FASES] = {NAO_EXECUTADA, NAO_EXECUTADA, NAO_EXECUTADA, NAO_EXECUTADA};
@@ -52,38 +60,64 @@ static void imprimir_relatorio(void)
 
 static void imprimir_uso(const char *programa)
 {
-    fprintf(stderr, "Uso: %s <arquivo.c> [--tokens | --ast | --tabela]\n", programa);
+    fprintf(stderr, "Uso: %s <arquivo.c> [--tokens | --ast | --tabela | --no-run]\n", programa);
     fprintf(stderr, "  (sem flag)  pipeline completo: analises lexica, sintatica e semantica + execucao\n");
     fprintf(stderr, "  --tokens    apenas a analise lexica, listando os tokens\n");
     fprintf(stderr, "  --ast       analises completas e impressao da AST, sem executar\n");
     fprintf(stderr, "  --tabela    analises completas e impressao da tabela de simbolos, sem executar\n");
+    fprintf(stderr, "  --no-run    analises completas, sem executar\n");
 }
 
 static const char *nome_token(int token)
 {
     switch (token)
     {
-    case INT_LIT: return "INT_LIT";
-    case FLOAT_LIT: return "FLOAT_LIT";
-    case CHAR_LIT: return "CHAR_LIT";
-    case STRING_LIT: return "STRING_LIT";
-    case ID: return "ID";
-    case INT: return "INT";
-    case FLOAT: return "FLOAT";
-    case CHAR: return "CHAR";
-    case VOID: return "VOID";
-    case IF: return "IF";
-    case ELSE: return "ELSE";
-    case WHILE: return "WHILE";
-    case FOR: return "FOR";
-    case RETURN: return "RETURN";
-    case EQ: return "EQ";
-    case NE: return "NE";
-    case LE: return "LE";
-    case GE: return "GE";
-    case AND: return "AND";
-    case OR: return "OR";
-    default: return "SIMBOLO";
+    case INT_LIT:
+        return "INT_LIT";
+    case FLOAT_LIT:
+        return "FLOAT_LIT";
+    case CHAR_LIT:
+        return "CHAR_LIT";
+    case STRING_LIT:
+        return "STRING_LIT";
+    case ID:
+        return "ID";
+    case INT:
+        return "INT";
+    case FLOAT:
+        return "FLOAT";
+    case CHAR:
+        return "CHAR";
+    case VOID:
+        return "VOID";
+    case IF:
+        return "IF";
+    case ELSE:
+        return "ELSE";
+    case WHILE:
+        return "WHILE";
+    case FOR:
+        return "FOR";
+    case RETURN:
+        return "RETURN";
+    case STRUCT:
+        return "STRUCT";
+    case UNION:
+        return "UNION";
+    case EQ:
+        return "EQ";
+    case NE:
+        return "NE";
+    case LE:
+        return "LE";
+    case GE:
+        return "GE";
+    case AND:
+        return "AND";
+    case OR:
+        return "OR";
+    default:
+        return "SIMBOLO";
     }
 }
 
@@ -123,6 +157,8 @@ int main(int argc, char **argv)
             flag = MODO_AST;
         else if (strcmp(argv[i], "--tabela") == 0)
             flag = MODO_TABELA;
+        else if (strcmp(argv[i], "--no-run") == 0)
+            flag = MODO_NO_RUN;
         else if (strncmp(argv[i], "--", 2) == 0 || arquivo != NULL)
         {
             imprimir_uso(argv[0]);
@@ -191,8 +227,8 @@ int main(int argc, char **argv)
         return encerrar(0);
 
     /* Fase 4: execucao */
-    interpretar(raiz_ast);
+    int codigo_programa = interpretar(raiz_ast);
     erros_fase[FASE_EXECUCAO] = erros_execucao;
 
-    return encerrar(erros_execucao > 0 ? SAIDA_EXECUCAO : 0);
+    return encerrar(erros_execucao > 0 ? SAIDA_EXECUCAO : codigo_programa);
 }
