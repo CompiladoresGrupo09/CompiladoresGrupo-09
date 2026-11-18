@@ -5,3 +5,4 @@ validos/expressao_multilinha.c
 validos/funcao_parametros_retorno.c
 validos/funcao_recursiva.c
 validos/precedencia_operadores.c
+validos/funcao_float_retorno_int.c

@@ -83,9 +83,13 @@ static void visitar_funcao(ASTNode *funcao) {
     ASTNode *bloco = funcao->num_children > 1 ? funcao->children[1] : NULL;
     int aridade = parametros == NULL ? 0 : parametros->num_children;
     TipoDado tipo_retorno_anterior = tipo_retorno_funcao;
+    TipoDado tipos_parametros[aridade > 0 ? aridade : 1];
+    for (int i = 0; i < aridade; i++) {
+        tipos_parametros[i] = (TipoDado)parametros->children[i]->intval;
+    }
 
-    if (!inserir_simbolo(funcao->strval, (TipoDado)funcao->intval,
-                         funcao->line, 1, aridade)) {
+    if (!inserir_funcao(funcao->strval, (TipoDado)funcao->intval,
+                        funcao->line, aridade, tipos_parametros)) {
         erros_semanticos++;
     }
 
@@ -167,9 +171,14 @@ static TipoDado inferir_tipo(ASTNode *no) {
                     }
                 }
             }
-            // Infere o tipo dos argumentos.
             for (int i = 0; i < no->num_children; i++) {
-                inferir_tipo(no->children[i]);
+                TipoDado tipo_argumento = inferir_tipo(no->children[i]);
+                if (simbolo != NULL && simbolo->tipos_parametros != NULL && i < simbolo->aridade &&
+                    simbolo->tipos_parametros[i] == TIPO_INT && tipo_argumento == TIPO_FLOAT) {
+                    fprintf(stderr, "Erro semantico [linha %d]: argumento %d de '%s' incompativel: conversao implicita de float para int nao permitida\n",
+                            no->line, i + 1, no->strval);
+                    erros_semanticos++;
+                }
             }
             return no->tipo;
         }
