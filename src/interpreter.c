@@ -486,6 +486,47 @@ static ASTNode *proximo_argumento_printf(ASTNode *chamada, int *indice_arg)
     return chamada->children[(*indice_arg)++];
 }
 
+static void imprimir_escape(char c)
+{
+    if (c == 'n')
+        putchar('\n');
+    else if (c == 't')
+        putchar('\t');
+    else if (c == '\\')
+        putchar('\\');
+    else if (c == '"')
+        putchar('"');
+    else if (c == '0')
+        putchar('\0');
+    else
+    {
+        putchar('\\');
+        putchar(c);
+    }
+}
+
+static void imprimir_texto(const char *texto)
+{
+    for (const char *p = texto; *p != '\0'; p++)
+    {
+        if (*p == '\\' && *(p + 1) != '\0')
+        {
+            p++;
+            imprimir_escape(*p);
+        }
+        else
+            putchar(*p);
+    }
+}
+
+static void erro_tipo_printf(ASTNode *chamada, char especificador, const char *esperado)
+{
+    fprintf(stderr, "Erro de execucao [linha %d]: %%%c do printf espera %s\n",
+            chamada->line, especificador, esperado);
+    erros_execucao++;
+    retornou = 1;
+}
+
 static void executar_printf(ASTNode *chamada)
 {
     if (chamada->num_children == 0)
@@ -501,22 +542,7 @@ static void executar_printf(ASTNode *chamada)
             p++;
             if (*p == '\0')
                 break;
-
-            if (*p == 'n')
-                putchar('\n');
-            else if (*p == 't')
-                putchar('\t');
-            else if (*p == '\\')
-                putchar('\\');
-            else if (*p == '"')
-                putchar('"');
-            else if (*p == '0')
-                putchar('\0');
-            else
-            {
-                putchar('\\');
-                putchar(*p);
-            }
+            imprimir_escape(*p);
             continue;
         }
 
@@ -533,39 +559,43 @@ static void executar_printf(ASTNode *chamada)
             break;
         }
 
-        if (*p == 'd')
-        {
-            ASTNode *argumento = proximo_argumento_printf(chamada, &indice_arg);
-            if (argumento == NULL)
-                return;
-            Valor v = interpretarNo(argumento);
-            printf("%d", valor_como_int(v));
-        }
-        else if (*p == 'f')
-        {
-            ASTNode *argumento = proximo_argumento_printf(chamada, &indice_arg);
-            if (argumento == NULL)
-                return;
-            Valor v = interpretarNo(argumento);
-            printf("%f", valor_como_float(v));
-        }
-        else if (*p == 'c')
-        {
-            ASTNode *argumento = proximo_argumento_printf(chamada, &indice_arg);
-            if (argumento == NULL)
-                return;
-            Valor v = interpretarNo(argumento);
-            putchar((char)valor_como_int(v));
-        }
-        else if (*p == '%')
+        if (*p == '%')
         {
             putchar('%');
+            continue;
         }
-        else
+
+        if (*p != 'd' && *p != 'f' && *p != 'c' && *p != 's')
         {
             putchar('%');
             putchar(*p);
+            continue;
         }
+
+        ASTNode *argumento = proximo_argumento_printf(chamada, &indice_arg);
+        if (argumento == NULL)
+            return;
+
+        int e_texto = argumento->type == NODE_STRING_LIT;
+        if (*p == 's' && !e_texto)
+        {
+            erro_tipo_printf(chamada, *p, "um texto entre aspas");
+            return;
+        }
+        if (*p != 's' && e_texto)
+        {
+            erro_tipo_printf(chamada, *p, "um numero ou caractere, nao um texto");
+            return;
+        }
+
+        if (*p == 's')
+            imprimir_texto(argumento->strval);
+        else if (*p == 'd')
+            printf("%d", valor_como_int(interpretarNo(argumento)));
+        else if (*p == 'f')
+            printf("%f", valor_como_float(interpretarNo(argumento)));
+        else
+            putchar((char)valor_como_int(interpretarNo(argumento)));
     }
 }
 
