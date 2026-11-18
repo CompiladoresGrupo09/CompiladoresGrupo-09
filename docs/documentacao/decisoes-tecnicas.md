@@ -152,6 +152,19 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Justificativa:** a tabela de símbolos guarda informação de análise (tipo, linha, aridade) e é liberada ao final da semântica (`analisar_semantica`). O ambiente guarda informação de execução (valores), que muda a cada comando e precisa de escopos novos toda vez que um bloco é executado, por exemplo a cada volta de um laço e, na S5-01, a cada chamada de função. Por isso a previsão anterior de migrar os valores para a `TabelaSimbolos` foi revista: separar as duas estruturas mantém uma responsabilidade por fase, e a lógica de pilha segue o mesmo padrão da `tabela.c`.
 * **Implementação:** issue #72; verificado com os critérios de aceitação da issue e com `make test`.
 
+## Chamada de função, parâmetros e retorno (S5-01)
+
+* **Decisão:** cada chamada abre um **frame**, um escopo novo no ambiente de execução, e guarda em `base_frame` o índice onde ele começa. `ler_variavel()` procura do escopo mais interno até `base_frame` e, depois, só no escopo global (índice 0). Assim, a função enxerga os próprios escopos e as variáveis globais, mas não as variáveis locais de quem a chamou.
+* **Regras adotadas:**
+  * as funções são localizadas pelo nome na raiz da AST, guardada em `programa` no início de `interpretar()`;
+  * os argumentos são avaliados no escopo de quem chama e só depois o frame novo é aberto; cada parâmetro recebe o valor convertido para o tipo declarado (passagem por valor);
+  * o valor do `return` é convertido para o tipo de retorno da função; uma função `void` devolve um valor do tipo `TIPO_VOID`;
+  * as declarações globais são executadas no escopo 0 antes de o `main` ser chamado; o `main` é executado pelo mesmo mecanismo de qualquer função.
+* **Propagação do `return` por sinalizador:** a execução usa dois sinalizadores, `retornou` (um `return` foi executado) e `abortou` (houve erro que interrompe o programa). Os dois fazem blocos e laços pararem; ao fim de uma chamada, `retornou` volta a 0, porque o `return` encerra só aquela função, mas `abortou` continua valendo até o fim do programa. Até a Sprint 4 havia um único sinalizador para as duas situações, o que faria um erro dentro de uma função ser "consumido" pela chamada e o programa continuar.
+* **Justificativa:** a alternativa seria `interpretarNo()` devolver um valor de controle junto com o resultado, o que mudaria a assinatura de todas as funções de execução. O sinalizador aproveita a estrutura que a S4-04 já tinha criado para o `return` do `main`. A recursão funciona sem código extra, porque cada chamada tem o próprio frame; o limite de profundidade fica para a S5-02.
+* **Testes:** os casos de `tests/validos/` que dependiam de funções saíram de `pendentes.txt`. Três `.esperado` foram corrigidos: `escopo_shadowing` e `comando_for` não batiam com o `printf` do próprio programa, e `funcao_parametros_retorno` usava `%d` com uma variável `float`, comportamento indefinido em C, e passou a usar `%f`.
+* **Implementação:** issue #80.
+
 
 ## Pipeline com parada na primeira fase que falhar (S3-01)
 
