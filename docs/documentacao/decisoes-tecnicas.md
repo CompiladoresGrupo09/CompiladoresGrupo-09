@@ -8,6 +8,10 @@ Recomendação oficial da disciplina. Cronograma organizado em Sprints (Planning
 ## AST construída diretamente no parser
 Diferente de um compilador (que gera código intermediário separado), o interpretador constrói a AST diretamente nas ações semânticas do `parser.y` (Bison). É essa AST que alimenta a análise semântica e a interpretação.
 
+## Uso de `&` restrito ao `scanf`
+**Decisão:** o operador `&` só é aceito como argumento de `scanf`; usos em argumentos de outras funções são erro semântico.
+**Justificativa:** a gramática representa `& ID` apenas na regra `argumento: '&' ID`, para permitir leitura por referência no `scanf`. Como ponteiros estão fora do escopo da linguagem, essa sintaxe não deve ser interpretada como passagem geral de endereço para funções.
+
 ## Interpretação por percurso recursivo da AST
 Em vez de gerar código final, a execução acontece percorrendo a AST recursivamente (função `interpretarNo()`, definida na issue #31). É o que diferencia o módulo de execução de um compilador tradicional.
 
@@ -123,6 +127,19 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 - Compatibilidade Multiplataforma (Windows/Linux): Inclusão de rotinas automáticas de normalização de finais de linha (tr -d '\r') no script de execução para evitar conflitos entre o ambiente de desenvolvimento local em Windows da equipe e o servidor de CI baseado em Linux.
 
 * **Consequências:** A suíte de testes transformou-se numa verdadeira rede de segurança para o núcleo do interpretador, fornecendo feedback transparente sobre o progresso das Sprints 4 e 5.
+
+## Correção de robustez e escapes no printf (S4-02)
+
+* **Decisão:** Correção de três defeitos críticos na função `executar_printf` em `src/interpreter.c`:
+  1. **Validação rigorosa de argumentos:** Validação do índice de argumentos (`indice_arg < num_children`) para impedir leituras fora do vetor da AST, emitindo o erro padronizado `Erro de execucao [linha N]: printf com menos argumentos do que especificadores` com código de saída `5`.
+
+  2. **Tratamento de `%` final:** Ajuste no avanço do ponteiro de formato para suportar strings terminadas com `%` literal (como `printf("100%");`) sem aceder a memória inválida após o terminador nulo (`\0`).
+  
+  3. **Decodificação de sequências de escape:** Implementação de rotina para traduzir sequências literais como `\n`, `\t`, `\\`, `\"` e `\0` para os carateres de controlo reais no momento da impressão.
+
+* **Justificativa:** Garantir a estabilidade do interpretador em tempo de execução e alinhar o comportamento do `printf` às especificações do núcleo da linguagem.
+
+* **Testes associados:** Criação de testes dedicados em `tests/invalidos/printf_argumentos_insuficientes.c` (validando o erro de execução) e em `tests/validos/printf_escape.c` e `printf_porcentagem_final.c` (validando a saída correta com `make test`).
 
 ## Ambiente de execução do interpretador (S4-03)
 

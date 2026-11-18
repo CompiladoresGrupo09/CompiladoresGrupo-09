@@ -100,6 +100,10 @@ static const char *nome_token(int token)
         return "FOR";
     case RETURN:
         return "RETURN";
+    case STRUCT:
+        return "STRUCT";
+    case UNION:
+        return "UNION";
     case EQ:
         return "EQ";
     case NE:
