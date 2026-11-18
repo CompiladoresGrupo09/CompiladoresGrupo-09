@@ -7,3 +7,4 @@ validos/funcao_recursiva.c
 validos/precedencia_operadores.c
 validos/organizador_compras.c
 validos/printf_scanf_formatos.c
+validos/funcao_float_retorno_int.c
