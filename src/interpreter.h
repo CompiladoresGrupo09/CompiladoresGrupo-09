@@ -3,9 +3,11 @@
 
 #include "ast.h"
 
-typedef struct Valor {
+typedef struct Valor
+{
     TipoDado tipo;
-    union {
+    union
+    {
         int i;
         float f;
         char c;
@@ -15,6 +17,6 @@ typedef struct Valor {
 extern int erros_execucao;
 
 Valor interpretarNo(ASTNode *no);
-void interpretar(ASTNode *raiz);
+int interpretar(ASTNode *raiz);
 
 #endif
