@@ -32,7 +32,7 @@ int main() {
     letra = proxima_letra('a');
     nada(r);
     printf("Soma: %d\n", r); // Adicionando saída no terminal para teste de Soma ->teste silencioso
-    printf("Média: %d\n", m); // Adicionando saída no terminal para teste de Média ->teste silencioso
+    printf("Média: %f\n", m); // Adicionando saída no terminal para teste de Média ->teste silencioso
     printf("Próxima Letra: %c\n", letra); // Adicioanando saída no terminal para teste de Próxima Letra -> teste silencioso
     return 0;
 }
