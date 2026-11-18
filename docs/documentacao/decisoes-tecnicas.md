@@ -8,6 +8,10 @@ Recomendação oficial da disciplina. Cronograma organizado em Sprints (Planning
 ## AST construída diretamente no parser
 Diferente de um compilador (que gera código intermediário separado), o interpretador constrói a AST diretamente nas ações semânticas do `parser.y` (Bison). É essa AST que alimenta a análise semântica e a interpretação.
 
+## Uso de `&` restrito ao `scanf`
+**Decisão:** o operador `&` só é aceito como argumento de `scanf`; usos em argumentos de outras funções são erro semântico.
+**Justificativa:** a gramática representa `& ID` apenas na regra `argumento: '&' ID`, para permitir leitura por referência no `scanf`. Como ponteiros estão fora do escopo da linguagem, essa sintaxe não deve ser interpretada como passagem geral de endereço para funções.
+
 ## Interpretação por percurso recursivo da AST
 Em vez de gerar código final, a execução acontece percorrendo a AST recursivamente (função `interpretarNo()`, definida na issue #31). É o que diferencia o módulo de execução de um compilador tradicional.
 
@@ -108,16 +112,33 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Verificação automática:** o workflow `build.yml` (S2-10) roda `make` e `make test` em todo PR. O motivo é transformar a regra "`main` sempre compilável" em verificação automática, em vez de depender só da revisão manual.
 * **Fechamento de issues:** o `Closes #N` só fecha a issue quando o PR é mesclado na branch padrão (`main`). Como os PRs vão para a `Dev`, a issue é fechada manualmente depois do merge, com um comentário citando o PR.
 
-## Armazenamento de Variáveis no Interpretador
+## Testes com saida esperada e entrada redirecionada para todos os casos validos (S4-01)
 
-**Decisão:**
-o interpretador de expressões usa uma lista própria e linear (`Variavel *variaveis` em `interpreter.c`), separada da `TabelaSimbolos` com escopos, que será decidido futuramente como iremos prosseguir.
+* **Decisão:** Arquitetura e Validação Rigorosa da Suíte de Testes (Sprint 4)
 
-**Justificativa**
-o escopo é só avaliação de expressões e literais sobre um único `main()`, sem blocos, funções ou recursão. Reaproveitar `tabela.c` teria exigido decidir o mapeamento símbolo→valor sem os comandos (`if`/`while`/chamadas) que ainda não existem.
+* **Contexto:** A revisão inicial da suíte de testes (run_tests.sh) revelou que o sistema de validação avaliava apenas o código de final, permitindo que blocos essenciais de execução, sendo elses: atribuições, condicionais (if/else) e laços de repetição pudessem ser ignorados pelo interpretador sem gerar falhas.
 
-**Limitação conhecida:**
-essa lista não tem noção de escopo. A Sprint 4 (blocos, funções) vai exigir migrar o armazenamento de valores para cima da `TabelaSimbolos` existente, para não duplicar a lógica de entrar/sair de escopo.
+- Validação de Saída: ".esperado" escritos manualmente com base no comportamento legítimo da linguagem C para todos os casos válidos.
+
+- Redirecionamento de Entrada (.entrada): ".entrada" para simular fluxos interativos de leitura via scanf, substituindo o comportamento anterior que fixava a entrada em /dev/null.
+
+- Isolamento de Pendências: Utilização de um arquivo "tests/pendentes.txt" para isolar temporariamente os casos dependentes de construções complexas ainda em desenvolvimento, mantendo a pipeline de CI transparente.
+
+- Compatibilidade Multiplataforma (Windows/Linux): Inclusão de rotinas automáticas de normalização de finais de linha (tr -d '\r') no script de execução para evitar conflitos entre o ambiente de desenvolvimento local em Windows da equipe e o servidor de CI baseado em Linux.
+
+* **Consequências:** A suíte de testes transformou-se numa verdadeira rede de segurança para o núcleo do interpretador, fornecendo feedback transparente sobre o progresso das Sprints 4 e 5.
+
+## Ambiente de execução do interpretador (S4-03)
+
+* **Decisão:** o interpretador tem um **ambiente de execução próprio**, separado da `TabelaSimbolos`: uma pilha de escopos (`EscopoExec`) em `interpreter.c`, em que cada variável guarda nome e valor (o `Valor` já carrega o tipo). Substitui a lista linear `Variavel *variaveis` usada até a Sprint 3.
+* **Regras adotadas:**
+  * `interpretar()` abre o escopo global; cada `NODE_BLOCK` abre um escopo ao entrar e o fecha ao sair, liberando as variáveis dele;
+  * `definir_variavel()` cria sempre no escopo atual; `ler_variavel()` e `atribuir_variavel()` procuram do escopo mais interno para fora (*shadowing*, como no semântico);
+  * o `=` é executado como expressão: guarda o valor e devolve o valor guardado, o que permite `a = b = 3`;
+  * o valor é sempre convertido para o tipo declarado da variável, na declaração e na atribuição (`float x = 5;` guarda `5.0`).
+* **Justificativa:** a tabela de símbolos guarda informação de análise (tipo, linha, aridade) e é liberada ao final da semântica (`analisar_semantica`). O ambiente guarda informação de execução (valores), que muda a cada comando e precisa de escopos novos toda vez que um bloco é executado, por exemplo a cada volta de um laço e, na S5-01, a cada chamada de função. Por isso a previsão anterior de migrar os valores para a `TabelaSimbolos` foi revista: separar as duas estruturas mantém uma responsabilidade por fase, e a lógica de pilha segue o mesmo padrão da `tabela.c`.
+* **Implementação:** issue #72; verificado com os critérios de aceitação da issue e com `make test`.
+
 
 ## Pipeline com parada na primeira fase que falhar (S3-01)
 
@@ -140,3 +161,14 @@ essa lista não tem noção de escopo. A Sprint 4 (blocos, funções) vai exigir
 * **Decisão:** toda mensagem de erro segue o formato `Erro <fase> [linha N]: <descricao>` — por exemplo, `Erro semantico [linha 4]: ...` — e é escrita **sem acentos**.
 * **Justificativa:** o formato único deixa claro em que fase e em que linha o problema está, e permite que os testes comparem as mensagens nos arquivos `.esperado`. Sem acentos, a saída aparece igual em qualquer terminal, independentemente da codificação configurada.
 * **Implementação:** mensagens em `scanner.l`, `parser.y`, `semantic.c`, `tabela.c` e `interpreter.c`; a última mensagem com acento foi corrigida no PR #57.
+
+## Código de saída vindo do `return` do `main` (S4-08)
+
+* **Decisão:** quando nenhuma fase tem erro, o processo sai com o valor do `return` do `main` interpretado, como um programa C compilado. A flag `--no-run` roda todas as análises e não executa.
+* **Regras adotadas:**
+  * o interpretador guarda o valor do `return` (convertido para `int`) e `interpretar()` o devolve ao `main.c`;
+  * `return;` sem valor, ou um `main` que termina sem `return`, resulta em 0;
+  * havendo erro em qualquer fase, vale o código da fase (2 sintático, 3 léxico, 4 semântico, 5 execução), e não o `return`;
+  * `--no-run` usa o mesmo desvio do `--ast` e do `--tabela`: qualquer modo diferente do completo encerra antes da execução.
+* **Limitação conhecida:** se o `main` retornar 1, 2, 3, 4 ou 5, o código de saída é igual ao de uma categoria de erro. Para diferenciar, basta olhar o relatório de erros no fim da saída, que mostra 0 erro em todas as fases. É a mesma limitação de qualquer interpretador que repassa o código de saída do programa.
+* **Implementação:** issue #77.

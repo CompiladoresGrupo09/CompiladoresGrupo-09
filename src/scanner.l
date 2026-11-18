@@ -99,6 +99,8 @@ LIT_STRING  \"(\\.|[^"\\])*\"
 ")"                              { return ')'; }
 "{"                              { return '{'; }
 "}"                              { return '}'; }
+"["                              { return '['; }
+"]"                              { return ']'; }
 ";"                              { return ';'; }
 ","                              { return ','; }
 "&"                              { return '&'; }
