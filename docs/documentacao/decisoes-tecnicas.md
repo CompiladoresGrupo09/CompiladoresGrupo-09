@@ -8,6 +8,10 @@ Recomendação oficial da disciplina. Cronograma organizado em Sprints (Planning
 ## AST construída diretamente no parser
 Diferente de um compilador (que gera código intermediário separado), o interpretador constrói a AST diretamente nas ações semânticas do `parser.y` (Bison). É essa AST que alimenta a análise semântica e a interpretação.
 
+## Uso de `&` restrito ao `scanf`
+**Decisão:** o operador `&` só é aceito como argumento de `scanf`; usos em argumentos de outras funções são erro semântico.
+**Justificativa:** a gramática representa `& ID` apenas na regra `argumento: '&' ID`, para permitir leitura por referência no `scanf`. Como ponteiros estão fora do escopo da linguagem, essa sintaxe não deve ser interpretada como passagem geral de endereço para funções.
+
 ## Interpretação por percurso recursivo da AST
 Em vez de gerar código final, a execução acontece percorrendo a AST recursivamente (função `interpretarNo()`, definida na issue #31). É o que diferencia o módulo de execução de um compilador tradicional.
 
