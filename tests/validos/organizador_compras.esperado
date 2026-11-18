@@ -1,0 +1,10 @@
+Digite o orcamento disponivel: Digite o preco de cada item (digite -1 para finalizar):
+Preco do item: Preco do item: Preco do item: Preco do item: Itens registrados: 3
+Total gasto: 120.000000
+Atencao: voce ultrapassou o orcamento!
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)

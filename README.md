@@ -47,7 +47,47 @@ Código de saída do processo:
 
 
 ## Exemplos de entrada e saída
-Ver `docs/documentacao/definicao-da-linguagem.md` para o exemplo completo do organizador de compras (entrada `.c` e saída esperada). Mais exemplos serão adicionados conforme o núcleo for funcionando.
+
+### Organizador de compras (estudo de caso)
+Programa completo em `tests/validos/organizador_compras.c`. Rodando no terminal e digitando orçamento 100 e os itens 30, 40 e 50, encerrando com -1:
+
+```
+$ ./interpretador ../tests/validos/organizador_compras.c
+Digite o orcamento disponivel: 100
+Digite o preco de cada item (digite -1 para finalizar):
+Preco do item: 30
+Preco do item: 40
+Preco do item: 50
+Preco do item: -1
+Itens registrados: 3
+Total gasto: 120.000000
+Atencao: voce ultrapassou o orcamento!
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
+```
+
+### Total por quantidade
+Programa mais simples, em `tests/validos/total_por_quantidade.c`: lê a quantidade e o preço unitário, mostra o total e diz se a compra é no atacado (10 itens ou mais) ou no varejo.
+
+```
+$ ./interpretador ../tests/validos/total_por_quantidade.c
+Quantidade: 12
+Preco unitario: 2.5
+Total: 30.000000
+Compra no atacado
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
+```
+
+Mais detalhes do estudo de caso em `docs/documentacao/definicao-da-linguagem.md`.
 
 ## Arquitetura
 Fonte → léxico (Flex) → sintático (Bison, já construindo a AST) → semântico (tabela de símbolos, checagem de tipos/escopo) → interpretação recursiva da AST → resultado.
