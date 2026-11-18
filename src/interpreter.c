@@ -24,6 +24,7 @@ static EscopoExec *escopos = NULL;
 static int numero_escopos = 0;
 static int capacidade_escopos = 0;
 static int retornou = 0;
+static int valor_retorno = 0;
 static void garantir_capacidade_escopos_exec(void)
 {
     if (numero_escopos < capacidade_escopos)
@@ -523,7 +524,7 @@ static void executar_comando(ASTNode *comando)
 
     case NODE_RETURN:
         if (comando->children[0] != NULL)
-            interpretarNo(comando->children[0]);
+            valor_retorno = valor_como_int(interpretarNo(comando->children[0]));
         retornou = 1;
         break;
 
@@ -535,13 +536,14 @@ static void executar_comando(ASTNode *comando)
         break;
     }
 }
-void interpretar(ASTNode *raiz)
+int interpretar(ASTNode *raiz)
 {
     if (raiz == NULL)
-        return;
+        return 0;
 
     entrar_escopo_exec();
     retornou = 0;
+    valor_retorno = 0;
 
     for (int i = 0; i < raiz->num_children; i++)
     {
@@ -560,4 +562,5 @@ void interpretar(ASTNode *raiz)
     free(escopos);
     escopos = NULL;
     capacidade_escopos = 0;
+    return valor_retorno;
 }
