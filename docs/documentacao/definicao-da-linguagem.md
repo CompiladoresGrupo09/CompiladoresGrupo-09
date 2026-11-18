@@ -12,6 +12,11 @@ Mesmo com cerca de um mês de prazo, C completo (ponteiros, structs, pré-proces
 - Funções com parâmetros, retorno e chamadas (inclusive recursivas)
 - Entrada/saída mínima: `printf` (formatos básicos `%d %f %c %s`) e `scanf`
 
+O `for` aceita expressões nas três posições (que podem ficar vazias), mas não
+declaração de variável no inicializador. Essa escolha mantém o subconjunto no
+estilo C89: declare a variável antes do laço. `for (int i = 0; ...)` é recusado
+com uma mensagem explícita.
+
 ## Diferenciais — só se o núcleo fechar adiantado, nesta ordem de prioridade
 
 1. Mensagens de erro com linha/coluna (barato: basta propagar `yylineno` do Flex pelas fases; alto retorno em robustez percebida)
