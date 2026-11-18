@@ -198,3 +198,15 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
   * `--no-run` usa o mesmo desvio do `--ast` e do `--tabela`: qualquer modo diferente do completo encerra antes da execução.
 * **Limitação conhecida:** se o `main` retornar 1, 2, 3, 4 ou 5, o código de saída é igual ao de uma categoria de erro. Para diferenciar, basta olhar o relatório de erros no fim da saída, que mostra 0 erro em todas as fases. É a mesma limitação de qualquer interpretador que repassa o código de saída do programa.
 * **Implementação:** issue #77.
+
+## `printf`: formatos, conversões e erros (S5-03)
+
+* **Decisão:** o `printf` aceita `%d`, `%f`, `%c`, `%s` e `%%`. Qualquer outro especificador (por exemplo `%x`) é impresso literalmente.
+* **Regras adotadas:**
+  * `%f` usa 6 casas decimais, igual ao `printf` do C (`3.5` imprime `3.500000`);
+  * as escapes `\n`, `\t`, `\\`, `\"` e `\0` são decodificadas na hora da impressão, tanto no formato quanto no texto passado para `%s`;
+  * entre números, o valor é convertido para o especificador: `%d` com `float` trunca (`2.9` imprime `2`), `%f` com `int` converte (`2` imprime `2.000000`) e `%c` imprime o caractere daquele código;
+  * `%s` só aceita texto entre aspas, porque a linguagem não tem variável do tipo texto;
+  * argumentos sobrando são ignorados, como no C.
+* **Erros de execução (código 5, com o relatório):** argumento faltando para um especificador, `%s` com número e `%d`/`%f`/`%c` com texto. Antes, o argumento faltando encerrava o programa com `exit(5)` sem mostrar o relatório; agora segue o mesmo caminho dos outros erros de execução.
+* **Implementação:** issue #89.
