@@ -177,6 +177,96 @@ static Valor executar_atribuicao(ASTNode *no)
     return *guardado;
 }
 
+static int executar_scanf(ASTNode *chamada, int usa_retorno)
+{
+    if (chamada->num_children == 0)
+        return 0;
+
+    const char *formato = chamada->children[0]->strval;
+    int indice_arg = 1;
+    int lidos = 0;
+
+    for (const char *p = formato; *p != '\0'; p++)
+    {
+        if (*p == ' ' || *p == '\\')
+        {
+            if (*p == '\\' && *(p + 1) != '\0')
+                p++;
+            scanf(" ");
+            continue;
+        }
+
+        if (*p != '%')
+            continue;
+
+        p++;
+        if (*p != 'd' && *p != 'f' && *p != 'c')
+        {
+            if (*p == '\0')
+                break;
+            continue;
+        }
+
+        ASTNode *argumento = indice_arg < chamada->num_children ? chamada->children[indice_arg++] : NULL;
+        if (argumento == NULL || argumento->type != NODE_ADDR)
+        {
+            fprintf(stderr, "Erro de execucao [linha %d]: scanf espera um argumento com '&' para cada especificador\n",
+                    chamada->line);
+            erros_execucao++;
+            retornou = 1;
+            return lidos;
+        }
+
+        Valor *destino = ler_variavel(argumento->strval);
+        if (destino == NULL)
+        {
+            fprintf(stderr, "Erro de execucao [linha %d]: variavel '%s' nao encontrada\n",
+                    chamada->line, argumento->strval);
+            erros_execucao++;
+            retornou = 1;
+            return lidos;
+        }
+
+        Valor lido = {0};
+        int resultado;
+        if (*p == 'd')
+        {
+            lido.tipo = TIPO_INT;
+            resultado = scanf("%d", &lido.como.i);
+        }
+        else if (*p == 'f')
+        {
+            lido.tipo = TIPO_FLOAT;
+            resultado = scanf("%f", &lido.como.f);
+        }
+        else
+        {
+            lido.tipo = TIPO_CHAR;
+            resultado = scanf("%c", &lido.como.c);
+        }
+
+        if (resultado != 1)
+        {
+            if (usa_retorno)
+                return (resultado == EOF && lidos == 0) ? EOF : lidos;
+
+            if (resultado == EOF)
+                fprintf(stderr, "Erro de execucao [linha %d]: fim da entrada no scanf\n", chamada->line);
+            else
+                fprintf(stderr, "Erro de execucao [linha %d]: entrada invalida para %%%c no scanf\n",
+                        chamada->line, *p);
+            erros_execucao++;
+            retornou = 1;
+            return lidos;
+        }
+
+        *destino = converter_para_tipo(lido, destino->tipo);
+        lidos++;
+    }
+
+    return lidos;
+}
+
 Valor interpretarNo(ASTNode *no)
 {
     Valor resultado = {0};
@@ -196,6 +286,19 @@ Valor interpretarNo(ASTNode *no)
     case NODE_CHAR_LIT:
         resultado.tipo = TIPO_CHAR;
         resultado.como.c = no->charval;
+        break;
+
+    case NODE_CALL:
+        if (strcmp(no->strval, "scanf") != 0)
+        {
+            fprintf(stderr, "Erro interno [linha %d]: no %s nao suportado na execucao\n",
+                    no->line, nome_tipo_no(no->type));
+            erros_execucao++;
+            retornou = 1;
+            break;
+        }
+        resultado.tipo = TIPO_INT;
+        resultado.como.i = executar_scanf(no, 1);
         break;
 
     case NODE_ID:
@@ -383,13 +486,19 @@ static void executar_printf(ASTNode *chamada)
         if (*p == '\\')
         {
             p++;
-            if (*p == '\0') break;
+            if (*p == '\0')
+                break;
 
-            if (*p == 'n') putchar('\n');
-            else if (*p == 't') putchar('\t');
-            else if (*p == '\\') putchar('\\');
-            else if (*p == '"') putchar('"');
-            else if (*p == '0') putchar('\0');
+            if (*p == 'n')
+                putchar('\n');
+            else if (*p == 't')
+                putchar('\t');
+            else if (*p == '\\')
+                putchar('\\');
+            else if (*p == '"')
+                putchar('"');
+            else if (*p == '0')
+                putchar('\0');
             else
             {
                 putchar('\\');
@@ -513,6 +622,8 @@ static void executar_comando(ASTNode *comando)
 
         if (expr->type == NODE_CALL && strcmp(expr->strval, "printf") == 0)
             executar_printf(expr);
+        else if (expr->type == NODE_CALL && strcmp(expr->strval, "scanf") == 0)
+            executar_scanf(expr, 0);
         else
             interpretarNo(expr);
         break;
