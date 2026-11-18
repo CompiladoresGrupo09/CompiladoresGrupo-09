@@ -473,6 +473,19 @@ Valor interpretarNo(ASTNode *no)
     return resultado;
 }
 
+static ASTNode *proximo_argumento_printf(ASTNode *chamada, int *indice_arg)
+{
+    if (*indice_arg >= chamada->num_children)
+    {
+        fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n",
+                chamada->line);
+        erros_execucao++;
+        retornou = 1;
+        return NULL;
+    }
+    return chamada->children[(*indice_arg)++];
+}
+
 static void executar_printf(ASTNode *chamada)
 {
     if (chamada->num_children == 0)
@@ -522,32 +535,26 @@ static void executar_printf(ASTNode *chamada)
 
         if (*p == 'd')
         {
-            if (indice_arg >= chamada->num_children)
-            {
-                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->line);
-                exit(5);
-            }
-            Valor v = interpretarNo(chamada->children[indice_arg++]);
+            ASTNode *argumento = proximo_argumento_printf(chamada, &indice_arg);
+            if (argumento == NULL)
+                return;
+            Valor v = interpretarNo(argumento);
             printf("%d", valor_como_int(v));
         }
         else if (*p == 'f')
         {
-            if (indice_arg >= chamada->num_children)
-            {
-                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->line);
-                exit(5);
-            }
-            Valor v = interpretarNo(chamada->children[indice_arg++]);
+            ASTNode *argumento = proximo_argumento_printf(chamada, &indice_arg);
+            if (argumento == NULL)
+                return;
+            Valor v = interpretarNo(argumento);
             printf("%f", valor_como_float(v));
         }
         else if (*p == 'c')
         {
-            if (indice_arg >= chamada->num_children)
-            {
-                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->line);
-                exit(5);
-            }
-            Valor v = interpretarNo(chamada->children[indice_arg++]);
+            ASTNode *argumento = proximo_argumento_printf(chamada, &indice_arg);
+            if (argumento == NULL)
+                return;
+            Valor v = interpretarNo(argumento);
             putchar((char)valor_como_int(v));
         }
         else if (*p == '%')
