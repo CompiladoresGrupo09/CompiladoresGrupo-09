@@ -165,6 +165,14 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Testes:** os casos de `tests/validos/` que dependiam de funções saíram de `pendentes.txt`. Três `.esperado` foram corrigidos: `escopo_shadowing` e `comando_for` não batiam com o `printf` do próprio programa, e `funcao_parametros_retorno` usava `%d` com uma variável `float`, comportamento indefinido em C, e passou a usar `%f`.
 * **Implementação:** issue #80.
 
+## Limite de profundidade para recursao (S5-02)
+
+* **Decisão:** o ambiente de execução mantém `profundidade_chamadas`, incrementada ao entrar em cada chamada e decrementada ao sair dela, inclusive nos caminhos que terminam por erro ou `return`.
+* **Limite padrão:** 1000 chamadas. Pode ser alterado pela variável de ambiente `INTERPRETADOR_LIMITE_RECURSAO` ou pela opção `--limite-recursao N`.
+* **Erro:** ao exceder o limite, a execução para com código 5 e informa a linha, o limite configurado e o nome da função envolvida, evitando um estouro de pilha do processo.
+* **Testes:** `fatorial.c`, `fibonacci.c` e `recursao_infinita.c` cobrem recursão com retorno, chamadas ramificadas e ausência de condição de parada.
+* **Implementação:** issue #88.
+
 
 ## Pipeline com parada na primeira fase que falhar (S3-01)
 
