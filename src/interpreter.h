@@ -18,5 +18,6 @@ extern int erros_execucao;
 
 Valor interpretarNo(ASTNode *no);
 int interpretar(ASTNode *raiz);
+void configurar_limite_recursao(int limite);
 
 #endif

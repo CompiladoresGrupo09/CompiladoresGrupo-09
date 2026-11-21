@@ -27,6 +27,9 @@ static int capacidade_escopos = 0;
 static int retornou = 0;
 static int abortou = 0;
 static Valor valor_retornado;
+static int profundidade_chamadas = 0;
+static int limite_recursao = 1000;
+static int limite_recursao_configurado = 0;
 
 /* Raiz da AST, para localizar as funcoes pelo nome na hora da chamada */
 static ASTNode *programa = NULL;
@@ -36,6 +39,54 @@ static int base_frame = 0;
 
 static void executar_comando(ASTNode *comando);
 static Valor chamar_funcao(ASTNode *chamada);
+
+static int obter_limite_recursao(void)
+{
+    if (limite_recursao_configurado)
+        return limite_recursao;
+
+    const char *valor = getenv("INTERPRETADOR_LIMITE_RECURSAO");
+    if (valor != NULL)
+    {
+        char *fim = NULL;
+        long configurado = strtol(valor, &fim, 10);
+        if (fim != valor && *fim == '\0' && configurado > 0)
+            return (int)configurado;
+    }
+    return limite_recursao;
+}
+
+void configurar_limite_recursao(int limite)
+{
+    if (limite > 0)
+    {
+        limite_recursao = limite;
+        limite_recursao_configurado = 1;
+    }
+}
+
+static int entrar_chamada(const char *nome, int linha)
+{
+    int limite = obter_limite_recursao();
+    if (profundidade_chamadas >= limite)
+    {
+        fprintf(stderr,
+                "Erro de execucao [linha %d]: limite de profundidade de %d chamadas excedido na funcao '%s'\n",
+                linha, limite, nome);
+        erros_execucao++;
+        abortou = 1;
+        return 0;
+    }
+
+    profundidade_chamadas++;
+    return 1;
+}
+
+static void sair_chamada(void)
+{
+    if (profundidade_chamadas > 0)
+        profundidade_chamadas--;
+}
 
 static int execucao_interrompida(void)
 {
@@ -825,6 +876,9 @@ static Valor chamar_funcao(ASTNode *chamada)
         return resultado;
     }
 
+    if (!entrar_chamada(chamada->strval, chamada->line))
+        return resultado;
+
     /* Os argumentos sao avaliados no escopo de quem chama, antes de abrir o frame novo */
     Valor *argumentos = NULL;
     if (chamada->num_children > 0)
@@ -838,12 +892,17 @@ static Valor chamar_funcao(ASTNode *chamada)
     }
 
     for (int i = 0; i < chamada->num_children; i++)
+    {
         argumentos[i] = interpretarNo(chamada->children[i]);
+        if (abortou)
+            break;
+    }
 
     if (!abortou)
         resultado = executar_funcao(funcao, argumentos, chamada->num_children);
 
     free(argumentos);
+    sair_chamada();
     return resultado;
 }
 
@@ -856,6 +915,7 @@ int interpretar(ASTNode *raiz)
     retornou = 0;
     abortou = 0;
     base_frame = 0;
+    profundidade_chamadas = 0;
 
     /* Escopo 0: variaveis globais, definidas antes de chamar o main */
     entrar_escopo_exec();
@@ -869,7 +929,13 @@ int interpretar(ASTNode *raiz)
     int codigo = 0;
     ASTNode *funcao_main = buscar_funcao("main");
     if (funcao_main != NULL && !abortou)
-        codigo = valor_como_int(executar_funcao(funcao_main, NULL, 0));
+    {
+        if (entrar_chamada("main", funcao_main->line))
+        {
+            codigo = valor_como_int(executar_funcao(funcao_main, NULL, 0));
+            sair_chamada();
+        }
+    }
 
     while (numero_escopos > 0)
         sair_escopo_exec();
