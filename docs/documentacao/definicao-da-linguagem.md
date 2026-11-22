@@ -108,4 +108,4 @@ Execucao   0 erro(s)
 ```
 Os números aparecem na saída porque foram digitados no terminal. Com a entrada vinda de um arquivo (`./interpretador organizador_compras.c < entrada.txt`), como faz a suíte de testes, eles não aparecem e cada mensagem fica colada na seguinte. Esse caso está automatizado em `tests/validos/organizador_compras.c`, com `.entrada` e `.esperado`.
 
-_(demais exemplos — casos dentro do orçamento, entrada inválida, etc. — serão adicionados conforme o núcleo for sendo implementado e testado)_
+Outros exemplos com entrada e saída reais estão no `README.md` (seção "Exemplos de entrada e saída") e em `demonstracao.md` (seção "Estudos de caso"), que reúne os programas usados por cada integrante para validar o interpretador.
