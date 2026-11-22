@@ -62,7 +62,7 @@ static void imprimir_uso(const char *programa)
 {
     fprintf(stderr, "Uso: %s <arquivo.c> [--limite-recursao N] [--tokens | --ast | --tabela | --no-run]\n", programa);
     fprintf(stderr, "  (sem flag)  pipeline completo: analises lexica, sintatica e semantica + execucao\n");
-    fprintf(stderr, "  --limite-recursao N define o limite de chamadas recursivas (padrao: 1000)\n");
+    fprintf(stderr, "  --limite-recursao N define o limite de chamadas recursivas (padrao: 1000, maximo: 1000)\n");
     fprintf(stderr, "  --tokens    apenas a analise lexica, listando os tokens\n");
     fprintf(stderr, "  --ast       analises completas e impressao da AST, sem executar\n");
     fprintf(stderr, "  --tabela    analises completas e impressao da tabela de simbolos, sem executar\n");

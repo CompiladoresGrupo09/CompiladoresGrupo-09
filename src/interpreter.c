@@ -30,6 +30,7 @@ static Valor valor_retornado;
 static int profundidade_chamadas = 0;
 static int limite_recursao = 1000;
 static int limite_recursao_configurado = 0;
+#define LIMITE_MAXIMO_RECURSAO 1000
 
 /* Raiz da AST, para localizar as funcoes pelo nome na hora da chamada */
 static ASTNode *programa = NULL;
@@ -43,7 +44,9 @@ static Valor chamar_funcao(ASTNode *chamada);
 static int obter_limite_recursao(void)
 {
     if (limite_recursao_configurado)
-        return limite_recursao;
+        return limite_recursao > LIMITE_MAXIMO_RECURSAO
+                   ? LIMITE_MAXIMO_RECURSAO
+                   : limite_recursao;
 
     const char *valor = getenv("INTERPRETADOR_LIMITE_RECURSAO");
     if (valor != NULL)
@@ -51,7 +54,11 @@ static int obter_limite_recursao(void)
         char *fim = NULL;
         long configurado = strtol(valor, &fim, 10);
         if (fim != valor && *fim == '\0' && configurado > 0)
+        {
+            if (configurado > LIMITE_MAXIMO_RECURSAO)
+                return LIMITE_MAXIMO_RECURSAO;
             return (int)configurado;
+        }
     }
     return limite_recursao;
 }
@@ -60,7 +67,9 @@ void configurar_limite_recursao(int limite)
 {
     if (limite > 0)
     {
-        limite_recursao = limite;
+        limite_recursao = limite > LIMITE_MAXIMO_RECURSAO
+                              ? LIMITE_MAXIMO_RECURSAO
+                              : limite;
         limite_recursao_configurado = 1;
     }
 }
@@ -929,13 +938,7 @@ int interpretar(ASTNode *raiz)
     int codigo = 0;
     ASTNode *funcao_main = buscar_funcao("main");
     if (funcao_main != NULL && !abortou)
-    {
-        if (entrar_chamada("main", funcao_main->line))
-        {
-            codigo = valor_como_int(executar_funcao(funcao_main, NULL, 0));
-            sair_chamada();
-        }
-    }
+        codigo = valor_como_int(executar_funcao(funcao_main, NULL, 0));
 
     while (numero_escopos > 0)
         sair_escopo_exec();
