@@ -76,6 +76,49 @@ Todos os comandos são rodados dentro de `src/`.
 make test
 ```
 
+## Estudos de caso (validação final)
+
+Cada integrante escreveu um programa que usa uma parte diferente do núcleo e validou o interpretador com ele de ponta a ponta. Os cenários estão na suíte, com `.entrada` e `.esperado`.
+
+### Controle de temperatura (S7-11)
+
+Programa em `tests/validos/estudo_temperatura.c`. Lê a escala de saída (`C` ou `F`) com `%c`, lê temperaturas em Celsius até a sentinela `-1`, converte cada uma numa função `float converter(float celsius, char escala)` e mostra a quantidade de leituras, a maior, a menor e a média. No fim, um bloco interno declara outra variável `leituras`, que esconde a de fora (*shadowing*).
+
+Recursos do núcleo que ele valida: `char` e `%c`, função com parâmetro `char` e retorno `float`, `while` com sentinela, `if`/`else` aninhado, `||`, blocos e escopo, `scanf` com `%c` e `%f`.
+
+Rodando no terminal e digitando `F`, `20`, `25`, `30` e `-1`:
+
+```
+$ ./interpretador ../tests/validos/estudo_temperatura.c
+Escala de saida (C ou F): F
+Digite as temperaturas em Celsius (-1 para terminar):
+20
+25
+30
+-1
+Escala: F
+Leituras: 3
+Maior: 86.000000
+Menor: 68.000000
+Media: 77.000000
+Leituras dentro do bloco: 0
+Leituras fora do bloco: 3
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
+```
+
+| Cenário | Arquivo | Resultado |
+|---|---|---|
+| Saída em Celsius (18.5, 22, 25.5) | `validos/estudo_temperatura.c` | maior 25.5, menor 18.5, média 22 |
+| Saída em Fahrenheit (20, 25, 30 °C) | `validos/estudo_temperatura_fahrenheit.c` | 68, 77 e 86 °F, média 77 |
+| Texto no lugar da temperatura | `invalidos/estudo_temperatura_entrada_invalida.c` | `Erro de execucao [linha 41]: entrada invalida para %f no scanf`, código 5 |
+
+Como o `run_tests.sh` associa cada `.entrada` ao `.c` de mesmo nome, os cenários de Fahrenheit e de entrada inválida usam cópias do mesmo programa. Também foram conferidos à mão, fora da suíte, dois casos de borda: sem nenhuma leitura (só `-1`) o programa mostra "Nenhuma leitura registrada" em vez de dividir por zero, e com a entrada terminando antes do `-1` a execução para com "fim da entrada no scanf", sem travar.
+
 ## Limitações conhecidas (para não ser pego de surpresa)
 
 - O interpretador executa por enquanto **só declarações e expressões do bloco da `main`**. `if`, `while`, `for`, `return` e chamadas de função passam pelas análises, mas ainda não são executados. Por isso o organizador de compras imprime os textos sem entrar no laço.
