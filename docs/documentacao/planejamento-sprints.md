@@ -26,7 +26,7 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 | P2 — Sintático/AST | Brenda Beatriz implementou `parser.y` e a AST (PRs #16 e #42) | ✅ Implementado |
 | Integração (`main.c`) | Giovana Ferreira Santos (issue #18 / PR #39); pipeline com flags e relatório por Brenda Beatriz (S3-01, PR #62) | ✅ Implementado |
 | P3 — Semântico | Giovana Ferreira Santos (tabela de símbolos, issue #22, PR #46; recuperação de erros sintáticos, PR #40); Mariana Martins (tipos na AST e compatibilidade, PR #53) | ✅ Implementado (PRs #46 e #53) |
-| P4 — Interpretação | Eduardo Ribeiro Xavier (esqueleto avaliando expressões, issue #31, PR #52) | 🟡 Expressões implementadas; comandos e funções na Sprint 4 |
+| P4 — Interpretação | Eduardo Ribeiro Xavier (expressões, PR #52; ambiente de execução e controle de fluxo, PRs #81 e #83; `scanf` e `printf` com `%s`, PRs #111 e #114); Mariana Martins (correções do `printf`, PR #87); Brenda Beatriz (chamada de função e retorno, PR #115) | ✅ Implementado; limite de recursão em revisão (PR #120) |
 | Líder / P5 — Integração, Testes, Documentação | Brenda Beatriz (testes, CI e documentação do P1: PRs #56–#64) | Ativo |
 | Scrum Master | Henrique Fontenelle (revisão e integração, decisões técnicas, sincronização `Dev`/`main`) | Ativo |
 

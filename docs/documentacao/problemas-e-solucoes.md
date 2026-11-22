@@ -184,10 +184,10 @@ Cada registro segue o formato **contexto → sintoma → causa → solução →
 
 ---
 
-## Problemas identificados e ainda em aberto
+## Problemas identificados nos testes da Sprint 3
 
-Encontrados durante os testes da Sprint 3; entram no planejamento da próxima sprint.
+Encontrados durante os testes da Sprint 3. Situação atualizada em 22/11/2026.
 
-- **`printf` imprime `\n` literalmente e não implementa `%s`:** a função `executar_printf` em `interpreter.c` não decodifica as sequências de escape, embora o comentário em `scanner.l` diga que isso seria feito na interpretação. Visível em `tests/validos/printf_scanf_formatos.c`.
-- **Interpretador não executa comandos:** `if`, `while`, `for`, `return` e chamadas de função passam pelas análises, mas não são executados; só as declarações e expressões do bloco da `main` rodam.
-- **String não fechada reportada como "caractere invalido":** o `scanner.l` não tem regra para string sem aspas de fechamento, e o padrão `LIT_STRING` aceita quebra de linha. Visível em `tests/invalidos/string_nao_fechada.c`.
+- **`printf` imprime `\n` literalmente e não implementa `%s`:** a função `executar_printf` em `interpreter.c` não decodifica as sequências de escape, embora o comentário em `scanner.l` diga que isso seria feito na interpretação. Visível em `tests/validos/printf_scanf_formatos.c`. *Resolvido:* as escapes passaram a ser decodificadas na impressão no PR #87 (S4-02), e o `%s` foi implementado no PR #114 (S5-03).
+- **Interpretador não executa comandos:** `if`, `while`, `for`, `return` e chamadas de função passam pelas análises, mas não são executados; só as declarações e expressões do bloco da `main` rodam. *Resolvido:* `if`, `while`, `for` e `return` no PR #83 (S4-04), e chamadas de função no PR #115 (S5-01).
+- **String não fechada reportada como "caractere invalido":** o `scanner.l` não tem regra para string sem aspas de fechamento, e o padrão `LIT_STRING` aceita quebra de linha. Visível em `tests/invalidos/string_nao_fechada.c`. *Em aberto.*

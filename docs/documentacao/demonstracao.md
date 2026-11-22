@@ -71,7 +71,7 @@ Todos os comandos são rodados dentro de `src/`.
 ./interpretador ../tests/invalidos/erro_sintatico.c
 ```
 
-**6. Suíte automatizada:** os 26 casos rodam com `make test`, e a CI roda a mesma suíte em todo PR.
+**6. Suíte automatizada:** todos os casos de `tests/validos/` e `tests/invalidos/` rodam com `make test`, comparando a saída com os arquivos `.esperado`, e a CI roda a mesma suíte em todo PR.
 ```bash
 make test
 ```
@@ -121,11 +121,13 @@ Como o `run_tests.sh` associa cada `.entrada` ao `.c` de mesmo nome, os cenário
 
 ## Limitações conhecidas (para não ser pego de surpresa)
 
-- O interpretador executa por enquanto **só declarações e expressões do bloco da `main`**. `if`, `while`, `for`, `return` e chamadas de função passam pelas análises, mas ainda não são executados. Por isso o organizador de compras imprime os textos sem entrar no laço.
-- O `printf` ainda **não traduz `\n`**, que aparece literalmente, e **não implementa `%s`**.
-- O `scanf` passa pelas análises, mas não lê valores na execução.
+Atualizado em 22/11/2026. O núcleo executa declarações, expressões, `if`/`else`, `while`, `for`, `return`, chamadas de função (inclusive recursivas), `printf` (`%d`, `%f`, `%c`, `%s`) e `scanf` (`%d`, `%f`, `%c`). O que ainda pode surpreender:
 
-Esses pontos fazem parte do planejamento da próxima sprint.
+- **Recursão infinita:** o limite de profundidade está em revisão no PR #120 (issue #88). Até ele entrar, uma recursão sem fim derruba o processo sem mensagem.
+- **Divisão por zero:** a divisão inteira (e o `%`) por zero mostra o erro, mas a execução continua com o valor 0; a divisão de `float` por zero não é erro e imprime `inf`, como em C. A decisão de parar ou não no primeiro erro de execução está na issue #95.
+- **`printf`:** não aceita precisão (`%.2f`), e o `%f` sempre mostra 6 casas. O `%s` só aceita texto entre aspas, porque a linguagem não tem variável de texto. O `printf` também não pode ser usado dentro de uma expressão, como `x = printf(...)`.
+- **String sem aspas de fechamento:** é reportada como "caractere invalido" em vez de uma mensagem própria (ver `problemas-e-solucoes.md`).
+- **Fora do escopo, de propósito:** vetores, ponteiros, structs, unions, variáveis de texto e pré-processador. Vetores, ponteiros, structs e unions são recusados com a mensagem "construcao fora do escopo"; as linhas com `#` (como `#include`) são ignoradas.
 
 ## Plano B: saídas salvas
 
