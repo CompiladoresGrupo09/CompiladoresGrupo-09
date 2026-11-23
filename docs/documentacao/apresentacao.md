@@ -1,4 +1,4 @@
-# 🚀 Interpretador de C — Grupo 09
+# Interpretador de C — Grupo 09
 
 ## 1. A disciplina de Compiladores 1
 
@@ -8,6 +8,8 @@ A disciplina ensina a construção de um interpretador seguindo o pipeline léxi
 
 ## 2. O projeto: Organizador de Compras no Mercado
 
+A fim de causar maior familiaridade entre a equipe e o projeto que está sendo desenvolvido, foi decidido entre os membros o interesse em inserir um tema que está presente no dia a dia em nosso projeto.
+
 Como estudo de caso para exercitar o núcleo da linguagem, a equipe escolheu um **organizador de compras de mercado**: o programa recebe itens e preços via `scanf` em loop, soma o total gasto e avisa se o valor ultrapassou o orçamento informado pelo usuário.
 
 O interpretador cobre apenas o núcleo obrigatório da linguagem: tipos `int`/`float`/`char`, variáveis, expressões aritméticas/relacionais/lógicas com precedência, estruturas de controle (`if`/`else`, `while`, `for`), blocos com escopo, funções com parâmetros/retorno/recursão e entrada/saída básica (`printf`/`scanf`). Ponteiros, structs, pré-processador e otimizações ficam deliberadamente fora de escopo.
@@ -16,20 +18,20 @@ Ver [Definição da Linguagem](definicao-da-linguagem.md) para o exemplo complet
 
 ## 3. Os Contribuidores
 
-A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
+A equipe de desenvolvimento é composta por alunos da Universidade de Brasília, que integram o Grupo 09.
 
 <div class="team-container">
 
   <div class="team-card">
-    <img src="docs/assets/Mariana_perfil.jpg" alt="Mariana Martins"/>
-    <h3>Mariana Martins</h3>
-    <p class="papel">Semântico: tipos e compatibilidade</p>
+    <img src="docs/assets/Brenda_perfil.jpg" alt="Brenda Beatriz"/>
+    <h3>Brenda Beatriz</h3>
+    <p class="papel">Léxico e Sintático/AST; integração, testes e documentação; líder</p>
     <div class="social-links">
-      <a href="https://github.com/Marianamrts" target="_blank">GitHub</a>
+      <a href="https://github.com/Brwnds" target="_blank">GitHub</a>
     </div>
   </div>
 
-  <div class="team-card">
+ <div class="team-card">
     <img src="docs/assets/Eduardo_perfil.jpg" alt="Eduardo Ribeiro Xavier"/>
     <h3>Eduardo Ribeiro Xavier</h3>
     <p class="papel">Interpretação</p>
@@ -47,7 +49,7 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
     </div>
   </div>
 
-  <div class="team-card">
+   <div class="team-card">
     <img src="docs/assets/Henrique_perfil.jpg" alt="Henrique Fontenelle"/>
     <h3>Henrique Fontenelle</h3>
     <p class="papel">Scrum Master: revisão e integração; suplente do líder</p>
@@ -57,11 +59,11 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
   </div>
 
   <div class="team-card">
-    <img src="docs/assets/Brenda_perfil.jpg" alt="Brenda Beatriz"/>
-    <h3>Brenda Beatriz</h3>
-    <p class="papel">Léxico e Sintático/AST; integração, testes e documentação; líder</p>
+    <img src="docs/assets/Mariana_perfil.jpg" alt="Mariana Martins"/>
+    <h3>Mariana Martins</h3>
+    <p class="papel">Semântico: tipos e compatibilidade</p>
     <div class="social-links">
-      <a href="https://github.com/Brwnds" target="_blank">GitHub</a>
+      <a href="https://github.com/Marianamrts" target="_blank">GitHub</a>
     </div>
   </div>
 
@@ -143,3 +145,4 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
 | Data | Versão | Descrição | Autor |
 |------|--------|-----------|-------|
 | 05/09/2026 | 1.0 | Criação da página de apresentação e equipe | Brenda |
+| 23/11/2026 | 1.1 | Atualização da página de apresentação da equipe | Mariana |
