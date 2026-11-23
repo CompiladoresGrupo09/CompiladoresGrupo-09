@@ -1,0 +1,9 @@
+Digite dois numeros inteiros: MDC(0, 0) = 0
+MMC(0, 0) = 
+Erro de execucao [linha 27]: divisao por zero
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   1 erro(s)
