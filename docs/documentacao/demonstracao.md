@@ -218,3 +218,34 @@ Sintatica  1 erro(s)
 Semantica  nao executada
 Execucao   nao executada
 ```
+### Boletim escolar (S7-08)
+
+Programa em `tests/validos/estudo_boletim.c`. Lê as notas de três provas com `scanf("%f", ...)`, calcula a média na função `float media(float a, float b, float c)`, classifica com `if / else` aninhado (`>= 7` APROVADO, `>= 5` RECUPERAÇÃO OU REPROVADO) e imprime as notas, a média e a situação com `printf` usando `%f` e `%s`.
+
+Recursos do núcleo que ele valida: `float` e conversão `int -> float`, função com parâmetros e retorno `float`, `if / else` aninhado e operadores relacionais, `scanf` com `%f` e `printf` com `%f` e `%s`.
+
+Rodando no terminal e digitando `8.0`, `7.0` e `9.0`:
+
+```text
+$ ./src/interpretador tests/validos/estudo_boletim.c
+Nota 1: 8.000000
+Nota 2: 7.000000
+Nota 3: 9.000000
+Média: 8.000000
+Situacao: APROVADO
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
+```
+
+| Cenário | Arquivo | Resultado |
+| :--- | :--- | :--- |
+| Aprovado (`8.0`, `7.0`, `9.0`) | `validos/estudo_boletim.c` (`estudo_boletim_aprovado.*`) | média `8.000000`, situação `APROVADO`, código `0` |
+| Recuperação (`6.0`, `5.0`, `4.0`) | `validos/estudo_boletim.c` (`estudo_boletim_recuperacao.*`) | média `5.000000`, situação `RECUPERACAO`, código `0` |
+| Reprovado (`3.0`, `4.0`, `5.0`) | `validos/estudo_boletim.c` (`estudo_boletim_reprovado.*`) | média `4.000000`, situação `REPROVADO`, código `0` |
+| Atribuição inválida `float` -> `int` | `invalidos/estudo_boletim_erro_tipo.c` | `Erro semantico [linha 20]: atribuicao incompativel: conversao implicita de float para int nao permitida`.
+
+As saídas esperadas foram conferidas contra a execução em programa C real compilado com `gcc` (usando `%f` com 6 casas decimais, sem `%.2f`, e sem vetores, ponteiros ou `structs`). Na execução da suíte `run_tests.sh` na branch `test/estudo-boletim`, todos os 55 casos passaram (`55 passaram, 0 falharam`).
