@@ -14,7 +14,7 @@ Como estudo de caso para exercitar o núcleo da linguagem, a equipe escolheu um 
 
 O interpretador cobre apenas o núcleo obrigatório da linguagem: tipos `int`/`float`/`char`, variáveis, expressões aritméticas/relacionais/lógicas com precedência, estruturas de controle (`if`/`else`, `while`, `for`), blocos com escopo, funções com parâmetros/retorno/recursão e entrada/saída básica (`printf`/`scanf`). Ponteiros, structs, pré-processador e otimizações ficam deliberadamente fora de escopo.
 
-Ver [Definição da Linguagem](definicao-da-linguagem.md) para o exemplo completo de código e saída esperada.
+Ver [Definição da Linguagem](/documentacao/definicao-da-linguagem.md) para o exemplo completo de código e saída esperada.
 
 ## 3. Os Contribuidores
 
