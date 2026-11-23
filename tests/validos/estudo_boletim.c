@@ -1,7 +1,7 @@
 float media(float a, float b, float c) { //cálculo da média da nota do aluno
     float Soma;
     Soma = a + b + c;
-    return Soma / 3;
+    return Soma / 3; //Int -> float 
 
 }
 
@@ -25,7 +25,7 @@ int main() {
     if (m >= 7) { //Verifica se a média presente é maior ou igual a 7
         printf("Situacao: %s\n", "APROVADO");
     } else {
-        if (m >= 5) {
+        if (m >= 5) { //OPeradores relacionais com int e float 
             printf("Situacao: %s\n", "RECUPERACAO");
         } else {
             printf("Situacao: %s\n", "REPROVADO");
