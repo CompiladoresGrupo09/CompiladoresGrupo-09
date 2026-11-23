@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 float media(float a, float b, float c) { //cálculo da média da nota do aluno
     float Soma;
     Soma = a + b + c;
