@@ -16,7 +16,7 @@ Diferente de um compilador (que gera código intermediário separado), o interpr
 Em vez de gerar código final, a execução acontece percorrendo a AST recursivamente (função `interpretarNo()`, definida na issue #31). É o que diferencia o módulo de execução de um compilador tradicional.
 
 ## Aplicação de estudo de caso: organizador de compras no mercado
-Escolhido um organizador de compras (soma preços lidos via `scanf` em loop e avisa se o total passou do orçamento) como programa de exemplo para exercitar o núcleo. Motivo: cobre variáveis, laço, condicional e E/S usando só recursos do núcleo obrigatório (seção 3 de `definicao-da-linguagem.md`), sem depender de nenhum diferencial (arrays, strings dinâmicas) que está fora de escopo.
+Escolhido um organizador de compras (soma preços lidos via `scanf` em loop e avisa se o total passou do orçamento) como programa de exemplo para exercitar o núcleo. Motivo: cobre variáveis, laço, condicional e E/S usando só recursos do núcleo obrigatório (seção 3 de [Definição da Linguagem](/documentacao/definicao-da-linguagem.md)), sem depender de nenhum diferencial (arrays, strings dinâmicas) que está fora de escopo.
 
 ## Estrutura de repositório: docs/ + src/ + tests/ na raiz
 Alinhada ao padrão usado nos exemplos do professor (pastas `docs/`/`src/` por unidade), adaptada para o projeto inteiro ser a "unidade", com `tests/` separado para casos válidos/inválidos.
@@ -24,18 +24,18 @@ Alinhada ao padrão usado nos exemplos do professor (pastas `docs/`/`src/` por u
 ## Papéis fixos com pares cruzados
 Pipeline sequencial (léxico → sintático/AST → semântico → interpretação), mas com pareamento cruzado (P1+P2, depois P3+P4, P5 circulando) para evitar silos de conhecimento — necessário porque a entrevista final é individual e cobra justificativa de qualquer parte do projeto.
 
-## Tratamento do dangling else (S2-03)
-O conflito clássico de `if (a) if (b) x; else y;` — a quem o `else` pertence — é resolvido pela precedência natural do Bison, que prefere deslocar (`shift`) o `else` para o `if` mais próximo sem `else`. É o comportamento padrão do C e não exigiu regra extra na gramática; o Bison emite 1 aviso de conflito shift/reduce esperado para isso, documentado em `gramatica.md`. Nenhuma ação adicional foi necessária além de reconhecer e documentar esse comportamento padrão.
-
-* **Alternativa descartada:** desambiguar com `%prec`/`%nonassoc` para silenciar o aviso. Produziria a mesma semântica com mais regras na gramática, sem ganho funcional.
-* **Evidência:** `bison -Wcounterexamples -d parser.y` mostra o único conflito da gramática, no token `ELSE`, com as derivações de *shift* e de *reduce* (saída anexada na issue #20). O teste `tests/validos/if_else_aninhado.c` (PR #56) comprova na AST que o `else` fica dentro do `if` interno.
-
 ## Recuperação de erros sintáticos (S2-02)
 
 * **Decisão:** o parser não para no primeiro erro sintático. As regras `declaracao` e `comando` têm uma produção `error ';'` com `yyerrok`: ao encontrar um erro, o Bison descarta tokens até o próximo `;` e continua a análise a partir dali. Cada erro é contado em `erros_sintaticos` e, no fim, a AST não segue para o semântico se houve qualquer erro.
 * **Justificativa:** reportar todos os erros de uma vez é mais útil para quem escreve o programa do que corrigir um erro por execução. O `;` foi escolhido como ponto de sincronização porque termina declarações e comandos no núcleo da linguagem, então é o lugar mais provável para o parser voltar a um estado conhecido.
 * **Limitação conhecida:** um erro dentro de uma estrutura sem `;` próximo (por exemplo, um parêntese não fechado no `if`) pode gerar erros em cascata nas linhas seguintes, como em `tests/invalidos/parentese_nao_fechado.c`.
 * **Implementação:** commit `daed43e` (PR #40), testado por `tests/invalidos/multiplos_erros_sintaticos.c`, que reporta 3 erros em linhas diferentes.
+
+## Tratamento do dangling else (S2-03)
+O conflito clássico de `if (a) if (b) x; else y;` — a quem o `else` pertence — é resolvido pela precedência natural do Bison, que prefere deslocar (`shift`) o `else` para o `if` mais próximo sem `else`. É o comportamento padrão do C e não exigiu regra extra na gramática; o Bison emite 1 aviso de conflito shift/reduce esperado para isso, documentado em `gramatica.md`. Nenhuma ação adicional foi necessária além de reconhecer e documentar esse comportamento padrão.
+
+* **Alternativa descartada:** desambiguar com `%prec`/`%nonassoc` para silenciar o aviso. Produziria a mesma semântica com mais regras na gramática, sem ganho funcional.
+* **Evidência:** `bison -Wcounterexamples -d parser.y` mostra o único conflito da gramática, no token `ELSE`, com as derivações de *shift* e de *reduce* (saída anexada na issue #20). O teste `tests/validos/if_else_aninhado.c` (PR #56) comprova na AST que o `else` fica dentro do `if` interno.
 
 ## Tabela de símbolos com escopos aninhados (S2-05)
 
@@ -48,7 +48,7 @@ O conflito clássico de `if (a) if (b) x; else y;` — a quem o `else` pertence 
 * **Justificativa:** o núcleo obrigatório inclui blocos e funções com parâmetros. Com lista plana, uma variável declarada dentro de um `if` continuaria visível depois do bloco, e `int a; { int a; }`, que é C válido, seria rejeitado como redeclaração. O problema está registrado em `problemas-e-solucoes.md`.
 * **Implementação:** issue #22, PR #46; testes `tests/validos/escopo_shadowing.c`, `tests/invalidos/redeclaracao_mesmo_escopo.c` e `tests/invalidos/variavel_nao_declarada.c` (PR #50).
 
-## S2-07: Verificação de compatibilidade de tipos e conversão implícita (Provisório)
+## Verificação de compatibilidade de tipos e conversão implícita (S2 - 07)
 
 * **Decisão:** o interpretador recusa conversões implícitas com perda de informação, como atribuir uma expressão do tipo `float` a uma variável do tipo `int` (por exemplo: `int a; a = 1.5 + 2;`).
 * **Comportamento adotado:** emissão de erro semântico na linha da atribuição.
@@ -93,6 +93,13 @@ Histórico do andamento de cada papel até a formalização:
 3. ~~Formalizar o responsável por P4, considerando que P3 e P4 formam par.~~ Resolvido em 01/10/2026: Eduardo Ribeiro Xavier (tabela acima).
 4. Combinar o fluxo de branches: hoje há PRs de documentação indo para a `main` e de código indo para a `Dev`, e as duas estão divergindo. *Atualização (01/10/2026):* desde o PR #56, todos os PRs (código e documentação) vão para a `Dev`; falta o grupo confirmar esse fluxo e combinar quando a `Dev` é mesclada na `main` (ver "Regras de branch").
 
+## Testes com comparação de saída esperada (S2-09)
+
+* **Decisão:** a suíte é executada por `src/run_tests.sh`, chamado pelo `make test`. Além do código de saída (0 para `tests/validos/`, diferente de 0 para `tests/invalidos/`), o script compara a saída com o arquivo `<caso>.esperado` quando ele existe.
+* **Justificativa:** conferir só o código de saída deixava passar um programa que termina com sucesso mas imprime o resultado errado. Com um erro proposital no parser (`*` gerando `+`), o `make test` antigo passava e o novo acusa a falha.
+* **Detalhes:** `stdout` e `stderr` são capturados separadamente e juntados sempre na mesma ordem, e o `\r` é removido antes da comparação, para o resultado não depender do sistema operacional; o `.gitattributes` força quebra de linha LF em `.sh` e `.esperado`. `bash run_tests.sh --gerar <caso.c>` cria ou atualiza um `.esperado` quando a mudança de saída é intencional.
+* **Implementação:** PR #58.
+
 ## Líder dos formulários e suplente (S2-12)
 
 * **Líder:** **Brenda Beatriz** é a responsável por enviar os formulários de apresentação. Decisão tomada na issue #6, fechada em 07/09/2026, e registrada por escrito em 01/10/2026 (issue #30).
@@ -112,6 +119,14 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Verificação automática:** o workflow `build.yml` (S2-10) roda `make` e `make test` em todo PR. O motivo é transformar a regra "`main` sempre compilável" em verificação automática, em vez de depender só da revisão manual.
 * **Fechamento de issues:** o `Closes #N` só fecha a issue quando o PR é mesclado na branch padrão (`main`). Como os PRs vão para a `Dev`, a issue é fechada manualmente depois do merge, com um comentário citando o PR.
 
+## Pipeline com parada na primeira fase que falhar (S3-01)
+
+* **Decisão:** o `main.c` executa as fases na ordem léxico → sintático → semântico → execução e **para na primeira que acusar erro**. No fim, sempre imprime (no `stderr`) um relatório com o total de erros por fase, marcando como "nao executada" as fases que não chegaram a rodar.
+* **Justificativa:** não faz sentido analisar semanticamente uma AST que veio de um parse com erro, nem executar um programa com erro de tipo; os erros das fases seguintes seriam consequência dos primeiros e confundiriam a leitura. O relatório vai para o `stderr` para não se misturar com a saída do programa interpretado.
+* **Flags de inspeção:** `--tokens` (só o léxico), `--ast` (análises e AST, sem executar) e `--tabela` (análises e tabela de símbolos, sem executar). Existem para a apresentação: permitem mostrar cada fase isoladamente enquanto se explica o pipeline. Sem flag, a AST não é impressa, para a execução mostrar só a saída do programa.
+* **Códigos de saída:** 0 sucesso, 1 uso incorreto, 2 sintático, 3 léxico, 4 semântico, 5 execução. Como o léxico e o sintático rodam juntos (o parser pede os tokens ao scanner), quando há erro léxico o código é 3 mesmo que também haja erro sintático, porque o léxico é a primeira fase.
+* **Tabela de símbolos para o `--tabela`:** como o semântico libera cada escopo ao sair dele, a tabela guarda um histórico dos símbolos declarados só para a impressão.
+* **Implementação:** PR #62; roteiro de uso em `demonstracao.md`.
 ## Testes com saida esperada e entrada redirecionada para todos os casos validos (S4-01)
 
 * **Decisão:** Arquitetura e Validação Rigorosa da Suíte de Testes (Sprint 4)
@@ -152,6 +167,17 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Justificativa:** a tabela de símbolos guarda informação de análise (tipo, linha, aridade) e é liberada ao final da semântica (`analisar_semantica`). O ambiente guarda informação de execução (valores), que muda a cada comando e precisa de escopos novos toda vez que um bloco é executado, por exemplo a cada volta de um laço e, na S5-01, a cada chamada de função. Por isso a previsão anterior de migrar os valores para a `TabelaSimbolos` foi revista: separar as duas estruturas mantém uma responsabilidade por fase, e a lógica de pilha segue o mesmo padrão da `tabela.c`.
 * **Implementação:** issue #72; verificado com os critérios de aceitação da issue e com `make test`.
 
+## Código de saída vindo do `return` do `main` (S4-08)
+
+* **Decisão:** quando nenhuma fase tem erro, o processo sai com o valor do `return` do `main` interpretado, como um programa C compilado. A flag `--no-run` roda todas as análises e não executa.
+* **Regras adotadas:**
+  * o interpretador guarda o valor do `return` (convertido para `int`) e `interpretar()` o devolve ao `main.c`;
+  * `return;` sem valor, ou um `main` que termina sem `return`, resulta em 0;
+  * havendo erro em qualquer fase, vale o código da fase (2 sintático, 3 léxico, 4 semântico, 5 execução), e não o `return`;
+  * `--no-run` usa o mesmo desvio do `--ast` e do `--tabela`: qualquer modo diferente do completo encerra antes da execução.
+* **Limitação conhecida:** se o `main` retornar 1, 2, 3, 4 ou 5, o código de saída é igual ao de uma categoria de erro. Para diferenciar, basta olhar o relatório de erros no fim da saída, que mostra 0 erro em todas as fases. É a mesma limitação de qualquer interpretador que repassa o código de saída do programa.
+* **Implementação:** issue #77.
+
 ## Chamada de função, parâmetros e retorno (S5-01)
 
 * **Decisão:** cada chamada abre um **frame**, um escopo novo no ambiente de execução, e guarda em `base_frame` o índice onde ele começa. `ler_variavel()` procura do escopo mais interno até `base_frame` e, depois, só no escopo global (índice 0). Assim, a função enxerga os próprios escopos e as variáveis globais, mas não as variáveis locais de quem a chamou.
@@ -165,39 +191,11 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Testes:** os casos de `tests/validos/` que dependiam de funções saíram de `pendentes.txt`. Três `.esperado` foram corrigidos: `escopo_shadowing` e `comando_for` não batiam com o `printf` do próprio programa, e `funcao_parametros_retorno` usava `%d` com uma variável `float`, comportamento indefinido em C, e passou a usar `%f`.
 * **Implementação:** issue #80.
 
-
-## Pipeline com parada na primeira fase que falhar (S3-01)
-
-* **Decisão:** o `main.c` executa as fases na ordem léxico → sintático → semântico → execução e **para na primeira que acusar erro**. No fim, sempre imprime (no `stderr`) um relatório com o total de erros por fase, marcando como "nao executada" as fases que não chegaram a rodar.
-* **Justificativa:** não faz sentido analisar semanticamente uma AST que veio de um parse com erro, nem executar um programa com erro de tipo; os erros das fases seguintes seriam consequência dos primeiros e confundiriam a leitura. O relatório vai para o `stderr` para não se misturar com a saída do programa interpretado.
-* **Flags de inspeção:** `--tokens` (só o léxico), `--ast` (análises e AST, sem executar) e `--tabela` (análises e tabela de símbolos, sem executar). Existem para a apresentação: permitem mostrar cada fase isoladamente enquanto se explica o pipeline. Sem flag, a AST não é impressa, para a execução mostrar só a saída do programa.
-* **Códigos de saída:** 0 sucesso, 1 uso incorreto, 2 sintático, 3 léxico, 4 semântico, 5 execução. Como o léxico e o sintático rodam juntos (o parser pede os tokens ao scanner), quando há erro léxico o código é 3 mesmo que também haja erro sintático, porque o léxico é a primeira fase.
-* **Tabela de símbolos para o `--tabela`:** como o semântico libera cada escopo ao sair dele, a tabela guarda um histórico dos símbolos declarados só para a impressão.
-* **Implementação:** PR #62; roteiro de uso em `demonstracao.md`.
-
-## Testes com comparação de saída esperada (S2-09)
-
-* **Decisão:** a suíte é executada por `src/run_tests.sh`, chamado pelo `make test`. Além do código de saída (0 para `tests/validos/`, diferente de 0 para `tests/invalidos/`), o script compara a saída com o arquivo `<caso>.esperado` quando ele existe.
-* **Justificativa:** conferir só o código de saída deixava passar um programa que termina com sucesso mas imprime o resultado errado. Com um erro proposital no parser (`*` gerando `+`), o `make test` antigo passava e o novo acusa a falha.
-* **Detalhes:** `stdout` e `stderr` são capturados separadamente e juntados sempre na mesma ordem, e o `\r` é removido antes da comparação, para o resultado não depender do sistema operacional; o `.gitattributes` força quebra de linha LF em `.sh` e `.esperado`. `bash run_tests.sh --gerar <caso.c>` cria ou atualiza um `.esperado` quando a mudança de saída é intencional.
-* **Implementação:** PR #58.
-
 ## Formato padrão das mensagens de erro
 
 * **Decisão:** toda mensagem de erro segue o formato `Erro <fase> [linha N]: <descricao>` — por exemplo, `Erro semantico [linha 4]: ...` — e é escrita **sem acentos**.
 * **Justificativa:** o formato único deixa claro em que fase e em que linha o problema está, e permite que os testes comparem as mensagens nos arquivos `.esperado`. Sem acentos, a saída aparece igual em qualquer terminal, independentemente da codificação configurada.
 * **Implementação:** mensagens em `scanner.l`, `parser.y`, `semantic.c`, `tabela.c` e `interpreter.c`; a última mensagem com acento foi corrigida no PR #57.
-
-## Código de saída vindo do `return` do `main` (S4-08)
-
-* **Decisão:** quando nenhuma fase tem erro, o processo sai com o valor do `return` do `main` interpretado, como um programa C compilado. A flag `--no-run` roda todas as análises e não executa.
-* **Regras adotadas:**
-  * o interpretador guarda o valor do `return` (convertido para `int`) e `interpretar()` o devolve ao `main.c`;
-  * `return;` sem valor, ou um `main` que termina sem `return`, resulta em 0;
-  * havendo erro em qualquer fase, vale o código da fase (2 sintático, 3 léxico, 4 semântico, 5 execução), e não o `return`;
-  * `--no-run` usa o mesmo desvio do `--ast` e do `--tabela`: qualquer modo diferente do completo encerra antes da execução.
-* **Limitação conhecida:** se o `main` retornar 1, 2, 3, 4 ou 5, o código de saída é igual ao de uma categoria de erro. Para diferenciar, basta olhar o relatório de erros no fim da saída, que mostra 0 erro em todas as fases. É a mesma limitação de qualquer interpretador que repassa o código de saída do programa.
-* **Implementação:** issue #77.
 
 ## `printf`: formatos, conversões e erros (S5-03)
 

@@ -1,6 +1,6 @@
 # Gramática do núcleo (alto nível)
 
-Especificação em BNF informal da gramática do núcleo obrigatório (ver [Definição da Linguagem](definicao-da-linguagem.md)), usada como base para o `src/parser.y` (Bison). Os tokens vêm do `src/scanner.l` (Flex).
+Especificação em BNF informal da gramática do núcleo obrigatório (ver [Definição da Linguagem](/documentacao/definicao-da-linguagem.md)), usada como base para o `src/parser.y` (Bison). Os tokens vêm do `src/scanner.l` (Flex).
 
 ## Tokens
 
