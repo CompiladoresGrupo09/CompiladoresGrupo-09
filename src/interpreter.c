@@ -439,6 +439,7 @@ Valor interpretarNo(ASTNode *no)
             {
                 fprintf(stderr, "Erro de execucao [linha %d]: divisao por zero\n", no->line);
                 erros_execucao++;
+                abortou = 1;
                 resultado.como.i = 0;
             }
             else
@@ -450,6 +451,7 @@ Valor interpretarNo(ASTNode *no)
             {
                 fprintf(stderr, "Erro de execucao [linha %d]: divisao por zero\n", no->line);
                 erros_execucao++;
+                abortou = 1;
                 resultado.como.i = 0;
             }
             else
@@ -623,13 +625,21 @@ static void executar_printf(ASTNode *chamada)
         }
 
         if (*p == 's')
+        {
             imprimir_texto(argumento->strval);
-        else if (*p == 'd')
-            printf("%d", valor_como_int(interpretarNo(argumento)));
+            continue;
+        }
+
+        Valor valor = interpretarNo(argumento);
+        if (abortou)
+            return;
+
+        if (*p == 'd')
+            printf("%d", valor_como_int(valor));
         else if (*p == 'f')
-            printf("%f", valor_como_float(interpretarNo(argumento)));
+            printf("%f", valor_como_float(valor));
         else
-            putchar((char)valor_como_int(interpretarNo(argumento)));
+            putchar((char)valor_como_int(valor));
     }
 }
 
