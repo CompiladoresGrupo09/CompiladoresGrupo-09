@@ -27,6 +27,7 @@ Cada registro segue o formato **contexto → sintoma → causa → solução →
 | 30/09 | Saída esperada dependente do sistema operacional | Testes | Resolvido |
 | 30/09 | `Closes #N` não fechava as issues | Processo | Contornado |
 | 01/10 | Tabela de símbolos vazia ao fim da análise (`--tabela`) | Semântico/Integração | Resolvido |
+| 18/11 | Chamada de função assumia o tipo do primeiro argumento | Semântico | Resolvido |
 | 23/11 | Divisão por zero não interrompia a execução | Interpretação | Resolvido |
 
 ---
@@ -182,6 +183,14 @@ Cada registro segue o formato **contexto → sintoma → causa → solução →
 **Solução:** a tabela passou a guardar um histórico dos símbolos inseridos (com o nível de escopo), que sobrevive à liberação dos escopos e é impresso pelo `--tabela` (commit `1823b2b`, PR #62).
 **Lição:** a estrutura de dados certa para a análise (pilha que encolhe) não é a mesma que serve para inspeção depois dela; quando precisamos das duas, guardamos um registro à parte.
 **Módulo/responsável:** Semântico/Integração — Brenda.
+
+## [18/11/2026] Chamada de função assumia o tipo do primeiro argumento
+**Contexto:** S4-05, verificação dos tipos dos argumentos nas chamadas de função (PR #112).
+**Sintoma:** `x = dobro(1);`, com `float dobro(int a)` e `x` inteiro, passava pelo semântico sem erro, embora atribua `float` a `int`. Já `r = metade(2.5);`, com `int metade(float a)`, era recusado com um erro de conversão de `float` para `int` que não existia.
+**Causa:** ao trocar o laço que confere os argumentos no `case NODE_CALL` de `inferir_tipo` (`semantic.c`, commit `c185eef`), o `return no->tipo;` do fim do `case` foi removido junto. Sem ele, a execução continuava no `case NODE_UNOP` logo abaixo, que sobrescreve o tipo do nó com o tipo do primeiro filho, ou seja, do primeiro argumento, e não com o tipo de retorno da função.
+**Solução:** o `return no->tipo;` voltou ao fim do `case NODE_CALL` (commit `388cafe`), e os dois cenários viraram testes: `tests/validos/funcao_float_retorno_int.c` e `tests/invalidos/erro_retorno_funcao_float_para_int.c` (commit `37d1790`). O defeito foi encontrado e corrigido dentro do próprio PR #112, antes do merge na `Dev`.
+**Lição:** em C, um `case` sem `return` ou `break` continua no `case` seguinte sem nenhum aviso com `-Wall`; testar uma chamada cujo tipo de retorno é diferente do tipo do argumento é o que separa "o tipo da função" de "o tipo do que foi passado para ela".
+**Módulo/responsável:** Semântico — Eduardo.
 
 ## [23/11/2026] Divisão por zero mostrava o erro mas não interrompia a execução
 **Contexto:** estudo de caso da calculadora de números (S7-10, issue #118), com a entrada `0 0`.
