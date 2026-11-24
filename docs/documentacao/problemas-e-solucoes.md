@@ -28,7 +28,9 @@ Cada registro segue o formato **contexto → sintoma → causa → solução →
 | 30/09 | `Closes #N` não fechava as issues | Processo | Contornado |
 | 01/10 | Tabela de símbolos vazia ao fim da análise (`--tabela`) | Semântico/Integração | Resolvido |
 | 18/11 | Chamada de função assumia o tipo do primeiro argumento | Semântico | Resolvido |
+| 18/11 | `printf` com argumentos faltando encerrava sem o relatório de erros | Interpretação | Resolvido |
 | 23/11 | Divisão por zero não interrompia a execução | Interpretação | Resolvido |
+
 
 ---
 
@@ -191,6 +193,14 @@ Cada registro segue o formato **contexto → sintoma → causa → solução →
 **Solução:** o `return no->tipo;` voltou ao fim do `case NODE_CALL` (commit `388cafe`), e os dois cenários viraram testes: `tests/validos/funcao_float_retorno_int.c` e `tests/invalidos/erro_retorno_funcao_float_para_int.c` (commit `37d1790`). O defeito foi encontrado e corrigido dentro do próprio PR #112, antes do merge na `Dev`.
 **Lição:** em C, um `case` sem `return` ou `break` continua no `case` seguinte sem nenhum aviso com `-Wall`; testar uma chamada cujo tipo de retorno é diferente do tipo do argumento é o que separa "o tipo da função" de "o tipo do que foi passado para ela".
 **Módulo/responsável:** Semântico — Eduardo.
+
+## [18/11/2026] printf com argumentos faltando encerrava o programa sem o relatório de erros
+**Contexto:** S5-03, tratamento de erros do `printf` no interpretador (PR #114).
+**Sintoma:** `printf("%d %d", 1);` mostrava o erro "printf com menos argumentos do que especificadores" e terminava com código 5, mas o relatório de erros por fase não aparecia e o erro não entrava na contagem de erros de execução. O `.esperado` de `tests/invalidos/printf_argumentos_insuficientes.c` tinha só duas linhas, então a suíte aprovava a saída incompleta.
+**Causa:** o `executar_printf` em `interpreter.c` chamava `exit(5)` nos três especificadores (`%d`, `%f` e `%c`) quando faltava argumento (commit `df5c4a9`, PR #87). O `exit` encerra o processo na hora, sem voltar ao `main.c`, que é quem conta os erros e imprime o relatório.
+**Solução:** os três trechos foram trocados por uma função só, `proximo_argumento_printf`, que incrementa `erros_execucao`, sinaliza o fim da execução e devolve `NULL`; o `printf` sai normalmente e o `main.c` mostra o relatório e sai com código 5. O `.esperado` foi gerado de novo, com o relatório (commit `ea82720`, PR #114). A primeira versão usava `retornou`, que só sai da função atual; no merge com as chamadas de função passou a usar `abortou`, que para o programa inteiro (commit `3daf5ac`, PR #115).
+**Lição:** quem decide encerrar o programa é o `main.c`; um módulo que chama `exit` pula a contagem de erros e o relatório. Os erros de execução devem ser sinalizados e devolvidos, não encerrar o processo no meio.
+**Módulo/responsável:** Interpretação (P4) — Eduardo.
 
 ## [23/11/2026] Divisão por zero mostrava o erro mas não interrompia a execução
 **Contexto:** estudo de caso da calculadora de números (S7-10, issue #118), com a entrada `0 0`.
