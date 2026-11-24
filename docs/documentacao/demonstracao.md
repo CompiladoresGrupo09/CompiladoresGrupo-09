@@ -164,10 +164,10 @@ Os resultados foram conferidos à mão. O cenário `0 0` revelou um defeito: a d
 
 ## Limitações conhecidas (para não ser pego de surpresa)
 
-Atualizado em 22/11/2026. O núcleo executa declarações, expressões, `if`/`else`, `while`, `for`, `return`, chamadas de função (inclusive recursivas), `printf` (`%d`, `%f`, `%c`, `%s`) e `scanf` (`%d`, `%f`, `%c`). O que ainda pode surpreender:
+Atualizado em 24/11/2026. O núcleo executa declarações, expressões, `if`/`else`, `while`, `for`, `return`, chamadas de função (inclusive recursivas), `printf` (`%d`, `%f`, `%c`, `%s`) e `scanf` (`%d`, `%f`, `%c`). O que ainda pode surpreender:
 
 - **Recursão infinita:** o limite de profundidade está em revisão no PR #120 (issue #88). Até ele entrar, uma recursão sem fim derruba o processo sem mensagem.
-- **Divisão por zero:** a divisão inteira (e o `%`) por zero mostra o erro, mas a execução continua com o valor 0; a divisão de `float` por zero não é erro e imprime `inf`, como em C. A decisão de parar ou não no primeiro erro de execução está na issue #95.
+- **Divisão por zero:** a divisão inteira (e o `%`) por zero mostra o erro e interrompe a execução com código 5, como os outros erros de execução (issue #124). Já a divisão de `float` por zero não é erro e imprime `inf`, como em C.
 - **`printf`:** não aceita precisão (`%.2f`), e o `%f` sempre mostra 6 casas. O `%s` só aceita texto entre aspas, porque a linguagem não tem variável de texto. O `printf` também não pode ser usado dentro de uma expressão, como `x = printf(...)`.
 - **String sem aspas de fechamento:** é reportada como "caractere invalido" em vez de uma mensagem própria (ver `problemas-e-solucoes.md`).
 - **Fora do escopo, de propósito:** vetores, ponteiros, structs, unions, variáveis de texto e pré-processador. Vetores, ponteiros, structs e unions são recusados com a mensagem "construcao fora do escopo"; as linhas com `#` (como `#include`) são ignoradas.
