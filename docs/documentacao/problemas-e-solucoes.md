@@ -22,7 +22,7 @@ Cada registro segue o formato **contexto → sintoma → causa → solução →
 | 15/09 | Critérios de aceitação da #22 sem cobertura de teste | Testes | Resolvido |
 | 15/09 | Desvios do checklist da issue não sinalizados no PR | Processo | Resolvido |
 | 24/09 | Mensagens diferentes para o mesmo erro de tipo `float` → `int` | Semântico | Resolvido |
-| 27/09 | Armazenamento de variáveis do interpretador sem noção de escopo | Interpretação | Em aberto (planejado) |
+| 27/09 | Armazenamento de variáveis do interpretador sem noção de escopo | Interpretação | Resolvido |
 | 30/09 | `make test` aprovava programa que imprimia resultado errado | Testes | Resolvido |
 | 30/09 | Saída esperada dependente do sistema operacional | Testes | Resolvido |
 | 30/09 | `Closes #N` não fechava as issues | Processo | Contornado |
@@ -30,7 +30,6 @@ Cada registro segue o formato **contexto → sintoma → causa → solução →
 | 18/11 | Chamada de função assumia o tipo do primeiro argumento | Semântico | Resolvido |
 | 18/11 | `printf` com argumentos faltando encerrava sem o relatório de erros | Interpretação | Resolvido |
 | 23/11 | Divisão por zero não interrompia a execução | Interpretação | Resolvido |
-
 
 ---
 
@@ -151,6 +150,7 @@ Cada registro segue o formato **contexto → sintoma → causa → solução →
 **Sintoma:** o interpretador guarda os valores numa lista linear própria (`Variavel *variaveis` em `interpreter.c`), separada da tabela de símbolos com escopos.
 **Causa:** nesta etapa o interpretador avalia apenas expressões dentro de um único `main()`, sem blocos, funções ou recursão; reaproveitar `tabela.c` exigiria decidir o mapeamento símbolo → valor antes de existirem os comandos que criam escopos.
 **Solução:** decisão provisória registrada em `decisoes-tecnicas.md` (commit `926bfe9`), com a limitação explícita. A migração para cima da `TabelaSimbolos` está planejada para quando o interpretador passar a executar blocos e funções.
+**Atualização (07/11/2026):** resolvido na S4-03 de um jeito diferente do previsto. Em vez de migrar os valores para a `TabelaSimbolos`, o interpretador ganhou um ambiente de execução próprio, uma pilha de escopos (`EscopoExec`) que abre um escopo novo a cada bloco executado (commit `304a097`, PR #81). A previsão foi revista porque a tabela de símbolos guarda informação de análise, não valores, e é liberada ao fim da análise semântica; o motivo está em "Ambiente de execução do interpretador (S4-03)" em `decisoes-tecnicas.md`. Na S5-01, a mesma pilha passou a abrir um frame por chamada de função (`base_frame`, PR #115).
 **Lição:** uma simplificação consciente é aceitável se a limitação e o momento de revê-la ficarem escritos.
 **Módulo/responsável:** Interpretação (P4) — Eduardo.
 
