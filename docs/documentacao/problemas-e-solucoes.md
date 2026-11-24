@@ -27,6 +27,7 @@ Cada registro segue o formato **contexto → sintoma → causa → solução →
 | 30/09 | Saída esperada dependente do sistema operacional | Testes | Resolvido |
 | 30/09 | `Closes #N` não fechava as issues | Processo | Contornado |
 | 01/10 | Tabela de símbolos vazia ao fim da análise (`--tabela`) | Semântico/Integração | Resolvido |
+| 23/11 | Divisão por zero não interrompia a execução | Interpretação | Resolvido |
 
 ---
 
@@ -181,6 +182,14 @@ Cada registro segue o formato **contexto → sintoma → causa → solução →
 **Solução:** a tabela passou a guardar um histórico dos símbolos inseridos (com o nível de escopo), que sobrevive à liberação dos escopos e é impresso pelo `--tabela` (commit `1823b2b`, PR #62).
 **Lição:** a estrutura de dados certa para a análise (pilha que encolhe) não é a mesma que serve para inspeção depois dela; quando precisamos das duas, guardamos um registro à parte.
 **Módulo/responsável:** Semântico/Integração — Brenda.
+
+## [23/11/2026] Divisão por zero mostrava o erro mas não interrompia a execução
+**Contexto:** estudo de caso da calculadora de números (S7-10, issue #118), com a entrada `0 0`.
+**Sintoma:** o MMC (`a * b / mdc(a, b)`) dividia por zero; o programa mostrava o erro e continuava imprimindo fatorial, primos e tabuada. No caso mínimo, `printf("%d", 1 / 0); printf("depois\n");` imprimia `0depois` junto com o erro.
+**Causa:** no `case NODE_BINOP` de `interpreter.c`, os dois pontos que detectam `/` e `%` por zero só incrementavam `erros_execucao` e trocavam o resultado por 0, sem ligar `abortou` como os outros erros de execução. Além disso, o `executar_printf` imprimia o valor do argumento sem conferir se a conta tinha falhado. O `.esperado` de `tests/invalidos/divisao_por_zero.c` tinha esse `0` gravado, então a suíte aprovava o defeito.
+**Solução:** os dois pontos passaram a ligar `abortou`, e o `printf` calcula o valor antes de imprimir e sai sem imprimir se a execução foi abortada. O `.esperado` foi gerado de novo, sem o `0` (commit `2785ef1`, issue #124, PR #125).
+**Lição:** um `.esperado` gerado com `--gerar` grava o comportamento atual, inclusive o errado; a saída esperada precisa ser conferida contra o que o C real faria, não só contra o que o interpretador já fazia.
+**Módulo/responsável:** Interpretação (P4) — Eduardo.
 
 ---
 
