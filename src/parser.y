@@ -58,7 +58,7 @@ programa:
 
 lista_declaracoes:
       lista_declaracoes declaracao { adicionar_filho($1, $2); $$ = $1; }
-    | /* vazio */ { $$ = criar_no(NODE_PROGRAM, @$.first_line); }
+    | /* vazio */ { $$ = criar_no(NODE_PROGRAM, 1); }
     ;
 
 declaracao:
