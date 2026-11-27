@@ -108,10 +108,10 @@ Execucao   0 erro(s)</pre>
   <h2 class="home-h2">Um estudo de caso por integrante</h2>
   <p class="home-sub">Cada um de nós escreveu um programa que usa uma parte diferente da linguagem. Juntos, eles passam por todo o núcleo, e foi assim que encontramos e corrigimos os últimos defeitos.</p>
   <div class="home-cards">
-    <a class="home-card" href="#/documentacao/estudos-de-casos"><span class="home-card-icon">📝</span><h3>Boletim escolar</h3><p><code>float</code>, <code>if</code>/<code>else</code> aninhado e função com retorno <code>float</code>.</p><span class="home-card-who">Mariana</span></a>
-    <a class="home-card" href="#/documentacao/estudos-de-casos"><span class="home-card-icon">🏧</span><h3>Caixa eletrônico</h3><p>Menu com <code>while</code>, variáveis globais e funções <code>void</code>.</p><span class="home-card-who">Giovana · em andamento</span></a>
-    <a class="home-card" href="#/documentacao/estudos-de-casos"><span class="home-card-icon">🔢</span><h3>Calculadora de números</h3><p>Recursão (MDC e fatorial), <code>for</code> aninhado e o operador <code>%</code>.</p><span class="home-card-who">Eduardo</span></a>
-    <a class="home-card" href="#/documentacao/estudos-de-casos"><span class="home-card-icon">🌡️</span><h3>Controle de temperatura</h3><p><code>char</code> e <code>%c</code>, sentinela <code>-1</code>, escopo e <i>shadowing</i>.</p><span class="home-card-who">Brenda</span></a>
+    <a class="home-card" href="#/documentacao/estudos-de-casos"><span class="home-card-icon">01</span><h3>Boletim escolar</h3><p><code>float</code>, <code>if</code>/<code>else</code> aninhado e função com retorno <code>float</code>.</p><span class="home-card-who">Mariana</span></a>
+    <a class="home-card" href="#/documentacao/estudos-de-casos"><span class="home-card-icon">02</span><h3>Caixa eletrônico</h3><p>Menu com <code>while</code>, variáveis globais e funções <code>void</code>.</p><span class="home-card-who">Giovana · em andamento</span></a>
+    <a class="home-card" href="#/documentacao/estudos-de-casos"><span class="home-card-icon">03</span><h3>Calculadora de números</h3><p>Recursão (MDC e fatorial), <code>for</code> aninhado e o operador <code>%</code>.</p><span class="home-card-who">Eduardo</span></a>
+    <a class="home-card" href="#/documentacao/estudos-de-casos"><span class="home-card-icon">04</span><h3>Controle de temperatura</h3><p><code>char</code> e <code>%c</code>, sentinela <code>-1</code>, escopo e <i>shadowing</i>.</p><span class="home-card-who">Brenda</span></a>
   </div>
 </section>
 

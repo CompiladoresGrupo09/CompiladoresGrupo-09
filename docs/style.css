@@ -666,7 +666,10 @@ body.pagina-inicial .markdown-section {
 }
 
 .home-card-icon {
-  font-size: 1.8em;
+  font-family: var(--mono);
+  font-size: 1.6em;
+  font-weight: 800;
+  color: var(--cor-principal);
 }
 
 .markdown-section .home-card h3 {
