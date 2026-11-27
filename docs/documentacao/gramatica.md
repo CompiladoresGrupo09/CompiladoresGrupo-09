@@ -96,7 +96,7 @@ argumento           → expressao | '&' ID
 ## Decisões de projeto
 
 - **`if`/`else` pendurado ("dangling else")**: resolvemos pela preferência natural do Bison, que desloca (`shift`) o `else` para o `if` mais próximo sem `else`. É o comportamento padrão do C e não exige regra extra na gramática (o Bison emite 1 aviso de conflito shift/reduce, que é esperado).
-- **Pré-processador**: linhas começando com `#` (ex.: `#include`) são reconhecidas e ignoradas pelo scanner, sem nenhum processamento. O núcleo não implementa pré-processador (ver [Definição da Linguagem](definicao-da-linguagem.md)).
+- **Pré-processador**: linhas começando com `#` (ex.: `#include`) são reconhecidas e ignoradas pelo scanner, sem nenhum processamento. O núcleo não implementa pré-processador (ver [Definição da Linguagem](/documentacao/definicao-da-linguagem.md)).
 - **`printf`/`scanf`**: não são palavras reservadas. Na análise sintática, são reconhecidos como `ID` comuns, e recebem tratamento especial na análise semântica e na interpretação.
 - **Inicializador de `for`**: só aceitamos expressões (ou nada); uma declaração como `for (int i = 0; ...)` é recusada com uma mensagem explícita. Escolhemos o subconjunto C89, em que a variável é declarada antes do laço.
 - **Fora do escopo**: declarações de ponteiro (`int *p;`), struct (`struct X {};`) e vetor (`int v[3];`) são reconhecidas apenas o bastante para reportar que a construção está fora do escopo; não são produções válidas.
