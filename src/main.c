@@ -6,13 +6,12 @@
 #include "tabela.h"
 #include "interpreter.h"
 #include "parser.tab.h"
+#include "erros.h"
 
 extern FILE *yyin;
 extern char *yytext;
 extern int yylineno;
 extern ASTNode *raiz_ast;
-extern int erros_lexicos;
-extern int erros_sintaticos;
 int yyparse(void);
 int yylex(void);
 
@@ -34,14 +33,6 @@ typedef enum
 
 /* Erros por fase; NAO_EXECUTADA marca as fases que o pipeline nao chegou a rodar */
 #define NAO_EXECUTADA -1
-enum
-{
-    FASE_LEXICA,
-    FASE_SINTATICA,
-    FASE_SEMANTICA,
-    FASE_EXECUCAO,
-    NUM_FASES
-};
 
 static const char *nomes_fases[NUM_FASES] = {"Lexica", "Sintatica", "Semantica", "Execucao"};
 static int erros_fase[NUM_FASES] = {NAO_EXECUTADA, NAO_EXECUTADA, NAO_EXECUTADA, NAO_EXECUTADA};
@@ -218,24 +209,24 @@ int main(int argc, char **argv)
     {
         listar_tokens();
         fclose(f);
-        erros_fase[FASE_LEXICA] = erros_lexicos;
-        return encerrar(erros_lexicos > 0 ? SAIDA_LEXICO : 0);
+        erros_fase[FASE_LEXICA] = erros_na_fase(FASE_LEXICA);
+        return encerrar(erros_na_fase(FASE_LEXICA) > 0 ? SAIDA_LEXICO : 0);
     }
 
     /* Fases 1 e 2: o parser chama o scanner, entao as duas rodam juntas */
     int resultado_sintatico = yyparse();
     fclose(f);
-    erros_fase[FASE_LEXICA] = erros_lexicos;
-    erros_fase[FASE_SINTATICA] = erros_sintaticos > 0 ? erros_sintaticos : (resultado_sintatico != 0);
+    erros_fase[FASE_LEXICA] = erros_na_fase(FASE_LEXICA);
+    erros_fase[FASE_SINTATICA] = erros_na_fase(FASE_SINTATICA) > 0 ? erros_na_fase(FASE_SINTATICA) : (resultado_sintatico != 0);
 
-    if (erros_lexicos > 0)
+    if (erros_na_fase(FASE_LEXICA) > 0)
         return encerrar(SAIDA_LEXICO);
     if (erros_fase[FASE_SINTATICA] > 0)
         return encerrar(SAIDA_SINTATICO);
 
     /* Fase 3: analise semantica (tabela de simbolos + tipos) */
     int semantica_ok = analisar_semantica(raiz_ast);
-    erros_fase[FASE_SEMANTICA] = erros_semanticos;
+    erros_fase[FASE_SEMANTICA] = erros_na_fase(FASE_SEMANTICA);
 
     if (modo == MODO_TABELA)
         imprimir_simbolos_declarados();
@@ -249,7 +240,7 @@ int main(int argc, char **argv)
 
     /* Fase 4: execucao */
     int codigo_programa = interpretar(raiz_ast);
-    erros_fase[FASE_EXECUCAO] = erros_execucao;
+    erros_fase[FASE_EXECUCAO] = erros_na_fase(FASE_EXECUCAO);
 
-    return encerrar(erros_execucao > 0 ? SAIDA_EXECUCAO : codigo_programa);
+    return encerrar(erros_na_fase(FASE_EXECUCAO) > 0 ? SAIDA_EXECUCAO : codigo_programa);
 }

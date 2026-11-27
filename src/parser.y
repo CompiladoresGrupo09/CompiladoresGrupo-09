@@ -3,20 +3,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ast.h"
+#include "erros.h"
 
 extern int yylineno;
 extern char *yytext;
-extern int erros_lexicos;
 int yylex(void);
 void yyerror(const char *msg);
 
 ASTNode *raiz_ast = NULL;
-int erros_sintaticos = 0;
 
 static void erro_fora_escopo(int linha, const char *construcao) {
-    fprintf(stderr, "Erro sintatico [linha %d]: construcao fora do escopo: %s\n",
-            linha, construcao);
-    erros_sintaticos++;
+    reportar_erro(FASE_SINTATICA, linha, "construcao fora do escopo: %s", construcao);
 }
 %}
 
@@ -342,6 +339,5 @@ argumento:
 %%
 
 void yyerror(const char *msg) {
-    fprintf(stderr, "Erro sintatico [linha %d]: %s (proximo a '%s')\n", yylineno, msg, yytext);
-    erros_sintaticos++;
+    reportar_erro(FASE_SINTATICA, yylineno, "%s (proximo a '%s')", msg, yytext);
 }

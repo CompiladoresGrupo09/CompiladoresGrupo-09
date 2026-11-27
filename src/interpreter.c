@@ -3,9 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "erros.h"
 #include "interpreter.h"
-
-int erros_execucao = 0;
 
 typedef struct Variavel
 {
@@ -79,10 +78,8 @@ static int entrar_chamada(const char *nome, int linha)
     int limite = obter_limite_recursao();
     if (profundidade_chamadas >= limite)
     {
-        fprintf(stderr,
-                "Erro de execucao [linha %d]: limite de profundidade de %d chamadas excedido na funcao '%s'\n",
-                linha, limite, nome);
-        erros_execucao++;
+        reportar_erro(FASE_EXECUCAO, linha, "limite de profundidade de %d chamadas excedido na funcao '%s'",
+                      limite, nome);
         abortou = 1;
         return 0;
     }
@@ -258,9 +255,7 @@ static Valor executar_atribuicao(ASTNode *no)
     Valor *guardado = atribuir_variavel(alvo->strval, valor);
     if (guardado == NULL)
     {
-        fprintf(stderr, "Erro de execucao [linha %d]: variavel '%s' nao encontrada\n",
-                no->line, alvo->strval);
-        erros_execucao++;
+        reportar_erro(FASE_EXECUCAO, no->line, "variavel '%s' nao encontrada", alvo->strval);
         return valor;
     }
 
@@ -300,9 +295,7 @@ static int executar_scanf(ASTNode *chamada, int usa_retorno)
         ASTNode *argumento = indice_arg < chamada->num_children ? chamada->children[indice_arg++] : NULL;
         if (argumento == NULL || argumento->type != NODE_ADDR)
         {
-            fprintf(stderr, "Erro de execucao [linha %d]: scanf espera um argumento com '&' para cada especificador\n",
-                    chamada->line);
-            erros_execucao++;
+            reportar_erro(FASE_EXECUCAO, chamada->line, "scanf espera um argumento com '&' para cada especificador");
             abortou = 1;
             return lidos;
         }
@@ -310,9 +303,7 @@ static int executar_scanf(ASTNode *chamada, int usa_retorno)
         Valor *destino = ler_variavel(argumento->strval);
         if (destino == NULL)
         {
-            fprintf(stderr, "Erro de execucao [linha %d]: variavel '%s' nao encontrada\n",
-                    chamada->line, argumento->strval);
-            erros_execucao++;
+            reportar_erro(FASE_EXECUCAO, chamada->line, "variavel '%s' nao encontrada", argumento->strval);
             abortou = 1;
             return lidos;
         }
@@ -341,11 +332,9 @@ static int executar_scanf(ASTNode *chamada, int usa_retorno)
                 return (resultado == EOF && lidos == 0) ? EOF : lidos;
 
             if (resultado == EOF)
-                fprintf(stderr, "Erro de execucao [linha %d]: fim da entrada no scanf\n", chamada->line);
+                reportar_erro(FASE_EXECUCAO, chamada->line, "fim da entrada no scanf");
             else
-                fprintf(stderr, "Erro de execucao [linha %d]: entrada invalida para %%%c no scanf\n",
-                        chamada->line, *p);
-            erros_execucao++;
+                reportar_erro(FASE_EXECUCAO, chamada->line, "entrada invalida para %%%c no scanf", *p);
             abortou = 1;
             return lidos;
         }
@@ -388,7 +377,7 @@ Valor interpretarNo(ASTNode *no)
         {
             fprintf(stderr, "Erro interno [linha %d]: printf dentro de expressao nao suportado na execucao\n",
                     no->line);
-            erros_execucao++;
+            contar_erro(FASE_EXECUCAO);
             abortou = 1;
         }
         else
@@ -400,9 +389,7 @@ Valor interpretarNo(ASTNode *no)
         Valor *var = ler_variavel(no->strval);
         if (var == NULL)
         {
-            fprintf(stderr, "Erro de execucao [linha %d]: variavel '%s' sem valor\n",
-                    no->line, no->strval);
-            erros_execucao++;
+            reportar_erro(FASE_EXECUCAO, no->line, "variavel '%s' sem valor", no->strval);
             resultado.tipo = TIPO_INT;
             resultado.como.i = 0;
             break;
@@ -497,8 +484,7 @@ Valor interpretarNo(ASTNode *no)
         {
             if (b == 0)
             {
-                fprintf(stderr, "Erro de execucao [linha %d]: divisao por zero\n", no->line);
-                erros_execucao++;
+                reportar_erro(FASE_EXECUCAO, no->line, "divisao por zero");
                 abortou = 1;
                 resultado.como.i = 0;
             }
@@ -509,8 +495,7 @@ Valor interpretarNo(ASTNode *no)
         {
             if (b == 0)
             {
-                fprintf(stderr, "Erro de execucao [linha %d]: divisao por zero\n", no->line);
-                erros_execucao++;
+                reportar_erro(FASE_EXECUCAO, no->line, "divisao por zero");
                 abortou = 1;
                 resultado.como.i = 0;
             }
@@ -561,7 +546,7 @@ Valor interpretarNo(ASTNode *no)
     default:
         fprintf(stderr, "Erro interno [linha %d]: no %s nao suportado na execucao\n",
                 no->line, nome_tipo_no(no->type));
-        erros_execucao++;
+        contar_erro(FASE_EXECUCAO);
         abortou = 1;
         break;
     }
@@ -573,9 +558,7 @@ static ASTNode *proximo_argumento_printf(ASTNode *chamada, int *indice_arg)
 {
     if (*indice_arg >= chamada->num_children)
     {
-        fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n",
-                chamada->line);
-        erros_execucao++;
+        reportar_erro(FASE_EXECUCAO, chamada->line, "printf com menos argumentos do que especificadores");
         abortou = 1;
         return NULL;
     }
@@ -617,9 +600,7 @@ static void imprimir_texto(const char *texto)
 
 static void erro_tipo_printf(ASTNode *chamada, char especificador, const char *esperado)
 {
-    fprintf(stderr, "Erro de execucao [linha %d]: %%%c do printf espera %s\n",
-            chamada->line, especificador, esperado);
-    erros_execucao++;
+    reportar_erro(FASE_EXECUCAO, chamada->line, "%%%c do printf espera %s", especificador, esperado);
     abortou = 1;
 }
 
@@ -737,9 +718,7 @@ static int passou_do_limite(long *voltas, int linha)
     (*voltas)++;
     if (*voltas <= limite_iteracoes())
         return 0;
-    fprintf(stderr, "Erro de execucao [linha %d]: limite de %ld iteracoes excedido\n",
-            linha, limite_iteracoes());
-    erros_execucao++;
+    reportar_erro(FASE_EXECUCAO, linha, "limite de %ld iteracoes excedido", limite_iteracoes());
     abortou = 1;
     return 1;
 }
@@ -828,7 +807,7 @@ static void executar_comando(ASTNode *comando)
     default:
         fprintf(stderr, "Erro interno [linha %d]: no %s nao suportado na execucao\n",
                 comando->line, nome_tipo_no(comando->type));
-        erros_execucao++;
+        contar_erro(FASE_EXECUCAO);
         abortou = 1;
         break;
     }
@@ -888,9 +867,7 @@ static Valor chamar_funcao(ASTNode *chamada)
     ASTNode *funcao = buscar_funcao(chamada->strval);
     if (funcao == NULL)
     {
-        fprintf(stderr, "Erro de execucao [linha %d]: funcao '%s' nao encontrada\n",
-                chamada->line, chamada->strval);
-        erros_execucao++;
+        reportar_erro(FASE_EXECUCAO, chamada->line, "funcao '%s' nao encontrada", chamada->strval);
         abortou = 1;
         return resultado;
     }

@@ -3,13 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ast.h"
+#include "erros.h"
 #include "parser.tab.h"
 
-int erros_lexicos = 0;
-
 static void erro_lexico(const char *msg, const char *lexema, int linha) {
-    fprintf(stderr, "Erro lexico [linha %d]: %s '%s'\n", linha, msg, lexema);
-    erros_lexicos++;
+    reportar_erro(FASE_LEXICA, linha, "%s '%s'", msg, lexema);
 }
 
 /* texto inclui as aspas simples, ex.: 'a' ou '\n' */
