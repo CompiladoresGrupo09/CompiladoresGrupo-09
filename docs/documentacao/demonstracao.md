@@ -324,8 +324,10 @@ Semantica  0 erro(s)
 Execucao   0 erro(s)
 ```
 
-Os arquivos `.esperado` foram escritos manualmente a partir dos cenários, sem usar apenas `--gerar`. A execução da suíte e a conferência desses arquivos contra o interpretador ainda precisam ser feitas em um ambiente com `make`, `gcc`, `flex` e `bison`:
+Os arquivos `.esperado` foram escritos manualmente a partir dos cenários e conferidos pela suíte, não apenas gerados com `--gerar`. Em `src/`, com `make`, `gcc`, `flex` e `bison` do MSYS2 no `PATH`, foi executado:
 
 ```bash
-make test
+make clean && make test
 ```
+
+Resultado: `67 passaram, 0 falharam (total 67)`.
