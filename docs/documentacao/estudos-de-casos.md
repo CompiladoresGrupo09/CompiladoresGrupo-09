@@ -1,10 +1,10 @@
 # Estudos de Casos
 
-Para validar o interpretador de ponta a ponta, cada integrante escreveu um programa C que usa uma parte diferente do núcleo da linguagem. Juntos, os programas passam por todas as construções que prometemos em [Definição da Linguagem](definicao-da-linguagem.md): tipos `int`, `float` e `char`, decisões, laços, funções, recursão, escopo, `printf` e `scanf`.
+Para validar o interpretador de ponta a ponta, cada integrante escreveu um programa C que usa uma parte diferente do núcleo da linguagem. Juntos, os programas passam por todas as construções que prometemos em [Definição da Linguagem](/documentacao/definicao-da-linguagem.md): tipos `int`, `float` e `char`, decisões, laços, funções, recursão, escopo, `printf` e `scanf`.
 
 Cada cenário tem um arquivo `.entrada`, com o que o usuário digitaria, e um `.esperado`, com a saída correta. Conferimos os valores à mão, ou com o mesmo programa compilado com `gcc`, antes de colocar o caso na suíte. Também escrevemos, para cada programa, um caso inválido que mostra o interpretador acusando um erro.
 
-O estudo de caso principal, usado na demonstração, continua sendo o **organizador de compras** (`tests/validos/organizador_compras.c`), descrito em [Definição da Linguagem](definicao-da-linguagem.md) e no [Roteiro de Demonstração](demonstracao.md).
+O estudo de caso principal, usado na demonstração, continua sendo o **organizador de compras** (`tests/validos/organizador_compras.c`), descrito em [Definição da Linguagem](/documentacao/definicao-da-linguagem.md) e no [Roteiro de Demonstração](/documentacao/demonstracao.md).
 
 | Estudo de caso | Responsável | O que ele valida principalmente | Situação |
 |---|---|---|---|
