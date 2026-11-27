@@ -48,7 +48,7 @@ O conflito clássico de `if (a) if (b) x; else y;` é saber a qual `if` o `else`
 * **Justificativa:** o núcleo obrigatório inclui blocos e funções com parâmetros. Com lista plana, uma variável declarada dentro de um `if` continuaria visível depois do bloco, e `int a; { int a; }`, que é C válido, seria rejeitado como redeclaração. O problema está registrado em `problemas-e-solucoes.md`.
 * **Implementação:** issue #22, PR #46; testes `tests/validos/escopo_shadowing.c`, `tests/invalidos/redeclaracao_mesmo_escopo.c` e `tests/invalidos/variavel_nao_declarada.c` (PR #50).
 
-## Análise semântica inicial — declarações e escopo (S2-06)
+## Análise semântica inicial: declarações e escopo (S2-06)
 
 * **Objetivo:** iniciar a verificação semântica recursiva sobre a AST gerada pelo `parser.y` (apoiando-se na pilha de escopos da tabela de símbolos de S2-05), cobrindo o marco do **P1** com detecção de variáveis não declaradas, redeclaração no mesmo escopo e controle de escopo léxico.
 * **Regras adotadas:**
@@ -210,3 +210,11 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
   * argumentos sobrando são ignorados, como no C.
 * **Erros de execução (código 5, com o relatório):** argumento faltando para um especificador, `%s` com número e `%d`/`%f`/`%c` com texto. Antes, o argumento faltando encerrava o programa com `exit(5)` sem mostrar o relatório; agora segue o mesmo caminho dos outros erros de execução.
 * **Implementação:** issue #89.
+
+## Diferenciais: só os testes mais extensos (S7-01)
+
+* **Decisão:** dos três diferenciais da [Definição da Linguagem](/documentacao/definicao-da-linguagem.md), fizemos só o **diferencial 2, testes automatizados mais extensos**. Decidimos em grupo, em 27/11/2026, não fazer a coluna nas mensagens de erro (diferencial 1, issue #99), os vetores 1D (diferencial 3) nem o relatório de erros unificado (issue #97).
+* **O que foi feito no diferencial 2:** a suíte do núcleo, com saída esperada em todos os casos e a tabela de cobertura em `tests/README.md` (PR #126), os casos-limite (PR #129) e a lista completa de erros de execução (PR #130). São 88 testes, todos comparando a saída.
+* **Por que os outros ficaram de fora:** o núcleo está completo e testado, e as entrevistas são em 30/11 e 02/12. A coluna nas mensagens e o relatório unificado mudariam todas as mensagens de erro e os 88 arquivos `.esperado` às vésperas da entrega, com risco de quebrar o que já funciona. Os vetores mexeriam no parser, na tabela de símbolos, no semântico e no interpretador ao mesmo tempo. Preferimos entregar um núcleo sólido a um diferencial pela metade.
+* **Limitações que ficam:** as mensagens de erro mostram a linha, mas não a coluna; vetores continuam recusados com a mensagem "construcao fora do escopo"; cada fase continua escrevendo as próprias mensagens, todas no mesmo formato `Erro <fase> [linha N]: ...`.
+* **Implementação:** issue #98.

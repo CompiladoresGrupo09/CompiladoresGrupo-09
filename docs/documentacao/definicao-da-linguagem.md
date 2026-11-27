@@ -23,6 +23,8 @@ com uma mensagem explícita.
 2. Testes automatizados mais extensos (cobrir mais casos-limite do núcleo, tratando isso como parte da qualidade do núcleo, não como "extra")
 3. Vetores/arrays 1D (só se sobrar bastante tempo; exige mudanças em parser, tabela de símbolos e semântica)
 
+**O que decidimos no fim (27/11/2026):** fizemos só o diferencial 2, com 88 testes que comparam a saída do programa. A coluna nas mensagens de erro e os vetores ficaram de fora, de propósito, para não arriscar o núcleo às vésperas da entrega: as mensagens mostram só a linha, e vetores continuam recusados com a mensagem "construcao fora do escopo". O motivo está em [Decisões Técnicas](/documentacao/decisoes-tecnicas.md).
+
 ## Deliberadamente fora de escopo, mesmo com um mês
 
 - Otimizações (dobra de constantes etc.)
