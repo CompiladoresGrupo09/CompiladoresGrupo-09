@@ -23,7 +23,7 @@ com uma mensagem explícita.
 2. Testes automatizados mais extensos (cobrir mais casos-limite do núcleo, tratando isso como parte da qualidade do núcleo, não como "extra")
 3. Vetores/arrays 1D (só se sobrar bastante tempo; exige mudanças em parser, tabela de símbolos e semântica)
 
-**O que decidimos no fim (27/11/2026):** fazer o diferencial 2, já entregue com 88 testes que comparam a saída do programa, junto com o relatório de erros unificado, com a Mariana. A coluna nas mensagens de erro e os vetores ficaram de fora, de propósito, para não arriscar o núcleo no dia da entrega: as mensagens mostram só a linha, e vetores continuam recusados com a mensagem "construcao fora do escopo". O motivo está em [Decisões Técnicas](/documentacao/decisoes-tecnicas.md).
+**O que decidimos no fim (27/11/2026):** fazer o diferencial 2, já entregue com 88 testes que comparam a saída do programa, junto com o relatório de erros unificado, feito pelo Eduardo (PR #131), em que as quatro fases reportam os erros por um único módulo. A coluna nas mensagens de erro e os vetores ficaram de fora, de propósito, para não arriscar o núcleo no dia da entrega: as mensagens mostram só a linha, e vetores continuam recusados com a mensagem "construcao fora do escopo". O motivo está em [Decisões Técnicas](/documentacao/decisoes-tecnicas.md).
 
 ## Deliberadamente fora de escopo, mesmo com um mês
 
@@ -116,3 +116,4 @@ Outros exemplos com entrada e saída reais estão no `README.md` (seção "Exemp
 |------|--------|-----------|-------|
 | 05/09/2026 | 1.0 | Criação da página Definição da Linguagem | Brenda |
 | 23/11/2026 | 1.1 | Revisão da página Definição da Linguagem | Mariana |
+| 27/11/2026 | 1.2 | Registro da decisão final sobre os diferenciais | Brenda |

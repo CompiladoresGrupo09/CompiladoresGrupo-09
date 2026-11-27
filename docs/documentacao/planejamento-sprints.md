@@ -192,7 +192,7 @@ Parte desse trabalho ficou pronta em 08/11, mas as issues só foram fechadas em 
 - **Documentação:** registramos as decisões da S5-01, S5-02 e S5-03 e atualizamos as limitações e os problemas resolvidos (PR #122).
 
 **Pendente, e por quê:**
-- **Tabela de cobertura (S5-06, issue #92):** os testes existem e passam; falta escrever qual teste cobre cada item do núcleo.
+- **Tabela de cobertura (S5-06, issue #92):** os testes existem e passam; falta escrever qual teste cobre cada item do núcleo. Entregue depois, na Sprint 6 (PR #126).
 - **Decisão do `scanf` (S5-04):** o que fazer no fim da entrada e com entrada inválida está implementado, mas ainda não está escrito em `decisoes-tecnicas.md`.
 
 **Issues fechadas:**
@@ -217,10 +217,12 @@ A issue #88 (S5-02, limite de recursão, PR #120, Giovana) já está na `Dev` e 
 **Entregue:**
 - **Estudos de caso:** em vez de testes de integração soltos, cada integrante escreveu um programa completo e validou o interpretador com ele: boletim escolar (Mariana, PR #123), calculadora de números (Eduardo, PR #125) e controle de temperatura (Brenda, PR #121). O caixa eletrônico (Giovana, issue #117) está em andamento. Os programas e os resultados estão em [Estudos de Casos](/documentacao/estudos-de-casos.md).
 - **Bug achado pelos estudos de caso:** a calculadora de números mostrou que a divisão por zero exibia o erro mas deixava o programa continuar. Corrigimos para a divisão por zero interromper a execução, como os outros erros (issue #124, PR #125).
+- **Testes mais extensos (diferencial 2):** a suíte do núcleo com saída esperada em todos os casos e a tabela de cobertura em `tests/README.md` (S5-06, PR #126), os casos-limite (S7-03, PR #129) e a lista completa de erros de execução, com o resto por zero (S6-02, PR #130). São 88 testes.
+- **Relatório de erros unificado:** as quatro fases passaram a reportar os erros por um único módulo, `erros.c`, sem mudar o texto das mensagens (S6-08, issue #97, PR #131, Eduardo).
 - **Documentação:** limitações, problemas resolvidos e roteiro de demonstração atualizados (PR #122 e branch `docs-fechamento-final`).
 
 **Pendente, e por quê:**
-- **Otimizações e diferenciais:** decidimos priorizar um núcleo completo e testado. Nenhuma otimização foi implementada, e a escolha dos diferenciais ainda vai ser feita em grupo (S7-01, issue #98).
+- **Otimizações e diferenciais:** decidimos priorizar um núcleo completo e testado, e nenhuma otimização foi implementada. Dos diferenciais, decidimos em grupo em 27/11 fazer os testes mais extensos e o relatório unificado; a coluna nas mensagens de erro e os vetores ficaram de fora, para não arriscar o núcleo no dia da entrega (S7-01, issue #98, explicado em [Decisões Técnicas](/documentacao/decisoes-tecnicas.md)).
 - **Versão candidata à entrega:** depende de levar a `Dev` para a `main` e de fechar o README (S7-04, issue #101).
 
 ## Sprint 7: Entrevistas finais e encerramento
@@ -281,3 +283,4 @@ As datas são as exibidas pelo GitHub; os PRs #56 a #64 aparecem com 01/10 no Gi
 | 29/09/2026 | 1.3 | Tabela de papéis com as entregas reais de P3 e P4 | Brenda |
 | 01/10/2026 | 2.0 | Replanejamento completo e renumeração das sprints, Sprint 3 preenchida, plano da Sprint 4, issues fechadas por sprint e histórico de PRs (S3-02) | Brenda |
 | 26/11/2026 | 2.1 | Sprints 4, 5 e 6 preenchidas, com o replanejamento de 26/10, as pendências e as issues fechadas (S4-10 e S5-07) | Brenda |
+| 27/11/2026 | 2.2 | Sprint 6 com os testes mais extensos, o relatório unificado e a decisão dos diferenciais | Brenda |
