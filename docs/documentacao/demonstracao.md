@@ -308,7 +308,7 @@ Como a suíte associa cada `.entrada` ao `.c` de mesmo nome, os cenários usam c
 | Fim da entrada após um depósito, antes de `0` | `validos/estudo_caixa_fim_entrada.c` | O `scanf` da condição do `while` retorna EOF, o laço termina e o programa encerra sem erro; código 0 |
 | Chamada de `sacar` com dois argumentos | `invalidos/estudo_caixa_argumentos_invalidos.c` | `Erro semantico [linha 14]: funcao 'sacar' esperava 1 argumento(s), recebeu 2`; código 4 |
 
-Saída esperada do cenário normal, rodado em `src/`:
+Saída observada do cenário normal, rodado em `src/`:
 
 ```text
 $ ./interpretador ../tests/validos/estudo_caixa.c < ../tests/validos/estudo_caixa.entrada
@@ -330,4 +330,4 @@ Os arquivos `.esperado` foram escritos manualmente a partir dos cenários e conf
 make clean && make test
 ```
 
-Resultado: `67 passaram, 0 falharam (total 67)`.
+Resultado: `67 passaram, 0 falharam (total 67)`. O mesmo comando também passou em um clone local limpo da branch `test/estudo-caixa`, com o mesmo resultado.
