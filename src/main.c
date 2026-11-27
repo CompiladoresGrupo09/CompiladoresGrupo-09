@@ -60,8 +60,9 @@ static void imprimir_relatorio(void)
 
 static void imprimir_uso(const char *programa)
 {
-    fprintf(stderr, "Uso: %s <arquivo.c> [--tokens | --ast | --tabela | --no-run]\n", programa);
+    fprintf(stderr, "Uso: %s <arquivo.c> [--limite-recursao N] [--tokens | --ast | --tabela | --no-run]\n", programa);
     fprintf(stderr, "  (sem flag)  pipeline completo: analises lexica, sintatica e semantica + execucao\n");
+    fprintf(stderr, "  --limite-recursao N define o limite de chamadas recursivas (padrao: 1000, maximo: 1000)\n");
     fprintf(stderr, "  --tokens    apenas a analise lexica, listando os tokens\n");
     fprintf(stderr, "  --ast       analises completas e impressao da AST, sem executar\n");
     fprintf(stderr, "  --tabela    analises completas e impressao da tabela de simbolos, sem executar\n");
@@ -149,6 +150,26 @@ int main(int argc, char **argv)
 
     for (int i = 1; i < argc; i++)
     {
+        if (strcmp(argv[i], "--limite-recursao") == 0)
+        {
+            if (i + 1 >= argc)
+            {
+                imprimir_uso(argv[0]);
+                return SAIDA_USO;
+            }
+
+            char *fim = NULL;
+            long limite = strtol(argv[++i], &fim, 10);
+            if (fim == argv[i] || *fim != '\0' || limite <= 0)
+            {
+                imprimir_uso(argv[0]);
+                return SAIDA_USO;
+            }
+
+            configurar_limite_recursao((int)limite);
+            continue;
+        }
+
         Modo flag = MODO_COMPLETO;
 
         if (strcmp(argv[i], "--tokens") == 0)
