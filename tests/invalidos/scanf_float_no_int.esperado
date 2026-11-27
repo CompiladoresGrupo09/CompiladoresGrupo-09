@@ -1,0 +1,8 @@
+a = 3
+Erro de execucao [linha 7]: entrada invalida para %d no scanf
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   1 erro(s)
