@@ -1,28 +1,28 @@
 # Decisões técnicas
 
-Registro de decisões e o porquê de cada uma — exigência do repositório conforme a Proposta de Trabalho.
+Aqui registramos as decisões que tomamos e o porquê de cada uma, como pede a Proposta de Trabalho.
 
 ## Metodologia: Scrum com sprints semanais
-Recomendação oficial da disciplina. Cronograma organizado em Sprints (Planning na segunda, Review na quarta), encaixado no ritmo já usado pelo curso.
+Seguimos a recomendação da disciplina e organizamos o cronograma em sprints (Planning na segunda, Review na quarta), no mesmo ritmo das aulas.
 
 ## AST construída diretamente no parser
-Diferente de um compilador (que gera código intermediário separado), o interpretador constrói a AST diretamente nas ações semânticas do `parser.y` (Bison). É essa AST que alimenta a análise semântica e a interpretação.
+Diferente de um compilador, que gera um código intermediário separado, o nosso interpretador monta a AST direto nas ações semânticas do `parser.y` (Bison). É essa AST que alimenta a análise semântica e a interpretação.
 
 ## Uso de `&` restrito ao `scanf`
 **Decisão:** o operador `&` só é aceito como argumento de `scanf`; usos em argumentos de outras funções são erro semântico.
 **Justificativa:** a gramática representa `& ID` apenas na regra `argumento: '&' ID`, para permitir leitura por referência no `scanf`. Como ponteiros estão fora do escopo da linguagem, essa sintaxe não deve ser interpretada como passagem geral de endereço para funções.
 
 ## Interpretação por percurso recursivo da AST
-Em vez de gerar código final, a execução acontece percorrendo a AST recursivamente (função `interpretarNo()`, definida na issue #31). É o que diferencia o módulo de execução de um compilador tradicional.
+Em vez de gerar código final, executamos o programa percorrendo a AST recursivamente (função `interpretarNo()`, criada na issue #31). É isso que diferencia o nosso módulo de execução de um compilador tradicional.
 
 ## Aplicação de estudo de caso: organizador de compras no mercado
-Escolhido um organizador de compras (soma preços lidos via `scanf` em loop e avisa se o total passou do orçamento) como programa de exemplo para exercitar o núcleo. Motivo: cobre variáveis, laço, condicional e E/S usando só recursos do núcleo obrigatório (seção 3 de [Definição da Linguagem](/documentacao/definicao-da-linguagem.md)), sem depender de nenhum diferencial (arrays, strings dinâmicas) que está fora de escopo.
+Escolhemos um organizador de compras (soma os preços lidos com `scanf` num laço e avisa se o total passou do orçamento) como programa de exemplo para exercitar o núcleo. Ele cobre variáveis, laço, condicional e entrada e saída usando só recursos do núcleo obrigatório (seção 3 de [Definição da Linguagem](/documentacao/definicao-da-linguagem.md)), sem depender de nenhum diferencial que está fora de escopo (arrays, strings dinâmicas).
 
 ## Estrutura de repositório: docs/ + src/ + tests/ na raiz
-Alinhada ao padrão usado nos exemplos do professor (pastas `docs/`/`src/` por unidade), adaptada para o projeto inteiro ser a "unidade", com `tests/` separado para casos válidos/inválidos.
+Seguimos o padrão dos exemplos do professor (pastas `docs/` e `src/` por unidade), mas tratando o projeto inteiro como a "unidade", com `tests/` separado para os casos válidos e inválidos.
 
 ## Papéis fixos com pares cruzados
-Pipeline sequencial (léxico → sintático/AST → semântico → interpretação), mas com pareamento cruzado (P1+P2, depois P3+P4, P5 circulando) para evitar silos de conhecimento — necessário porque a entrevista final é individual e cobra justificativa de qualquer parte do projeto.
+O pipeline é sequencial (léxico → sintático/AST → semântico → interpretação), mas trabalhamos em pares cruzados (P1+P2, depois P3+P4, com o P5 circulando) para ninguém ficar isolado num módulo só. Isso é importante porque, na entrevista final, qualquer um de nós pode ser perguntado sobre qualquer parte do projeto.
 
 ## Recuperação de erros sintáticos (S2-02)
 
@@ -32,7 +32,7 @@ Pipeline sequencial (léxico → sintático/AST → semântico → interpretaç�
 * **Implementação:** commit `daed43e` (PR #40), testado por `tests/invalidos/multiplos_erros_sintaticos.c`, que reporta 3 erros em linhas diferentes.
 
 ## Tratamento do dangling else (S2-03)
-O conflito clássico de `if (a) if (b) x; else y;` — a quem o `else` pertence — é resolvido pela precedência natural do Bison, que prefere deslocar (`shift`) o `else` para o `if` mais próximo sem `else`. É o comportamento padrão do C e não exigiu regra extra na gramática; o Bison emite 1 aviso de conflito shift/reduce esperado para isso, documentado em `gramatica.md`. Nenhuma ação adicional foi necessária além de reconhecer e documentar esse comportamento padrão.
+O conflito clássico de `if (a) if (b) x; else y;` é saber a qual `if` o `else` pertence. Resolvemos pela preferência natural do Bison, que desloca (`shift`) o `else` para o `if` mais próximo sem `else`. É o comportamento padrão do C e não exigiu regra extra na gramática; o Bison emite 1 aviso de conflito shift/reduce, que é esperado e está documentado em `gramatica.md`. Não precisamos fazer nada além de reconhecer e documentar esse comportamento.
 
 * **Alternativa descartada:** desambiguar com `%prec`/`%nonassoc` para silenciar o aviso. Produziria a mesma semântica com mais regras na gramática, sem ganho funcional.
 * **Evidência:** `bison -Wcounterexamples -d parser.y` mostra o único conflito da gramática, no token `ELSE`, com as derivações de *shift* e de *reduce* (saída anexada na issue #20). O teste `tests/validos/if_else_aninhado.c` (PR #56) comprova na AST que o `else` fica dentro do `if` interno.
@@ -48,41 +48,41 @@ O conflito clássico de `if (a) if (b) x; else y;` — a quem o `else` pertence 
 * **Justificativa:** o núcleo obrigatório inclui blocos e funções com parâmetros. Com lista plana, uma variável declarada dentro de um `if` continuaria visível depois do bloco, e `int a; { int a; }`, que é C válido, seria rejeitado como redeclaração. O problema está registrado em `problemas-e-solucoes.md`.
 * **Implementação:** issue #22, PR #46; testes `tests/validos/escopo_shadowing.c`, `tests/invalidos/redeclaracao_mesmo_escopo.c` e `tests/invalidos/variavel_nao_declarada.c` (PR #50).
 
-## Verificação de compatibilidade de tipos e conversão implícita (S2 - 07)
+## Verificação de compatibilidade de tipos e conversão implícita (S2-07)
 
 * **Decisão:** o interpretador recusa conversões implícitas com perda de informação, como atribuir uma expressão do tipo `float` a uma variável do tipo `int` (por exemplo: `int a; a = 1.5 + 2;`).
-* **Comportamento adotado:** emissão de erro semântico na linha da atribuição.
-* **Justificativa:** promover tipagem estrita e evitar truncamento silencioso de dados. A promoção no sentido inverso (`int` para `float`, em operações binárias mistas ou na atribuição a variáveis `float`) continua válida.
+* **Comportamento adotado:** erro semântico na linha da atribuição.
+* **Justificativa:** quisemos uma tipagem estrita, para os dados não serem truncados sem aviso. A promoção no sentido inverso (`int` para `float`, em operações binárias mistas ou na atribuição a variáveis `float`) continua válida.
 * **Limitação conhecida:** a linguagem não oferece conversão de `float` para `int` (não há suporte a cast na gramática). Essa limitação é intencional no escopo atual do projeto.
 * **Implementação:** PR #53 (issue #24), mesclado na `Dev`. Na verificação manual, a atribuição e a inicialização geravam mensagens diferentes para o mesmo erro; no PR #57 (issue #55) as duas foram unificadas em `atribuicao incompativel: conversao implicita de float para int nao permitida`, com os testes `tests/invalidos/erro_tipo_atribuicao.c` e `erro_tipo_inicializacao.c`.
 * **Status:** implementada e testada; segue marcada como provisória até a confirmação do grupo (ver "Pontos a decidir").
 
-## Atribuição formal dos papéis técnicos P1–P4
+## Atribuição formal dos papéis técnicos P1 a P4
 
-**Papéis confirmados pelo grupo em 01/10/2026 (S2-11, issue #28),** com base no que cada integrante de fato entregou:
+**Papéis que confirmamos em grupo em 01/10/2026 (S2-11, issue #28),** com base no que cada integrante de fato entregou:
 
 | Papel | Responsável |
 |---|---|
-| P1 — Léxico e P2 — Sintático/AST | Brenda Beatriz |
-| P3 — Semântico | Giovana Ferreira (tabela de símbolos) e Mariana Martins (tipos e compatibilidade) |
-| P4 — Interpretação | Eduardo Ribeiro Xavier |
+| P1 (Léxico) e P2 (Sintático/AST) | Brenda Beatriz |
+| P3 (Semântico) | Giovana Ferreira (tabela de símbolos) e Mariana Martins (tipos e compatibilidade) |
+| P4 (Interpretação) | Eduardo Ribeiro Xavier |
 | Integração (`main.c`) | Giovana Ferreira; pipeline integrado por Brenda Beatriz |
-| P5 — Integração, testes e documentação; líder dos formulários | Brenda Beatriz |
+| P5 (Integração, testes e documentação); líder dos formulários | Brenda Beatriz |
 | Scrum Master; suplente do líder | Henrique Fontenelle |
 
-**Justificativa:** a divisão original previa uma pessoa por papel, com pares cruzados (P1+P2, P3+P4). Na prática, P1 e P2 foram entregues pela mesma pessoa e P3 foi dividido entre duas, por tipo de verificação. Formalizar a divisão real, em vez da planejada, deixa claro o que cada um defende na entrevista.
+**Justificativa:** a divisão original previa uma pessoa por papel, com pares cruzados (P1+P2, P3+P4). Na prática, P1 e P2 foram entregues pela mesma pessoa e P3 foi dividido entre duas, por tipo de verificação. Preferimos registrar a divisão real, e não a planejada, para ficar claro o que cada um defende na entrevista.
 
 Histórico do andamento de cada papel até a formalização:
 
-- `scanner.l` (**P1 — Léxico**) e `parser.y` com construção de AST (**P2 — Sintático/AST**) já foram implementados e mesclados, ambos pelo mesmo autor no repositório (Brenda Beatriz).
-- **Integração (`main.c`) — concluída:** implementada, revisada e mesclada (issue #18 / PR #39), com validação manual completa.
-- **P3 (Semântico / tabela de símbolos) — em andamento avançado:**
+- `scanner.l` (**P1, Léxico**) e `parser.y` com construção de AST (**P2, Sintático/AST**) já foram implementados e mesclados, ambos pelo mesmo autor no repositório (Brenda Beatriz).
+- **Integração (`main.c`), concluída:** implementada, revisada e mesclada (issue #18 / PR #39), com validação manual completa.
+- **P3 (Semântico / tabela de símbolos), em andamento avançado:**
   - Tabela de símbolos (issue #22) implementada e mesclada na `Dev` pelo PR #46, com testes de escopo, shadowing, redeclaração e variável não declarada (`tests/validos/escopo_shadowing.c`, `tests/invalidos/redeclaracao_mesmo_escopo.c`, `tests/invalidos/variavel_nao_declarada.c`).
   
   - Verificação de declaração e uso (S2-06, issue #23): implementada pelo PR #46 e validada pelos testes `variavel_nao_declarada.c`, `redeclaracao_mesmo_escopo.c` e `escopo_shadowing.c` (make test em 24/09/2026); issue encerrada.
 
   - Campo de tipo na AST e verificação de compatibilidade de tipos (S2-07, issue #24): concluída e mesclada na `Dev` pelo PR #53, trabalho em par (AST + semântico).
-- **P4 (Interpretação) — iniciada:** issue #31 (esqueleto do interpretador, `interpretarNo`); avaliação de expressões mesclada na `Dev` pelo PR #52, de @EduardoRibeiroXavier.
+- **P4 (Interpretação), iniciada:** issue #31 (esqueleto do interpretador, `interpretarNo`); avaliação de expressões mesclada na `Dev` pelo PR #52, de @EduardoRibeiroXavier.
 - **Integração ponta a ponta (S3-01, issue #32):** `main.c` encadeando as fases, com as flags `--tokens`/`--ast`/`--tabela` e o relatório de erros, mesclado pelo PR #62 (ver seção própria abaixo).
 - **S2-05 (tabela de símbolos com escopos aninhados):** política registrada na seção própria acima.
 - **S2-07 (política de conversão implícita de tipos):** decisão registrada na seção própria acima, aguardando confirmação do grupo.
@@ -105,10 +105,10 @@ Histórico do andamento de cada papel até a formalização:
 * **Líder:** **Brenda Beatriz** é a responsável por enviar os formulários de apresentação. Decisão tomada na issue #6, fechada em 07/09/2026, e registrada por escrito em 01/10/2026 (issue #30).
 * **Suplente:** **Henrique Fontenelle**. Se a líder não puder enviar, o suplente assume, **avisando o professor antes do envio**.
 * **Justificativa:** a Proposta de Trabalho determina que somente o líder da equipe envia o formulário, e o não envio no prazo zera a nota da apresentação para a equipe inteira. Com uma única pessoa responsável, qualquer imprevisto vira um ponto único de falha; o suplente é o plano B.
-* **Formulário P1:** `https://forms.office.com/r/MyKh4HiAAu`, prazo 23/09/2026 às 23h59 — **enviado pela líder em 22/09/2026**, dentro do prazo.
+* **Formulário P1:** `https://forms.office.com/r/MyKh4HiAAu`, prazo 23/09/2026 às 23h59. **Enviado pela líder em 22/09/2026**, dentro do prazo.
 
 ## Acesso do professor ao repositório (RESOLVIDO)
-Não houve uma decisão nova do professor: a política de não participar dos repositórios das equipes já era dele desde o início do semestre. Havia apenas uma dúvida remanescente no grupo sobre isso, esclarecida diretamente com ele em **01/09/2026** — ele confirmou que não tem interesse em fazer parte do repositório da equipe neste momento. Não é necessário adicioná-lo como colaborador.
+Não houve uma decisão nova do professor: desde o início do semestre a política dele é não participar dos repositórios das equipes. Ainda tínhamos uma dúvida sobre isso, e perguntamos direto a ele em **01/09/2026**. Ele confirmou que não tem interesse em fazer parte do repositório da equipe neste momento, então não precisamos adicioná-lo como colaborador.
 
 ## Regras de branch
 `main` sempre compilável. Cada pessoa/par trabalha em branch de feature (`feat/scanner`, `feat/parser`, `feat/interpreter`...) e faz merge após revisão. `main` é protegida no GitHub, exigindo Pull Request com pelo menos 1 aprovação.
@@ -129,32 +129,23 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Implementação:** PR #62; roteiro de uso em `demonstracao.md`.
 ## Testes com saida esperada e entrada redirecionada para todos os casos validos (S4-01)
 
-* **Decisão:** Arquitetura e Validação Rigorosa da Suíte de Testes (Sprint 4)
-
-* **Contexto:** A revisão inicial da suíte de testes (run_tests.sh) revelou que o sistema de validação avaliava apenas o código de final, permitindo que blocos essenciais de execução, sendo elses: atribuições, condicionais (if/else) e laços de repetição pudessem ser ignorados pelo interpretador sem gerar falhas.
-
-- Validação de Saída: ".esperado" escritos manualmente com base no comportamento legítimo da linguagem C para todos os casos válidos.
-
-- Redirecionamento de Entrada (.entrada): ".entrada" para simular fluxos interativos de leitura via scanf, substituindo o comportamento anterior que fixava a entrada em /dev/null.
-
-- Isolamento de Pendências: Utilização de um arquivo "tests/pendentes.txt" para isolar temporariamente os casos dependentes de construções complexas ainda em desenvolvimento, mantendo a pipeline de CI transparente.
-
-- Compatibilidade Multiplataforma (Windows/Linux): Inclusão de rotinas automáticas de normalização de finais de linha (tr -d '\r') no script de execução para evitar conflitos entre o ambiente de desenvolvimento local em Windows da equipe e o servidor de CI baseado em Linux.
-
-* **Consequências:** A suíte de testes transformou-se numa verdadeira rede de segurança para o núcleo do interpretador, fornecendo feedback transparente sobre o progresso das Sprints 4 e 5.
+* **Decisão:** a suíte passou a conferir também o que o programa imprime, e não só o código de saída.
+* **Contexto:** na revisão da suíte (`run_tests.sh`), percebemos que a maioria dos casos válidos só tinha o código de saída conferido. Com isso, atribuições, condicionais (`if`/`else`) e laços podiam ser ignorados pelo interpretador sem nenhum teste falhar.
+* **O que mudamos:**
+  * **Saída esperada:** escrevemos à mão o `.esperado` de todos os casos válidos, com a saída que um programa C de verdade daria.
+  * **Entrada redirecionada:** um arquivo `.entrada` faz o papel do que o usuário digitaria no `scanf`. Antes, a entrada era sempre `/dev/null`.
+  * **Casos pendentes:** o arquivo `tests/pendentes.txt` marcava os casos que dependiam de partes ainda não implementadas, para a CI continuar mostrando com clareza o que passava e o que faltava.
+  * **Windows e Linux:** o script remove o `\r` do fim das linhas (`tr -d '\r'`) antes de comparar, porque desenvolvemos no Windows e a CI roda no Linux.
+* **Consequência:** a suíte virou uma rede de segurança de verdade para o interpretador, e mostrou com clareza o que ainda faltava nas Sprints 4 e 5.
 
 ## Correção de robustez e escapes no printf (S4-02)
 
-* **Decisão:** Correção de três defeitos críticos na função `executar_printf` em `src/interpreter.c`:
-  1. **Validação rigorosa de argumentos:** Validação do índice de argumentos (`indice_arg < num_children`) para impedir leituras fora do vetor da AST, emitindo o erro padronizado `Erro de execucao [linha N]: printf com menos argumentos do que especificadores` com código de saída `5`.
-
-  2. **Tratamento de `%` final:** Ajuste no avanço do ponteiro de formato para suportar strings terminadas com `%` literal (como `printf("100%");`) sem aceder a memória inválida após o terminador nulo (`\0`).
-  
-  3. **Decodificação de sequências de escape:** Implementação de rotina para traduzir sequências literais como `\n`, `\t`, `\\`, `\"` e `\0` para os carateres de controlo reais no momento da impressão.
-
-* **Justificativa:** Garantir a estabilidade do interpretador em tempo de execução e alinhar o comportamento do `printf` às especificações do núcleo da linguagem.
-
-* **Testes associados:** Criação de testes dedicados em `tests/invalidos/printf_argumentos_insuficientes.c` (validando o erro de execução) e em `tests/validos/printf_escape.c` e `printf_porcentagem_final.c` (validando a saída correta com `make test`).
+* **Decisão:** corrigimos três defeitos da função `executar_printf`, em `src/interpreter.c`:
+  1. **Argumentos faltando:** antes de ler um argumento, conferimos se ele existe (`indice_arg < num_children`). Assim o `printf` não lê fora da AST e mostra o erro `Erro de execucao [linha N]: printf com menos argumentos do que especificadores`, com código de saída 5.
+  2. **`%` no fim do texto:** ajustamos o avanço no texto do formato para aceitar um `%` sozinho no final (como em `printf("100%");`), sem passar do fim da string (`\0`).
+  3. **Sequências de escape:** `\n`, `\t`, `\\`, `\"` e `\0` passaram a ser trocadas pelos caracteres de verdade na hora da impressão.
+* **Justificativa:** os dois primeiros defeitos liam memória inválida e podiam derrubar o programa; o terceiro fazia todo programa com `\n` imprimir errado.
+* **Testes:** `tests/invalidos/printf_argumentos_insuficientes.c` confere o erro de execução, e `tests/validos/printf_escape.c` e `printf_porcentagem_final.c` conferem a saída certa.
 
 ## Ambiente de execução do interpretador (S4-03)
 
@@ -193,7 +184,7 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 
 ## Formato padrão das mensagens de erro
 
-* **Decisão:** toda mensagem de erro segue o formato `Erro <fase> [linha N]: <descricao>` — por exemplo, `Erro semantico [linha 4]: ...` — e é escrita **sem acentos**.
+* **Decisão:** toda mensagem de erro segue o formato `Erro <fase> [linha N]: <descricao>` (por exemplo, `Erro semantico [linha 4]: ...`) e é escrita **sem acentos**.
 * **Justificativa:** o formato único deixa claro em que fase e em que linha o problema está, e permite que os testes comparem as mensagens nos arquivos `.esperado`. Sem acentos, a saída aparece igual em qualquer terminal, independentemente da codificação configurada.
 * **Implementação:** mensagens em `scanner.l`, `parser.y`, `semantic.c`, `tabela.c` e `interpreter.c`; a última mensagem com acento foi corrigida no PR #57.
 
