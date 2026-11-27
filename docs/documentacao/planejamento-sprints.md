@@ -26,7 +26,7 @@ Planejado × entregue, por sprint. Atualizar ao final de cada sprint (exigência
 | P2 — Sintático/AST | Brenda Beatriz implementou `parser.y` e a AST (PRs #16 e #42) | ✅ Implementado |
 | Integração (`main.c`) | Giovana Ferreira Santos (issue #18 / PR #39); pipeline com flags e relatório por Brenda Beatriz (S3-01, PR #62) | ✅ Implementado |
 | P3 — Semântico | Giovana Ferreira Santos (tabela de símbolos, issue #22, PR #46; recuperação de erros sintáticos, PR #40); Mariana Martins (tipos na AST e compatibilidade, PR #53) | ✅ Implementado (PRs #46 e #53) |
-| P4 — Interpretação | Eduardo Ribeiro Xavier (expressões, PR #52; ambiente de execução e controle de fluxo, PRs #81 e #83; `scanf` e `printf` com `%s`, PRs #111 e #114); Mariana Martins (correções do `printf`, PR #87); Brenda Beatriz (chamada de função e retorno, PR #115) | ✅ Implementado; limite de recursão em revisão (PR #120) |
+| P4 — Interpretação | Eduardo Ribeiro Xavier (expressões, PR #52; ambiente de execução e controle de fluxo, PRs #81 e #83; `scanf` e `printf` com `%s`, PRs #111 e #114); Mariana Martins (correções do `printf`, PR #87); Brenda Beatriz (chamada de função e retorno, PR #115) | ✅ Implementado, incluindo o limite de recursão (Giovana Ferreira Santos, PR #120) |
 | Líder / P5 — Integração, Testes, Documentação | Brenda Beatriz (testes, CI e documentação do P1: PRs #56–#64) | Ativo |
 | Scrum Master | Henrique Fontenelle (revisão e integração, decisões técnicas, sincronização `Dev`/`main`) | Ativo |
 
@@ -132,44 +132,96 @@ As issues S2-03 a S2-10 eram da Sprint 2 no planejamento original e foram conclu
 ## Sprint 4 — Interpretação completa: comandos, funções e E/S
 
 **Planejado:**
-- [ ] Executar comandos no interpretador: blocos, `if`/`else`, `while`, `for` e `return`
-- [ ] Chamadas de função com parâmetros, retorno e recursão
-- [ ] Migrar o armazenamento de variáveis do interpretador para cima da `TabelaSimbolos`, com escopos (limitação registrada em `decisoes-tecnicas.md`)
-- [ ] `printf` decodificando sequências de escape (`\n`, `\t`) e implementando `%s`; `scanf` lendo valores na execução
+- [x] Executar comandos no interpretador: blocos, `if`/`else`, `while`, `for` e `return` (S4-04, issue #73, PR #83)
+- [x] Chamadas de função com parâmetros, retorno e recursão. Ficou para a Sprint 5 (S5-01, issue #80, PR #115; limite de recursão na S5-02, issue #88, PR #120)
+- [x] Migrar o armazenamento de variáveis do interpretador para cima da `TabelaSimbolos`, com escopos. Mudamos de ideia: o interpretador ganhou um ambiente de execução próprio, separado da tabela (S4-03, issue #72, PR #81; o motivo está em `decisoes-tecnicas.md`)
+- [x] `printf` decodificando sequências de escape (`\n`, `\t`) e implementando `%s`; `scanf` lendo valores na execução. As escapes entraram na Sprint 4 (S4-02, issue #71, PR #87), e o `%s` e o `scanf` na Sprint 5 (PRs #114 e #111)
 - [ ] Mensagem de erro léxico específica para string não fechada
-- [ ] Novos casos de teste com saída esperada para programas que dependem de comandos (fatorial, organizador de compras com entrada)
+- [x] Novos casos de teste com saída esperada para programas que dependem de comandos (S4-01, issue #70, PRs #82 e #84)
 - [ ] Atualizar o site da documentação no GitHub Pages com os documentos da Sprint 3 e o histórico de sprints (S3-07, issue #51, vinda da Sprint 3)
-- [ ] Concluir as pendências do P1: tag `v0.1-p1` (S3-06) e README com integrantes e papéis reais (S2-11)
+- [x] Concluir as pendências do P1: tag `v0.1-p1` (S3-06, PR #69) e README com integrantes e papéis reais (S2-11, PR #68)
 - [ ] Confirmar em reunião as decisões provisórias: conversão implícita (S2-07), papéis P1/P2/P4 e fluxo de branches
 - [ ] Cada integrante conferir o próprio registro em `problemas-e-solucoes.md`
-- [ ] Processo: exigir aprovação antes do merge e ativar *Require status checks* (`build-e-testes`) nas regras de branch
+- [ ] Processo: exigir aprovação antes do merge e ativar *Require status checks* (`build-e-testes`) nas regras de branch (S4-09, issue #78)
 
-**Checkpoint:** organizador de compras executando de ponta a ponta, lendo os preços com `scanf` e decidindo dentro do orçamento.
+**Checkpoint:** organizador de compras executando de ponta a ponta, lendo os preços com `scanf` e decidindo dentro do orçamento. **Atingido na Sprint 5** (S5-05, issue #91, PR #113), porque dependia do `scanf` e das chamadas de função.
 
-**Entregue:** _(preencher ao final da sprint)_
+**Replanejamento de 26/10:** depois do P1, ficamos de 01/10 a 08/11 sem mesclar nenhum PR. Em 26/10 revisamos o código da `main` e descobrimos que a suíte passava sem o interpretador executar a maior parte dos programas: atribuição, `if`, `while`, `for` e `return` eram pulados sem aviso, e os testes válidos só conferiam o código de saída. A partir dessa revisão refizemos o backlog, com as issues S4-01 a S4-10 nos milestones do GitHub, e passamos as chamadas de função, o `scanf` e o resto do `printf` para a Sprint 5.
+
+**Entregue:**
+- **Testes:** escrevemos à mão os `.esperado` dos testes válidos e passamos a redirecionar um `.entrada` para a entrada padrão. O `tests/pendentes.txt` marcava os casos que ainda dependiam de implementação (S4-01, PRs #82 e #84).
+- **Interpretação:** ambiente de execução com pilha de escopos, atribuição e conversão para o tipo declarado (S4-03, PR #81); `if`/`else`, `while`, `for`, `return`, curto-circuito de `&&` e `||`, limite de iterações e erro interno no lugar dos comandos pulados sem aviso (S4-04, PR #83); `printf` sem ler fora da memória, com `%` no fim do texto e escapes decodificadas (S4-02, PR #87).
+- **Semântico:** passamos a recusar programa sem `main`, variável ou parâmetro `void`, `&` fora do `scanf` e `return` de tipo errado (S4-06, PR #85), e a conferir o tipo dos argumentos nas chamadas de função (S4-05, PR #112).
+- **Sintático:** ponteiros, vetores, structs, unions e `for` com declaração passaram a ser recusados com a mensagem "construcao fora do escopo", e a `gramatica.md` ficou igual ao `parser.y` (S4-07, PR #86).
+- **Integração:** flag `--no-run` e código de saída vindo do `return` do `main` (S4-08, PR #107).
+
+**Pendente, e por quê:**
+- **Mensagem para string não fechada:** não chegou a virar issue; está registrada como problema em aberto em `problemas-e-solucoes.md`.
+- **GitHub Pages (S3-07, issue #51):** vai junto com o fechamento dos documentos (S7-05, issue #102).
+
+**Issues fechadas:**
+
+| Issue | Descrição | PR | Responsáveis |
+|---|---|---|---|
+| #70 | S4-01: Testes com saída esperada e entrada redirecionada | PRs #82 e #84 | Mariana |
+| #71 | S4-02: `printf` com argumentos, `%` no fim e escapes | PR #87 | Mariana, Brenda |
+| #72 | S4-03: Ambiente de execução com escopos, atribuição e conversão | PR #81 | Eduardo |
+| #73 | S4-04: `if`/`else`, `while`, `for`, `return` e curto-circuito | PR #83 | Eduardo |
+| #74 | S4-05: Semântica de chamadas (existência, aridade e tipos) | PR #112 | Eduardo |
+| #75 | S4-06: Programa sem `main`, `void`, `&` e `return` | PR #85 | Giovana |
+| #76 | S4-07: Núcleo contra a gramática e construções fora do escopo | PR #86 | Giovana, Brenda |
+| #77 | S4-08: `--no-run` e código de saída do `return` do `main` | PR #107 | Eduardo |
+
+Parte desse trabalho ficou pronta em 08/11, mas as issues só foram fechadas em 18/11. Um PR mesclado na `Dev` não fecha a issue sozinho (ver `problemas-e-solucoes.md`), então fechamos pelo PR `Dev` para `main` (#110) ou à mão.
 
 ## Sprint 5 — Robustez, testes, documentação
 
 **Planejado:**
-- [ ] Revisar o que falta, priorizar robustez do núcleo > diferencial opcional
-- [ ] Ajustes finais, revisão cruzada de módulos
-- [ ] Suíte de testes cobrindo o núcleo inteiro (casos válidos e de erro)
-- [ ] Fechar `docs/documentacao/decisoes-tecnicas.md` e `docs/documentacao/problemas-e-solucoes.md`; atualizar README com exemplos
-- [ ] Ensaio da entrevista
+- [x] Revisar o que falta, priorizar robustez do núcleo > diferencial opcional. Fizemos isso na revisão de código de 26/10, que gerou o backlog das Sprints 4 a 8
+- [ ] Ajustes finais, revisão cruzada de módulos (S6-01, issue #94). Passamos a testar o PR de outro integrante antes de aprovar, mas a rodada formal de revisão cruzada ainda não aconteceu
+- [x] Suíte de testes cobrindo o núcleo inteiro (casos válidos e de erro). Desde o PR #115 todos os casos válidos executam e comparam a saída; falta a tabela de cobertura (S5-06, issue #92)
+- [ ] Fechar `docs/documentacao/decisoes-tecnicas.md` e `docs/documentacao/problemas-e-solucoes.md`; atualizar README com exemplos. O README ganhou dois exemplos reais (PR #113) e estamos fechando os documentos na S7-05 (issue #102)
+- [ ] Ensaio da entrevista (S8-01, issue #104)
 
-**Marco P2:** Interpretador completo (núcleo), testado, documentado; formulário P2 enviado pelo líder.
+**Marco P2:** Interpretador completo (núcleo), testado, documentado; formulário P2 enviado pelo líder. **Atingido em parte:** a Giovana enviou o formulário do P2, e o núcleo ficou completo e testado em 18/11, com chamadas de função, `scanf`, `printf` com `%s` e o organizador de compras rodando de ponta a ponta. O limite de recursão entrou depois, em 27/11.
 
-**Entregue:** _(preencher ao final da sprint)_
+**Entregue:**
+- **Interpretação:** chamada de função com escopo próprio, parâmetros por valor, retorno convertido para o tipo da função, variáveis globais e recursão, com marcações separadas para `return` e para erro (S5-01, PR #115); `printf` com `%s`, escapes dentro do `%s` e erro quando o tipo do argumento não combina, mostrando o relatório no lugar do antigo `exit(5)` (S5-03, PR #114); `scanf` com `%d`, `%f` e `%c`, erro sem `&` e tratamento do fim da entrada (S5-04, PR #111); limite de 1000 chamadas aninhadas, com erro claro em vez de travar o programa (S5-02, PR #120).
+- **Estudo de caso:** o organizador de compras rodando de ponta a ponta na suíte, com `.entrada` e `.esperado`, um segundo exemplo (total por quantidade) e os dois no README (S5-05, PR #113).
+- **Testes:** o `tests/pendentes.txt` ficou vazio, e corrigimos três `.esperado` antigos que estavam errados (PR #115).
+- **Documentação:** registramos as decisões da S5-01, S5-02 e S5-03 e atualizamos as limitações e os problemas resolvidos (PR #122).
+
+**Pendente, e por quê:**
+- **Tabela de cobertura (S5-06, issue #92):** os testes existem e passam; falta escrever qual teste cobre cada item do núcleo.
+- **Decisão do `scanf` (S5-04):** o que fazer no fim da entrada e com entrada inválida está implementado, mas ainda não está escrito em `decisoes-tecnicas.md`.
+
+**Issues fechadas:**
+
+| Issue | Descrição | PR | Responsáveis |
+|---|---|---|---|
+| #80 | S5-01: Chamada de função, parâmetros e retorno | PR #115 | Brenda |
+| #89 | S5-03: `printf` com `%s` e erros de tipo | PR #114 | Eduardo |
+| #90 | S5-04: `scanf` com `%d`, `%f` e `%c` | PR #111 | Eduardo |
+| #91 | S5-05: Estudo de caso do organizador de compras | PR #113 | Eduardo |
+
+A issue #88 (S5-02, limite de recursão, PR #120, Giovana) já está na `Dev` e fecha quando a `Dev` for para a `main`.
 
 ## Sprint 6 — Otimizações, recursos extras e testes integrados
 
 **Planejado:**
 - [ ] Otimizações opcionais na interpretação (ex.: simplificação de expressões constantes), só se o núcleo já estiver estável
 - [ ] Recursos adicionais na linguagem, caso haja tempo (respeitando a ordem de prioridade de diferenciais definida em `definicao-da-linguagem.md`)
-- [ ] Testes de integração cobrindo programas mais completos, não só casos isolados
+- [x] Testes de integração cobrindo programas mais completos, não só casos isolados
 - [ ] Preparar a versão candidata à entrega final (repositório atualizado, README completo)
 
-**Entregue:** _(preencher ao final da sprint)_
+**Entregue:**
+- **Estudos de caso:** em vez de testes de integração soltos, cada integrante escreveu um programa completo e validou o interpretador com ele: boletim escolar (Mariana, PR #123), calculadora de números (Eduardo, PR #125) e controle de temperatura (Brenda, PR #121). O caixa eletrônico (Giovana, issue #117) está em andamento. Os programas e os resultados estão em [Estudos de Casos](estudos-de-casos.md).
+- **Bug achado pelos estudos de caso:** a calculadora de números mostrou que a divisão por zero exibia o erro mas deixava o programa continuar. Corrigimos para a divisão por zero interromper a execução, como os outros erros (issue #124, PR #125).
+- **Documentação:** limitações, problemas resolvidos e roteiro de demonstração atualizados (PR #122 e branch `docs-fechamento-final`).
+
+**Pendente, e por quê:**
+- **Otimizações e diferenciais:** decidimos priorizar um núcleo completo e testado. Nenhuma otimização foi implementada, e a escolha dos diferenciais ainda vai ser feita em grupo (S7-01, issue #98).
+- **Versão candidata à entrega:** depende de levar a `Dev` para a `main` e de fechar o README (S7-04, issue #101).
 
 ## Sprint 7 — Entrevistas finais e encerramento
 
@@ -177,9 +229,9 @@ As issues S2-03 a S2-10 eram da Sprint 2 no planejamento original e foram conclu
 - [ ] Participar das entrevistas finais com o professor (equipe completa)
 - [ ] Corrigir pendências/bugs apontados durante as entrevistas ou testes finais
 - [ ] Finalizar documentação (README, `docs/`, exemplos de uso)
-- [ ] Conferir datas de entrevista no plano de ensino — falta de comparecimento pode zerar a nota da apresentação final
+- [ ] Conferir datas de entrevista no plano de ensino, porque faltar pode zerar a nota da apresentação final
 
-**Entregue:** _(preencher ao final da sprint)_
+**Entregue:** vamos preencher depois das entrevistas de 30/11 e 02/12.
 
 ## Histórico de entregas até o P1
 
@@ -228,3 +280,4 @@ As datas são as exibidas pelo GitHub; os PRs #56 a #64 aparecem com 01/10 no Gi
 | 24/09/2026 | — | Proposta de tabelas de issues fechadas por sprint e deste histórico de versões (branch `docs-atualizacao-p1-pages`, não mesclada; estrutura incorporada na versão 2.0) | Mariana |
 | 29/09/2026 | 1.3 | Tabela de papéis com as entregas reais de P3 e P4 | Brenda |
 | 01/10/2026 | 2.0 | Replanejamento completo e renumeração das sprints, Sprint 3 preenchida, plano da Sprint 4, issues fechadas por sprint e histórico de PRs (S3-02) | Brenda |
+| 26/11/2026 | 2.1 | Sprints 4, 5 e 6 preenchidas, com o replanejamento de 26/10, as pendências e as issues fechadas (S4-10 e S5-07) | Brenda |
