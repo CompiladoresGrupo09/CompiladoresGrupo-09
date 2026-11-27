@@ -21,6 +21,11 @@ void reportar_erro(Fase fase, int linha, const char *formato, ...)
     va_end(argumentos);
     fputc('\n', stderr);
 
+    contar_erro(fase);
+}
+
+void contar_erro(Fase fase)
+{
     contagem[fase]++;
 }
 

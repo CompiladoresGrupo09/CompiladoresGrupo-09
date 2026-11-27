@@ -15,6 +15,8 @@ __attribute__((format(printf, 3, 4)))
 #endif
 void reportar_erro(Fase fase, int linha, const char *formato, ...);
 
+void contar_erro(Fase fase);
+
 int erros_na_fase(Fase fase);
 
 #endif
