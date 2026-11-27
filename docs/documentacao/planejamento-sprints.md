@@ -215,7 +215,7 @@ A issue #88 (S5-02, limite de recursão, PR #120, Giovana) já está na `Dev` e 
 - [ ] Preparar a versão candidata à entrega final (repositório atualizado, README completo)
 
 **Entregue:**
-- **Estudos de caso:** em vez de testes de integração soltos, cada integrante escreveu um programa completo e validou o interpretador com ele: boletim escolar (Mariana, PR #123), calculadora de números (Eduardo, PR #125) e controle de temperatura (Brenda, PR #121). O caixa eletrônico (Giovana, issue #117) está em andamento. Os programas e os resultados estão em [Estudos de Casos](estudos-de-casos.md).
+- **Estudos de caso:** em vez de testes de integração soltos, cada integrante escreveu um programa completo e validou o interpretador com ele: boletim escolar (Mariana, PR #123), calculadora de números (Eduardo, PR #125) e controle de temperatura (Brenda, PR #121). O caixa eletrônico (Giovana, issue #117) está em andamento. Os programas e os resultados estão em [Estudos de Casos](/documentacao/estudos-de-casos.md).
 - **Bug achado pelos estudos de caso:** a calculadora de números mostrou que a divisão por zero exibia o erro mas deixava o programa continuar. Corrigimos para a divisão por zero interromper a execução, como os outros erros (issue #124, PR #125).
 - **Documentação:** limitações, problemas resolvidos e roteiro de demonstração atualizados (PR #122 e branch `docs-fechamento-final`).
 
