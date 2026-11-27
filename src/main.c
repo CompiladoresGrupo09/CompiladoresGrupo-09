@@ -240,7 +240,7 @@ int main(int argc, char **argv)
 
     /* Fase 4: execucao */
     int codigo_programa = interpretar(raiz_ast);
-    erros_fase[FASE_EXECUCAO] = erros_execucao;
+    erros_fase[FASE_EXECUCAO] = erros_na_fase(FASE_EXECUCAO);
 
-    return encerrar(erros_execucao > 0 ? SAIDA_EXECUCAO : codigo_programa);
+    return encerrar(erros_na_fase(FASE_EXECUCAO) > 0 ? SAIDA_EXECUCAO : codigo_programa);
 }
