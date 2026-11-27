@@ -78,7 +78,7 @@ O interpretador para na primeira fase que encontra erro. O código de saída mos
 | Semântica | Tipos: `float` para `int`, `%` com `float`, retorno e argumento de tipo errado | `erro_tipo.c`, `erro_tipo_atribuicao.c`, `erro_tipo_inicializacao.c`, `erro_retorno_funcao_float_para_int.c`, `erro_tipo_argumento.c`, `estudo_boletim_erro_tipo.c` |
 | Semântica | Funções: não declarada, número de argumentos, `return` errado, `void` como tipo de variável ou parâmetro, programa sem `main` ou vazio | `erro_funcao_nao_declarada.c`, `erro_aridade.c`, `return_sem_valor.c`, `return_valor_void.c`, `return_tipo_incompativel.c`, `variavel_void.c`, `parametro_void.c`, `programa_sem_main.c`, `programa_vazio.c` |
 | Semântica | `&` fora do `scanf` | `endereco_fora_scanf.c` |
-| Execução | Divisão por zero | `divisao_por_zero.c`, `estudo_numeros_divisao_zero.c` |
+| Execução | Divisão (`/`) e resto (`%`) por zero | `divisao_por_zero.c`, `resto_por_zero.c`, `estudo_numeros_divisao_zero.c` |
 | Execução | Recursão sem fim ou funda demais (passa do limite de 1000 chamadas) | `recursao_infinita.c`, `recursao_um_alem_do_limite.c` |
 | Execução | Entrada inválida (letra ou número com ponto em `%d`) e fim da entrada no `scanf` | `estudo_temperatura_entrada_invalida.c`, `scanf_letra_no_int.c`, `scanf_float_no_int.c`, `scanf_fim_entrada.c` |
 | Execução | `printf` com argumento faltando ou de tipo errado | `printf_argumentos_insuficientes.c`, `printf_d_com_texto.c`, `printf_s_com_numero.c` |
