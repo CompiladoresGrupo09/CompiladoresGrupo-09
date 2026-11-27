@@ -1,0 +1,7 @@
+Erro semantico [linha 14]: funcao 'sacar' esperava 1 argumento(s), recebeu 2
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  1 erro(s)
+Execucao   nao executada

@@ -292,3 +292,42 @@ Execucao   0 erro(s)
 | Atribuição inválida `float` -> `int` | `invalidos/estudo_boletim_erro_tipo.c` | `Erro semantico [linha 20]: atribuicao incompativel: conversao implicita de float para int nao permitida`.
 
 As saídas esperadas foram conferidas contra a execução em programa C real compilado com `gcc` (usando `%f` com 6 casas decimais, sem `%.2f`, e sem vetores, ponteiros ou `structs`). Na execução da suíte `run_tests.sh` na branch `test/estudo-boletim`, todos os 55 casos passaram (`55 passaram, 0 falharam`).
+
+### Caixa eletrônico (S7-09)
+
+O programa `tests/validos/estudo_caixa.c` mantém o saldo em uma variável global e oferece um menu em `while` para depositar, sacar, consultar o saldo ou sair. As funções `void depositar(float valor)` e `void sacar(float valor)` alteram o saldo global; `sacar` recusa valores negativos ou acima do saldo e usa `return;` para encerrar antecipadamente. A condição do laço combina o resultado de `scanf` com a opção escolhida (`&&`), e a validação do saque usa `||`.
+
+O interpretador cria um frame de chamada para cada função. A função enxerga seus parâmetros e variáveis locais nesse frame e, depois, consulta o escopo global; ela não percorre o frame de quem a chamou. Por isso `depositar` e `sacar` acessam `saldo`, mas não as variáveis locais `opcao` e `valor` de `main`.
+
+Como a suíte associa cada `.entrada` ao `.c` de mesmo nome, os cenários usam cópias do programa:
+
+| Cenário | Arquivo | Resultado esperado |
+|---|---|---|
+| Depósito de 100, saque de 30 e consulta | `validos/estudo_caixa.c` | Saldo `70.000000`; saída com código 0 |
+| Saque de 60 após depósito de 50 e saque de `-10` | `validos/estudo_caixa_tentativas_invalidas.c` | Dois avisos de recusa; saldo permanece `50.000000`; código 0 |
+| Fim da entrada após um depósito, antes de `0` | `validos/estudo_caixa_fim_entrada.c` | O `scanf` da condição do `while` retorna EOF, o laço termina e o programa encerra sem erro; código 0 |
+| Chamada de `sacar` com dois argumentos | `invalidos/estudo_caixa_argumentos_invalidos.c` | `Erro semantico [linha 14]: funcao 'sacar' esperava 1 argumento(s), recebeu 2`; código 4 |
+
+Saída observada do cenário normal, rodado em `src/`:
+
+```text
+$ ./interpretador ../tests/validos/estudo_caixa.c < ../tests/validos/estudo_caixa.entrada
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Deposito realizado.
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Saque realizado.
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Saldo: 70.000000
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Caixa encerrado.
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
+```
+
+Os arquivos `.esperado` foram escritos manualmente a partir dos cenários e conferidos pela suíte, não apenas gerados com `--gerar`. Em `src/`, com `make`, `gcc`, `flex` e `bison` do MSYS2 no `PATH`, foi executado:
+
+```bash
+make clean && make test
+```
+
+Resultado: `67 passaram, 0 falharam (total 67)`. O mesmo comando também passou em um clone local limpo da branch `test/estudo-caixa`, com o mesmo resultado.

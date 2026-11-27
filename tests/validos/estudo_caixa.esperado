@@ -1,0 +1,10 @@
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Deposito realizado.
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Saque realizado.
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Saldo: 70.000000
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Caixa encerrado.
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
