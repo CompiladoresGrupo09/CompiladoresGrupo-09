@@ -1,5 +1,784 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap');
+
+/*
+  Identidade visual: um editor de código.
+  As cores vêm do destaque de sintaxe, e cada fase do interpretador tem a sua:
+  léxico (azul), sintático (roxo), semântico (verde) e execução (laranja).
+*/
+:root {
+  --fundo-editor: #0e1525;
+  --fundo-editor-2: #141d31;
+  --linha-editor: rgba(130, 160, 210, 0.08);
+
+  --sx-id: #82aaff;       /* identificadores, fase léxica */
+  --sx-kw: #c792ea;       /* palavras reservadas, fase sintática */
+  --sx-tp: #7fdbca;       /* tipos, fase semântica */
+  --sx-num: #f78c6c;      /* números, fase de execução */
+  --sx-str: #c3e88d;      /* textos */
+  --sx-com: #6b7a99;      /* comentários */
+
+  --cor-principal: #3a5bd9;
+  --cor-texto: #1c2233;
+  --cor-texto-suave: #5a6478;
+  --cor-borda: #e1e6f0;
+  --cor-fundo-suave: #f5f7fc;
+  --mono: 'JetBrains Mono', monospace;
+}
 
 body, html {
   font-family: 'Inter', sans-serif !important;
+  color: var(--cor-texto);
+}
+
+/* ---------- Páginas da documentação ---------- */
+
+.sidebar > h1 a {
+  font-family: var(--mono);
+  font-weight: 800;
+  color: var(--cor-principal);
+}
+
+.sidebar-nav > ul > li > strong,
+.sidebar-nav > ul > li > p {
+  display: block;
+  margin-top: 18px;
+  font-family: var(--mono);
+  font-size: 0.72em;
+  letter-spacing: 0.04em;
+  color: var(--sx-com);
+}
+
+.sidebar-nav > ul > li > strong::before,
+.sidebar-nav > ul > li > p::before {
+  content: '// ';
+}
+
+.sidebar-nav li.active > a {
+  color: var(--cor-principal);
+  font-weight: 600;
+  border-right: 3px solid var(--cor-principal);
+}
+
+.markdown-section code,
+.markdown-section pre {
+  font-family: var(--mono);
+}
+
+.markdown-section pre {
+  border-radius: 10px;
+  border: 1px solid var(--cor-borda);
+}
+
+.markdown-section h1,
+.markdown-section h2 {
+  letter-spacing: -0.01em;
+}
+
+.docsify-pagination-container {
+  border-top: 1px solid var(--cor-borda);
+}
+
+/* ---------- Página inicial ---------- */
+
+/* A página inicial é uma tela de entrada: sem menu lateral e ocupando a largura toda */
+body.pagina-inicial .sidebar,
+body.pagina-inicial .sidebar-toggle,
+body.pagina-inicial .github-corner,
+body.pagina-inicial .docsify-pagination-container {
+  display: none;
+}
+
+body.pagina-inicial .content {
+  left: 0;
+  padding-top: 0;
+}
+
+body.pagina-inicial .markdown-section {
+  max-width: none;
+  padding: 0;
+}
+
+.home a {
+  text-decoration: none;
+}
+
+.sx-id { color: var(--sx-id); }
+.sx-kw { color: var(--sx-kw); }
+.sx-tp { color: var(--sx-tp); }
+.sx-num { color: var(--sx-num); }
+.sx-str { color: var(--sx-str); }
+
+/* Capa: um editor de código em tela cheia */
+.home-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 0 48px;
+  color: #d6deeb;
+  background:
+    linear-gradient(var(--linha-editor) 1px, transparent 1px),
+    linear-gradient(90deg, var(--linha-editor) 1px, transparent 1px),
+    radial-gradient(circle at 85% 20%, rgba(199, 146, 234, 0.12), transparent 40%),
+    radial-gradient(circle at 10% 90%, rgba(127, 219, 202, 0.10), transparent 40%),
+    var(--fundo-editor);
+  background-size: 32px 32px, 32px 32px, auto, auto, auto;
+}
+
+.home-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 22px 0;
+  font-family: var(--mono);
+}
+
+.home-nav-marca {
+  font-weight: 700;
+  color: #fff;
+}
+
+.home-nav-marca b {
+  color: var(--sx-kw);
+}
+
+.home-nav-marca small {
+  margin-left: 6px;
+  font-size: 0.75em;
+  color: var(--sx-com);
+}
+
+.home-nav-links {
+  display: flex;
+  gap: 26px;
+}
+
+.markdown-section .home-nav-links a {
+  color: #9aa8c4;
+  font-size: 0.9em;
+}
+
+.markdown-section .home-nav-links a:hover {
+  color: var(--sx-tp);
+}
+
+.home-hero-grade {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 56px;
+  align-items: center;
+  max-width: 1240px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.markdown-section .home-comentario {
+  margin: 0 0 18px;
+  font-family: var(--mono);
+  font-size: 0.95em;
+  color: var(--sx-com);
+}
+
+.markdown-section .home-title {
+  margin: 0 0 22px;
+  padding: 0;
+  border: none;
+  font-size: 4.6em;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  color: #fff;
+}
+
+.home-title em {
+  font-family: var(--mono);
+  font-style: normal;
+  color: var(--sx-num);
+}
+
+.home-cursor {
+  display: inline-block;
+  width: 0.08em;
+  height: 0.85em;
+  margin-left: 0.12em;
+  vertical-align: -0.05em;
+  background: var(--sx-tp);
+  animation: home-piscar 1.1s steps(1) infinite;
+}
+
+@keyframes home-piscar {
+  50% { opacity: 0; }
+}
+
+.markdown-section .home-lead {
+  max-width: 560px;
+  margin: 0 0 34px;
+  font-size: 1.15em;
+  line-height: 1.6;
+  color: #9aa8c4;
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.markdown-section .home-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 24px;
+  border-radius: 10px;
+  border: 1px solid rgba(154, 168, 196, 0.25);
+  background: var(--fundo-editor-2);
+  color: #fff;
+  font-weight: 700;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s;
+}
+
+.markdown-section .home-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--sx-tp);
+}
+
+.markdown-section .home-btn-primary {
+  border-color: transparent;
+  background: var(--cor-principal);
+  box-shadow: 0 10px 28px rgba(58, 91, 217, 0.35);
+}
+
+.markdown-section .home-btn-primary:hover {
+  background: #4a6be6;
+  border-color: transparent;
+}
+
+.markdown-section .home-btn-cmd {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #c8d3e6;
+}
+
+.home-btn-cmd b {
+  color: var(--sx-tp);
+}
+
+/* Painel com uma linha passando pelas fases */
+.home-painel {
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid rgba(154, 168, 196, 0.18);
+  background: rgba(20, 29, 49, 0.92);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45);
+  font-family: var(--mono);
+}
+
+.home-painel-topo {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(154, 168, 196, 0.12);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.home-painel-topo span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+
+.home-painel-topo span:nth-child(2) { background: #febc2e; }
+.home-painel-topo span:nth-child(3) { background: #28c840; }
+
+.home-painel-topo em {
+  margin-left: 8px;
+  font-size: 0.75em;
+  font-style: normal;
+  color: var(--sx-com);
+}
+
+.home-painel-fonte {
+  padding: 16px 20px;
+  border-bottom: 1px dashed rgba(154, 168, 196, 0.18);
+  font-size: 1.05em;
+  color: #d6deeb;
+}
+
+.home-fase {
+  position: relative;
+  padding: 12px 20px 12px 38px;
+}
+
+.home-fase::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: rgba(154, 168, 196, 0.15);
+}
+
+.home-fase::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 17px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--fase-cor);
+  box-shadow: 0 0 0 4px rgba(20, 29, 49, 1);
+}
+
+/* No painel, as fases vêm depois da barra do topo e da linha de código */
+.home-painel > .home-fase:nth-child(3) { --fase-cor: var(--sx-id); }
+.home-painel > .home-fase:nth-child(4) { --fase-cor: var(--sx-kw); }
+.home-painel > .home-fase:nth-child(5) { --fase-cor: var(--sx-tp); }
+.home-painel > .home-fase:nth-child(6) { --fase-cor: var(--sx-num); }
+
+.markdown-section .home-fase-nome {
+  margin: 0 0 8px;
+  font-size: 0.78em;
+  color: var(--fase-cor);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.home-fase-nome b {
+  margin-right: 6px;
+}
+
+.home-fase-nome i {
+  margin-left: 6px;
+  font-style: normal;
+  color: var(--sx-com);
+  text-transform: none;
+}
+
+.home-tokens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.home-tokens span {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 6px;
+  border: 1px solid rgba(130, 170, 255, 0.35);
+  background: rgba(130, 170, 255, 0.08);
+  font-size: 0.85em;
+  color: #e3e9f5;
+}
+
+.home-tokens span.tk-s {
+  border-color: rgba(154, 168, 196, 0.3);
+  background: rgba(154, 168, 196, 0.06);
+}
+
+.home-tokens i {
+  font-size: 0.62em;
+  font-style: normal;
+  color: var(--sx-id);
+}
+
+.home-tokens span.tk-s i {
+  color: var(--sx-com);
+}
+
+.markdown-section .home-ast {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-size: 0.82em;
+  line-height: 1.6;
+  color: #8f9bb5;
+}
+
+.markdown-section .home-fase-texto {
+  margin: 0;
+  font-size: 0.85em;
+  color: #d6deeb;
+}
+
+.home-ok {
+  margin-left: 8px;
+  color: var(--sx-str);
+}
+
+.home-saida {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.home-rolar {
+  margin: 0 auto 34px;
+  border: none;
+  background: none;
+  color: var(--sx-com);
+  font: 0.9em var(--mono);
+  cursor: pointer;
+}
+
+.home-rolar i {
+  display: inline-block;
+  font-style: normal;
+  animation: home-pulo 1.8s infinite;
+}
+
+@keyframes home-pulo {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+/* ---------- Conteúdo abaixo da capa ---------- */
+
+.home-corpo {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 64px 32px 20px;
+}
+
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.home-stat {
+  padding: 22px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--cor-borda);
+  text-align: center;
+}
+
+.home-stat strong {
+  display: block;
+  font-family: var(--mono);
+  font-size: 2.1em;
+  font-weight: 800;
+  color: var(--cor-principal);
+}
+
+.home-stat span {
+  font-size: 0.9em;
+  color: var(--cor-texto-suave);
+}
+
+.home-section {
+  margin-top: 72px;
+}
+
+.markdown-section .home-kicker {
+  margin: 0 0 6px;
+  font-family: var(--mono);
+  font-size: 0.85em;
+  color: var(--sx-com);
+}
+
+.markdown-section .home-kicker::before {
+  content: '// ';
+}
+
+.markdown-section .home-h2 {
+  margin: 0 0 22px;
+  padding: 0;
+  border: none;
+  font-size: 1.9em;
+  font-weight: 800;
+  color: var(--cor-texto);
+}
+
+.markdown-section .home-sub {
+  max-width: 720px;
+  color: var(--cor-texto-suave);
+}
+
+/* Os 5 passos do pipeline, cada um com a cor da sua fase */
+.home-steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 14px;
+}
+
+.home-step {
+  padding: 20px 18px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--cor-borda);
+  border-top: 4px solid var(--passo-cor);
+}
+
+.home-step:nth-child(1) { --passo-cor: var(--sx-id); }
+.home-step:nth-child(2) { --passo-cor: var(--sx-kw); }
+.home-step:nth-child(3) { --passo-cor: var(--sx-tp); }
+.home-step:nth-child(4) { --passo-cor: var(--sx-num); }
+.home-step:nth-child(5) { --passo-cor: var(--sx-str); }
+
+.home-step-n {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  font-weight: 800;
+  color: var(--cor-texto-suave);
+}
+
+.markdown-section .home-step h3 {
+  margin: 6px 0 8px;
+  font-size: 1.1em;
+  color: var(--cor-texto);
+}
+
+.markdown-section .home-step p {
+  margin: 0;
+  font-size: 0.9em;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+/* Estudo de caso principal */
+.home-case {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 36px;
+  align-items: center;
+  padding: 40px;
+  border-radius: 20px;
+  background: var(--cor-fundo-suave);
+  border: 1px solid var(--cor-borda);
+}
+
+.markdown-section .home-case-text p {
+  line-height: 1.65;
+}
+
+.markdown-section .home-case .home-btn {
+  color: #fff;
+}
+
+.home-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 18px 0 26px;
+  padding: 0;
+  list-style: none;
+}
+
+.markdown-section .home-tags li {
+  margin: 0;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid var(--cor-borda);
+  font-size: 0.85em;
+}
+
+.home-terminal {
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--fundo-editor);
+  box-shadow: 0 18px 44px rgba(14, 21, 37, 0.3);
+}
+
+.home-terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 14px;
+  background: var(--fundo-editor-2);
+}
+
+.home-terminal-bar span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff5f57;
+}
+
+.home-terminal-bar span:nth-child(2) { background: #febc2e; }
+.home-terminal-bar span:nth-child(3) { background: #28c840; }
+
+.home-terminal-bar em {
+  margin-left: 8px;
+  font-family: var(--mono);
+  font-size: 0.78em;
+  font-style: normal;
+  color: var(--sx-com);
+}
+
+.markdown-section .home-terminal pre {
+  margin: 0;
+  padding: 18px 20px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #d6deeb;
+  font-size: 0.85em;
+  line-height: 1.6;
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.home-terminal pre b {
+  color: var(--sx-tp);
+}
+
+.home-terminal pre i {
+  font-style: normal;
+  color: var(--sx-num);
+}
+
+/* Cartões dos estudos de caso */
+.home-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.markdown-section .home-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto);
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.markdown-section .home-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--cor-principal);
+  box-shadow: 0 12px 28px rgba(28, 34, 51, 0.1);
+}
+
+.home-card-icon {
+  font-size: 1.8em;
+}
+
+.markdown-section .home-card h3 {
+  margin: 10px 0 8px;
+  font-size: 1.05em;
+  color: var(--cor-texto);
+}
+
+.markdown-section .home-card p {
+  flex: 1;
+  margin: 0 0 14px;
+  font-size: 0.9em;
+  line-height: 1.5;
+  color: var(--cor-texto-suave);
+}
+
+.home-card-who {
+  font-family: var(--mono);
+  font-size: 0.78em;
+  color: var(--cor-principal);
+}
+
+/* Equipe */
+.home-team {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+}
+
+.markdown-section .home-member {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 22px 14px;
+  border-radius: 14px;
+  background: #fff;
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto);
+  text-align: center;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.markdown-section .home-member:hover {
+  transform: translateY(-4px);
+  border-color: var(--cor-principal);
+}
+
+.home-member img {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 12px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--cor-fundo-suave);
+}
+
+.home-member strong {
+  font-size: 0.95em;
+  color: var(--cor-texto);
+}
+
+/* Cartões da documentação */
+.home-docs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 48px;
+}
+
+.markdown-section .home-docs a {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: var(--cor-fundo-suave);
+  border: 1px solid var(--cor-borda);
+  color: var(--cor-texto);
+  font-weight: 600;
+  transition: border-color 0.2s;
+}
+
+.markdown-section .home-docs a:hover {
+  border-color: var(--cor-principal);
+}
+
+.home-docs span {
+  font-family: var(--mono);
+  font-weight: 800;
+  color: var(--cor-principal);
+}
+
+/* ---------- Telas menores ---------- */
+
+@media (max-width: 1100px) {
+  .home-hero-grade { grid-template-columns: 1fr; gap: 36px; padding: 24px 0 36px; }
+  .home-steps { grid-template-columns: repeat(3, 1fr); }
+  .home-cards { grid-template-columns: repeat(2, 1fr); }
+  .home-team { grid-template-columns: repeat(3, 1fr); }
+  .home-case { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .home-hero { padding: 0 18px; }
+  .home-nav-links { display: none; }
+  .markdown-section .home-title { font-size: 2.9em; }
+  .markdown-section .home-lead { font-size: 1.02em; }
+  .home-corpo { padding: 40px 18px 10px; }
+  .home-stats { grid-template-columns: 1fr; }
+  .home-steps,
+  .home-cards,
+  .home-docs { grid-template-columns: 1fr; }
+  .home-team { grid-template-columns: repeat(2, 1fr); }
+  .home-case { padding: 22px; }
 }
