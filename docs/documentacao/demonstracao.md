@@ -1,6 +1,6 @@
 # Roteiro de Demonstração do Pipeline
 
-Este é o roteiro que usamos para mostrar o interpretador funcionando de ponta a ponta na apresentação. O programa principal da demonstração é o organizador de compras (`tests/validos/organizador_compras.c`), o estudo de caso que escolhemos no início do projeto. Os outros programas que usamos para validar o interpretador estão em [Estudos de Casos](estudos-de-casos.md).
+Este é o roteiro que usamos para mostrar o interpretador funcionando de ponta a ponta na apresentação. O programa principal da demonstração é o organizador de compras (`tests/validos/organizador_compras.c`), o estudo de caso que escolhemos no início do projeto. Os outros programas que usamos para validar o interpretador estão em [Estudos de Casos](/documentacao/estudos-de-casos.md).
 
 ## Preparação (antes da apresentação)
 
@@ -93,7 +93,7 @@ Atualizado em 26/11/2026. O núcleo executa declarações, expressões, `if`/`el
 - **Recursão:** o limite é de 1000 chamadas aninhadas, sem contar o `main`. A opção `--limite-recursao` só deixa o limite menor, porque acima disso a pilha do próprio interpretador pode estourar no Windows.
 - **`printf`:** não aceita precisão (`%.2f`), e o `%f` sempre mostra 6 casas. O `%s` só aceita texto entre aspas, porque a linguagem não tem variável de texto. O `printf` também não pode ser usado dentro de uma expressão, como `x = printf(...)`.
 - **Entrada vinda de arquivo:** quando rodamos com `< entrada.txt`, como faz a suíte, os valores lidos não aparecem na tela e as mensagens ficam coladas umas nas outras. No terminal, digitando, a saída fica normal.
-- **String sem aspas de fechamento:** aparece como "caractere invalido", e não com uma mensagem própria (ver [Problemas e Soluções](problemas-e-solucoes.md)).
+- **String sem aspas de fechamento:** aparece como "caractere invalido", e não com uma mensagem própria (ver [Problemas e Soluções](/documentacao/problemas-e-solucoes.md)).
 - **Fora do escopo, de propósito:** vetores, ponteiros, structs, unions, variáveis de texto e pré-processador. Vetores, ponteiros, structs e unions são recusados com a mensagem "construcao fora do escopo", e as linhas que começam com `#` (como `#include`) são ignoradas.
 
 ## Plano B: saídas salvas
