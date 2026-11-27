@@ -226,7 +226,7 @@ int main(int argc, char **argv)
 
     /* Fase 3: analise semantica (tabela de simbolos + tipos) */
     int semantica_ok = analisar_semantica(raiz_ast);
-    erros_fase[FASE_SEMANTICA] = erros_semanticos;
+    erros_fase[FASE_SEMANTICA] = erros_na_fase(FASE_SEMANTICA);
 
     if (modo == MODO_TABELA)
         imprimir_simbolos_declarados();

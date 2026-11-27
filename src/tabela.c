@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "erros.h"
 #include "tabela.h"
 
 static TabelaSimbolos tabela = {0};
@@ -124,8 +125,7 @@ int inserir_simbolo(const char *nome, TipoDado tipo, int linha, int e_funcao, in
     Escopo *escopo_atual = &tabela.escopos[tabela.numero_escopos - 1];
 
     if (buscar_no_escopo_atual(nome) != NULL) {
-        fprintf(stderr, "Erro semantico [linha %d]: simbolo '%s' ja declarado no escopo atual\n",
-                linha, nome);
+        reportar_erro(FASE_SEMANTICA, linha, "simbolo '%s' ja declarado no escopo atual", nome);
         return 0;
     }
 
