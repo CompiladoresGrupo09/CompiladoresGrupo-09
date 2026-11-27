@@ -15,7 +15,7 @@ O estudo de caso principal, usado na demonstração, continua sendo o **organiza
 
 Como o `run_tests.sh` liga cada `.entrada` ao `.c` de mesmo nome, quando um programa tem mais de um cenário usamos uma cópia do `.c` com outro nome para cada cenário.
 
-## Boletim escolar (S7-08)
+# Boletim escolar (S7-08)
 
 Programa em `tests/validos/estudo_boletim.c`. Ele lê as notas de três provas com `scanf("%f", ...)`, calcula a média na função `float media(float a, float b, float c)` e classifica o aluno com `if`/`else` aninhado: média 7 ou mais é `APROVADO`, de 5 a 7 é `RECUPERACAO` e abaixo de 5 é `REPROVADO`. No fim, imprime as notas, a média e a situação com `printf`, usando `%f` e `%s`.
 
@@ -48,11 +48,11 @@ Execucao   0 erro(s)
 | Reprovado | `5.0`, `4.0`, `4.0` | média `4.333333`, `REPROVADO` |
 | Inválido: média `float` guardada numa variável `int` (`invalidos/estudo_boletim_erro_tipo.c`) | | `Erro semantico [linha 20]: atribuicao incompativel: conversao implicita de float para int nao permitida`, código 4 |
 
-## Caixa eletrônico (S7-09)
+# Caixa eletrônico (S7-09)
 
 Em andamento (issue #117). A ideia é um menu em `while` com depósito, saque e consulta de saldo, guardando o saldo numa variável global alterada por funções `void`.
 
-## Calculadora de números (S7-10)
+# Calculadora de números (S7-10)
 
 Programa em `tests/validos/estudo_numeros.c`. Ele lê dois números inteiros e mostra o MDC, calculado por uma função recursiva com o algoritmo de Euclides, o MMC, o fatorial do primeiro número, também recursivo, os números primos até o segundo número e a tabuada do primeiro.
 
@@ -89,7 +89,7 @@ Execucao   0 erro(s)
 
 Foi esse estudo de caso que mostrou que a divisão por zero mostrava o erro e deixava o programa continuar, imprimindo fatorial, primos e tabuada depois. Corrigimos isso na issue #124: agora a divisão por zero interrompe a execução, como os outros erros.
 
-## Controle de temperatura (S7-11)
+# Controle de temperatura (S7-11)
 
 Programa em `tests/validos/estudo_temperatura.c`. Ele lê a escala de saída (`C` ou `F`) com `%c`, lê temperaturas em Celsius até o usuário digitar `-1`, converte cada uma na função `float converter(float celsius, char escala)` e mostra quantas leituras foram feitas, a maior, a menor e a média. No fim, um bloco interno declara outra variável `leituras`, com o mesmo nome de uma de fora, para mostrar o *shadowing*.
 

@@ -48,6 +48,17 @@ O conflito clássico de `if (a) if (b) x; else y;` é saber a qual `if` o `else`
 * **Justificativa:** o núcleo obrigatório inclui blocos e funções com parâmetros. Com lista plana, uma variável declarada dentro de um `if` continuaria visível depois do bloco, e `int a; { int a; }`, que é C válido, seria rejeitado como redeclaração. O problema está registrado em `problemas-e-solucoes.md`.
 * **Implementação:** issue #22, PR #46; testes `tests/validos/escopo_shadowing.c`, `tests/invalidos/redeclaracao_mesmo_escopo.c` e `tests/invalidos/variavel_nao_declarada.c` (PR #50).
 
+## Análise semântica inicial — declarações e escopo (S2-06)
+
+* **Objetivo:** iniciar a verificação semântica recursiva sobre a AST gerada pelo `parser.y` (apoiando-se na pilha de escopos da tabela de símbolos de S2-05), cobrindo o marco do **P1** com detecção de variáveis não declaradas, redeclaração no mesmo escopo e controle de escopo léxico.
+* **Regras adotadas:**
+  * percurso recursivo sobre a AST controlando entrada e saída de escopo (`entrar_escopo()` e `sair_escopo()`) em `NODE_BLOCK` e `NODE_FUNC_DECL`, inserindo os parâmetros da função no escopo do corpo;
+  * ao visitar `NODE_ID`, verifica a existência do identificador na tabela de símbolos e reporta erro semântico caso não esteja declarado;
+  * ao declarar um símbolo, verifica duplicidade no escopo atual (`buscar_no_escopo_atual()`) para acusar redeclaração, permitindo *shadowing* em escopos internos e mantendo visibilidade restrita de parâmetros e variáveis de bloco;
+  * contabiliza ocorrências em `erros_semanticos` e retorna código de saída diferente de `0` quando houver falha, com mensagens no padrão `Erro semantico [linha N]: ...`.
+* **Justificativa:** atende aos requisitos do guia oficial, do núcleo obrigatório (declaração/atribuição e blocos/escopo) e ao item *"o que foi implementado"* do **P1**, garantindo que estruturas válidas (como `int a; a = 10;`, *shadowing* em `int a; { int a; }` e toda a suíte em `tests/validos/`) continuem passando sem falsos positivos.
+* **Implementação:** módulo `src/semantic.h` e `src/semantic.c` com `analisar_semantica(ASTNode *raiz)` na branch `feat/semantic-declaracoes` (commits `feat(semantic): ...` e revisão via PR), acompanhado dos casos de teste em `tests/invalidos/erro_nao_declarada.c`, `tests/invalidos/erro_redeclaracao.c` e verificação explícita de *shadowing*.
+
 ## Verificação de compatibilidade de tipos e conversão implícita (S2-07)
 
 * **Decisão:** o interpretador recusa conversões implícitas com perda de informação, como atribuir uma expressão do tipo `float` a uma variável do tipo `int` (por exemplo: `int a; a = 1.5 + 2;`).
