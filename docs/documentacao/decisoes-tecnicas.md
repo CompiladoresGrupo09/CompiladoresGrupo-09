@@ -211,15 +211,10 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Erros de execução (código 5, com o relatório):** argumento faltando para um especificador, `%s` com número e `%d`/`%f`/`%c` com texto. Antes, o argumento faltando encerrava o programa com `exit(5)` sem mostrar o relatório; agora segue o mesmo caminho dos outros erros de execução.
 * **Implementação:** issue #89.
 
-## Diferenciais: testes, coluna nos erros e relatório unificado; vetores de fora (S7-01)
+## Diferenciais: testes e relatório unificado; coluna e vetores de fora (S7-01)
 
-* **Decisão:** dos três diferenciais da [Definição da Linguagem](/documentacao/definicao-da-linguagem.md), decidimos em grupo, em 27/11/2026, fazer:
-  * o **diferencial 2, testes automatizados mais extensos**, que já está entregue;
-  * o **diferencial 1, coluna nas mensagens de erro**, com a Giovana (issue #99);
-  * e, junto com ele, o **relatório de erros unificado**, com a Mariana (issue #97), que deixa as quatro fases reportando os erros por um único módulo.
-
-  Os **vetores 1D** (diferencial 3) ficaram de fora.
+* **Decisão:** dos três diferenciais da [Definição da Linguagem](/documentacao/definicao-da-linguagem.md), decidimos em grupo, em 27/11/2026, fazer o **diferencial 2, testes automatizados mais extensos**, que já está entregue, e, junto com ele, o **relatório de erros unificado**, com a Mariana (issue #97), que deixa as quatro fases reportando os erros por um único módulo. A **coluna nas mensagens de erro** (diferencial 1, issue #99) e os **vetores 1D** (diferencial 3) ficaram de fora.
 * **O que foi feito no diferencial 2:** a suíte do núcleo, com saída esperada em todos os casos e a tabela de cobertura em `tests/README.md` (PR #126), os casos-limite (PR #129) e a lista completa de erros de execução (PR #130). São 88 testes, todos comparando a saída.
-* **Por que os vetores ficaram de fora:** o núcleo está completo e testado, e as entrevistas são em 30/11 e 02/12. Os vetores mexeriam no parser, na tabela de símbolos, no semântico e no interpretador ao mesmo tempo, e preferimos não arriscar o que já funciona com uma mudança desse tamanho às vésperas da entrega.
-* **Limitação que fica:** vetores continuam recusados com a mensagem "construcao fora do escopo".
+* **Por que a coluna e os vetores ficaram de fora:** o núcleo está completo e testado, e a entrega é em 27/11, com a entrevista em 30/11. A coluna mudaria o scanner, o parser, a AST, todas as mensagens de erro e os `.esperado` dos testes de erro; os vetores mexeriam no parser, na tabela de símbolos, no semântico e no interpretador ao mesmo tempo. Preferimos não arriscar o que já funciona com mudanças desse tamanho no dia da entrega. O relatório unificado entrou porque não muda o texto das mensagens, e os 88 testes conferem se alguma mudou sem querer.
+* **Limitações que ficam:** as mensagens de erro mostram a linha, mas não a coluna, e vetores continuam recusados com a mensagem "construcao fora do escopo".
 * **Implementação:** issue #98.
