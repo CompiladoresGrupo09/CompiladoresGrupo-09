@@ -1,0 +1,22 @@
+Digite dois numeros inteiros: MDC(7, 30) = 1
+MMC(7, 30) = 210
+7! = 5040
+Primos ate 30: 2 3 5 7 11 13 17 19 23 29
+Total de primos: 10
+Tabuada do 7:
+7 x 1 = 7
+7 x 2 = 14
+7 x 3 = 21
+7 x 4 = 28
+7 x 5 = 35
+7 x 6 = 42
+7 x 7 = 49
+7 x 8 = 56
+7 x 9 = 63
+7 x 10 = 70
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)

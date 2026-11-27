@@ -119,12 +119,55 @@ Execucao   0 erro(s)
 
 Como o `run_tests.sh` associa cada `.entrada` ao `.c` de mesmo nome, os cenários de Fahrenheit e de entrada inválida usam cópias do mesmo programa. Também foram conferidos à mão, fora da suíte, dois casos de borda: sem nenhuma leitura (só `-1`) o programa mostra "Nenhuma leitura registrada" em vez de dividir por zero, e com a entrada terminando antes do `-1` a execução para com "fim da entrada no scanf", sem travar.
 
+### Calculadora de números (S7-10)
+
+Programa em `tests/validos/estudo_numeros.c`. Lê dois inteiros `a` e `b` e mostra o MDC (função recursiva, algoritmo de Euclides), o MMC, o fatorial de `a` (função recursiva), os números primos de 2 até `b` e a tabuada de `a`.
+
+Recursos do núcleo que ele valida: recursão em duas funções, `for` aninhado, `for` com corpo de uma linha, operador `%`, divisão inteira, função chamada dentro do `printf` e dentro de uma expressão, `scanf` com dois `%d` no mesmo formato.
+
+Rodando no terminal e digitando `12 18`:
+
+```
+$ ./interpretador ../tests/validos/estudo_numeros.c
+Digite dois numeros inteiros: 12 18
+MDC(12, 18) = 6
+MMC(12, 18) = 36
+12! = 479001600
+Primos ate 18: 2 3 5 7 11 13 17
+Total de primos: 7
+Tabuada do 12:
+12 x 1 = 12
+12 x 2 = 24
+12 x 3 = 36
+12 x 4 = 48
+12 x 5 = 60
+12 x 6 = 72
+12 x 7 = 84
+12 x 8 = 96
+12 x 9 = 108
+12 x 10 = 120
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
+```
+
+| Cenário | Arquivo | Resultado |
+|---|---|---|
+| `12 18` | `validos/estudo_numeros.c` | MDC 6, MMC 36, 12! = 479001600, 7 primos |
+| `7 30` (coprimos) | `validos/estudo_numeros_coprimos.c` | MDC 1, MMC 210, 7! = 5040, 10 primos |
+| `0 0` | `invalidos/estudo_numeros_divisao_zero.c` | `Erro de execucao [linha 27]: divisao por zero` no MMC, código 5 |
+
+Os resultados foram conferidos à mão. O cenário `0 0` revelou um defeito: a divisão por zero mostrava o erro mas o programa continuava, imprimindo 0 no lugar da conta. Ele foi registrado como issue `bug` `(#124)` e corrigido no mesmo PR; agora a execução para no erro.
+
 ## Limitações conhecidas (para não ser pego de surpresa)
 
-Atualizado em 22/11/2026. O núcleo executa declarações, expressões, `if`/`else`, `while`, `for`, `return`, chamadas de função (inclusive recursivas), `printf` (`%d`, `%f`, `%c`, `%s`) e `scanf` (`%d`, `%f`, `%c`). O que ainda pode surpreender:
+Atualizado em 24/11/2026. O núcleo executa declarações, expressões, `if`/`else`, `while`, `for`, `return`, chamadas de função (inclusive recursivas), `printf` (`%d`, `%f`, `%c`, `%s`) e `scanf` (`%d`, `%f`, `%c`). O que ainda pode surpreender:
 
 - **Recursão infinita:** o limite de profundidade está em revisão no PR #120 (issue #88). Até ele entrar, uma recursão sem fim derruba o processo sem mensagem.
-- **Divisão por zero:** a divisão inteira (e o `%`) por zero mostra o erro, mas a execução continua com o valor 0; a divisão de `float` por zero não é erro e imprime `inf`, como em C. A decisão de parar ou não no primeiro erro de execução está na issue #95.
+- **Divisão por zero:** a divisão inteira (e o `%`) por zero mostra o erro e interrompe a execução com código 5, como os outros erros de execução (issue #124). Já a divisão de `float` por zero não é erro e imprime `inf`, como em C.
 - **`printf`:** não aceita precisão (`%.2f`), e o `%f` sempre mostra 6 casas. O `%s` só aceita texto entre aspas, porque a linguagem não tem variável de texto. O `printf` também não pode ser usado dentro de uma expressão, como `x = printf(...)`.
 - **String sem aspas de fechamento:** é reportada como "caractere invalido" em vez de uma mensagem própria (ver `problemas-e-solucoes.md`).
 - **Fora do escopo, de propósito:** vetores, ponteiros, structs, unions, variáveis de texto e pré-processador. Vetores, ponteiros, structs e unions são recusados com a mensagem "construcao fora do escopo"; as linhas com `#` (como `#include`) são ignoradas.
