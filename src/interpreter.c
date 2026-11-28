@@ -3,9 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "erros.h"
 #include "interpreter.h"
-
-int erros_execucao = 0;
 
 typedef struct Variavel
 {
@@ -23,8 +22,83 @@ typedef struct EscopoExec
 static EscopoExec *escopos = NULL;
 static int numero_escopos = 0;
 static int capacidade_escopos = 0;
+/* retornou: um return foi executado; abortou: houve erro que interrompe o programa */
 static int retornou = 0;
-static int valor_retorno = 0;
+static int abortou = 0;
+static Valor valor_retornado;
+static int profundidade_chamadas = 0;
+static int limite_recursao = 1000;
+static int limite_recursao_configurado = 0;
+#define LIMITE_MAXIMO_RECURSAO 1000
+
+/* Raiz da AST, para localizar as funcoes pelo nome na hora da chamada */
+static ASTNode *programa = NULL;
+
+/* Indice do primeiro escopo da funcao em execucao. O escopo 0 e o global. */
+static int base_frame = 0;
+
+static void executar_comando(ASTNode *comando);
+static Valor chamar_funcao(ASTNode *chamada);
+
+static int obter_limite_recursao(void)
+{
+    if (limite_recursao_configurado)
+        return limite_recursao > LIMITE_MAXIMO_RECURSAO
+                   ? LIMITE_MAXIMO_RECURSAO
+                   : limite_recursao;
+
+    const char *valor = getenv("INTERPRETADOR_LIMITE_RECURSAO");
+    if (valor != NULL)
+    {
+        char *fim = NULL;
+        long configurado = strtol(valor, &fim, 10);
+        if (fim != valor && *fim == '\0' && configurado > 0)
+        {
+            if (configurado > LIMITE_MAXIMO_RECURSAO)
+                return LIMITE_MAXIMO_RECURSAO;
+            return (int)configurado;
+        }
+    }
+    return limite_recursao;
+}
+
+void configurar_limite_recursao(int limite)
+{
+    if (limite > 0)
+    {
+        limite_recursao = limite > LIMITE_MAXIMO_RECURSAO
+                              ? LIMITE_MAXIMO_RECURSAO
+                              : limite;
+        limite_recursao_configurado = 1;
+    }
+}
+
+static int entrar_chamada(const char *nome, int linha)
+{
+    int limite = obter_limite_recursao();
+    if (profundidade_chamadas >= limite)
+    {
+        reportar_erro(FASE_EXECUCAO, linha, "limite de profundidade de %d chamadas excedido na funcao '%s'",
+                      limite, nome);
+        abortou = 1;
+        return 0;
+    }
+
+    profundidade_chamadas++;
+    return 1;
+}
+
+static void sair_chamada(void)
+{
+    if (profundidade_chamadas > 0)
+        profundidade_chamadas--;
+}
+
+static int execucao_interrompida(void)
+{
+    return retornou || abortou;
+}
+
 static void garantir_capacidade_escopos_exec(void)
 {
     if (numero_escopos < capacidade_escopos)
@@ -81,17 +155,30 @@ static void sair_escopo_exec(void)
     free(escopo->variaveis);
     numero_escopos--;
 }
+static Valor *buscar_no_escopo_exec(EscopoExec *escopo, const char *nome)
+{
+    for (int i = escopo->quantidade - 1; i >= 0; i--)
+    {
+        if (strcmp(escopo->variaveis[i].nome, nome) == 0)
+            return &escopo->variaveis[i].valor;
+    }
+    return NULL;
+}
+
+/* Procura do escopo mais interno ate o inicio do frame atual e, depois, no global.
+   Os escopos de quem chamou a funcao ficam de fora. */
 static Valor *ler_variavel(const char *nome)
 {
-    for (int e = numero_escopos - 1; e >= 0; e--)
+    for (int e = numero_escopos - 1; e >= base_frame && e >= 0; e--)
     {
-        EscopoExec *escopo = &escopos[e];
-        for (int i = escopo->quantidade - 1; i >= 0; i--)
-        {
-            if (strcmp(escopo->variaveis[i].nome, nome) == 0)
-                return &escopo->variaveis[i].valor;
-        }
+        Valor *valor = buscar_no_escopo_exec(&escopos[e], nome);
+        if (valor != NULL)
+            return valor;
     }
+
+    if (base_frame > 0 && numero_escopos > 0)
+        return buscar_no_escopo_exec(&escopos[0], nome);
+
     return NULL;
 }
 
@@ -168,13 +255,95 @@ static Valor executar_atribuicao(ASTNode *no)
     Valor *guardado = atribuir_variavel(alvo->strval, valor);
     if (guardado == NULL)
     {
-        fprintf(stderr, "Erro de execucao [linha %d]: variavel '%s' nao encontrada\n",
-                no->line, alvo->strval);
-        erros_execucao++;
+        reportar_erro(FASE_EXECUCAO, no->line, "variavel '%s' nao encontrada", alvo->strval);
         return valor;
     }
 
     return *guardado;
+}
+
+static int executar_scanf(ASTNode *chamada, int usa_retorno)
+{
+    if (chamada->num_children == 0)
+        return 0;
+
+    const char *formato = chamada->children[0]->strval;
+    int indice_arg = 1;
+    int lidos = 0;
+
+    for (const char *p = formato; *p != '\0'; p++)
+    {
+        if (*p == ' ' || *p == '\\')
+        {
+            if (*p == '\\' && *(p + 1) != '\0')
+                p++;
+            scanf(" ");
+            continue;
+        }
+
+        if (*p != '%')
+            continue;
+
+        p++;
+        if (*p != 'd' && *p != 'f' && *p != 'c')
+        {
+            if (*p == '\0')
+                break;
+            continue;
+        }
+
+        ASTNode *argumento = indice_arg < chamada->num_children ? chamada->children[indice_arg++] : NULL;
+        if (argumento == NULL || argumento->type != NODE_ADDR)
+        {
+            reportar_erro(FASE_EXECUCAO, chamada->line, "scanf espera um argumento com '&' para cada especificador");
+            abortou = 1;
+            return lidos;
+        }
+
+        Valor *destino = ler_variavel(argumento->strval);
+        if (destino == NULL)
+        {
+            reportar_erro(FASE_EXECUCAO, chamada->line, "variavel '%s' nao encontrada", argumento->strval);
+            abortou = 1;
+            return lidos;
+        }
+
+        Valor lido = {0};
+        int resultado;
+        if (*p == 'd')
+        {
+            lido.tipo = TIPO_INT;
+            resultado = scanf("%d", &lido.como.i);
+        }
+        else if (*p == 'f')
+        {
+            lido.tipo = TIPO_FLOAT;
+            resultado = scanf("%f", &lido.como.f);
+        }
+        else
+        {
+            lido.tipo = TIPO_CHAR;
+            resultado = scanf("%c", &lido.como.c);
+        }
+
+        if (resultado != 1)
+        {
+            if (usa_retorno)
+                return (resultado == EOF && lidos == 0) ? EOF : lidos;
+
+            if (resultado == EOF)
+                reportar_erro(FASE_EXECUCAO, chamada->line, "fim da entrada no scanf");
+            else
+                reportar_erro(FASE_EXECUCAO, chamada->line, "entrada invalida para %%%c no scanf", *p);
+            abortou = 1;
+            return lidos;
+        }
+
+        *destino = converter_para_tipo(lido, destino->tipo);
+        lidos++;
+    }
+
+    return lidos;
 }
 
 Valor interpretarNo(ASTNode *no)
@@ -198,14 +367,29 @@ Valor interpretarNo(ASTNode *no)
         resultado.como.c = no->charval;
         break;
 
+    case NODE_CALL:
+        if (strcmp(no->strval, "scanf") == 0)
+        {
+            resultado.tipo = TIPO_INT;
+            resultado.como.i = executar_scanf(no, 1);
+        }
+        else if (strcmp(no->strval, "printf") == 0)
+        {
+            fprintf(stderr, "Erro interno [linha %d]: printf dentro de expressao nao suportado na execucao\n",
+                    no->line);
+            contar_erro(FASE_EXECUCAO);
+            abortou = 1;
+        }
+        else
+            resultado = chamar_funcao(no);
+        break;
+
     case NODE_ID:
     {
         Valor *var = ler_variavel(no->strval);
         if (var == NULL)
         {
-            fprintf(stderr, "Erro de execucao [linha %d]: variavel '%s' sem valor\n",
-                    no->line, no->strval);
-            erros_execucao++;
+            reportar_erro(FASE_EXECUCAO, no->line, "variavel '%s' sem valor", no->strval);
             resultado.tipo = TIPO_INT;
             resultado.como.i = 0;
             break;
@@ -300,8 +484,8 @@ Valor interpretarNo(ASTNode *no)
         {
             if (b == 0)
             {
-                fprintf(stderr, "Erro de execucao [linha %d]: divisao por zero\n", no->line);
-                erros_execucao++;
+                reportar_erro(FASE_EXECUCAO, no->line, "divisao por zero");
+                abortou = 1;
                 resultado.como.i = 0;
             }
             else
@@ -311,8 +495,8 @@ Valor interpretarNo(ASTNode *no)
         {
             if (b == 0)
             {
-                fprintf(stderr, "Erro de execucao [linha %d]: divisao por zero\n", no->line);
-                erros_execucao++;
+                reportar_erro(FASE_EXECUCAO, no->line, "divisao por zero");
+                abortou = 1;
                 resultado.como.i = 0;
             }
             else
@@ -362,12 +546,62 @@ Valor interpretarNo(ASTNode *no)
     default:
         fprintf(stderr, "Erro interno [linha %d]: no %s nao suportado na execucao\n",
                 no->line, nome_tipo_no(no->type));
-        erros_execucao++;
-        retornou = 1;
+        contar_erro(FASE_EXECUCAO);
+        abortou = 1;
         break;
     }
 
     return resultado;
+}
+
+static ASTNode *proximo_argumento_printf(ASTNode *chamada, int *indice_arg)
+{
+    if (*indice_arg >= chamada->num_children)
+    {
+        reportar_erro(FASE_EXECUCAO, chamada->line, "printf com menos argumentos do que especificadores");
+        abortou = 1;
+        return NULL;
+    }
+    return chamada->children[(*indice_arg)++];
+}
+
+static void imprimir_escape(char c)
+{
+    if (c == 'n')
+        putchar('\n');
+    else if (c == 't')
+        putchar('\t');
+    else if (c == '\\')
+        putchar('\\');
+    else if (c == '"')
+        putchar('"');
+    else if (c == '0')
+        putchar('\0');
+    else
+    {
+        putchar('\\');
+        putchar(c);
+    }
+}
+
+static void imprimir_texto(const char *texto)
+{
+    for (const char *p = texto; *p != '\0'; p++)
+    {
+        if (*p == '\\' && *(p + 1) != '\0')
+        {
+            p++;
+            imprimir_escape(*p);
+        }
+        else
+            putchar(*p);
+    }
+}
+
+static void erro_tipo_printf(ASTNode *chamada, char especificador, const char *esperado)
+{
+    reportar_erro(FASE_EXECUCAO, chamada->line, "%%%c do printf espera %s", especificador, esperado);
+    abortou = 1;
 }
 
 static void executar_printf(ASTNode *chamada)
@@ -383,18 +617,9 @@ static void executar_printf(ASTNode *chamada)
         if (*p == '\\')
         {
             p++;
-            if (*p == '\0') break;
-
-            if (*p == 'n') putchar('\n');
-            else if (*p == 't') putchar('\t');
-            else if (*p == '\\') putchar('\\');
-            else if (*p == '"') putchar('"');
-            else if (*p == '0') putchar('\0');
-            else
-            {
-                putchar('\\');
-                putchar(*p);
-            }
+            if (*p == '\0')
+                break;
+            imprimir_escape(*p);
             continue;
         }
 
@@ -411,45 +636,51 @@ static void executar_printf(ASTNode *chamada)
             break;
         }
 
-        if (*p == 'd')
-        {
-            if (indice_arg >= chamada->num_children)
-            {
-                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->line);
-                exit(5);
-            }
-            Valor v = interpretarNo(chamada->children[indice_arg++]);
-            printf("%d", valor_como_int(v));
-        }
-        else if (*p == 'f')
-        {
-            if (indice_arg >= chamada->num_children)
-            {
-                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->line);
-                exit(5);
-            }
-            Valor v = interpretarNo(chamada->children[indice_arg++]);
-            printf("%f", valor_como_float(v));
-        }
-        else if (*p == 'c')
-        {
-            if (indice_arg >= chamada->num_children)
-            {
-                fprintf(stderr, "Erro de execucao [linha %d]: printf com menos argumentos do que especificadores\n", chamada->line);
-                exit(5);
-            }
-            Valor v = interpretarNo(chamada->children[indice_arg++]);
-            putchar((char)valor_como_int(v));
-        }
-        else if (*p == '%')
+        if (*p == '%')
         {
             putchar('%');
+            continue;
         }
-        else
+
+        if (*p != 'd' && *p != 'f' && *p != 'c' && *p != 's')
         {
             putchar('%');
             putchar(*p);
+            continue;
         }
+
+        ASTNode *argumento = proximo_argumento_printf(chamada, &indice_arg);
+        if (argumento == NULL)
+            return;
+
+        int e_texto = argumento->type == NODE_STRING_LIT;
+        if (*p == 's' && !e_texto)
+        {
+            erro_tipo_printf(chamada, *p, "um texto entre aspas");
+            return;
+        }
+        if (*p != 's' && e_texto)
+        {
+            erro_tipo_printf(chamada, *p, "um numero ou caractere, nao um texto");
+            return;
+        }
+
+        if (*p == 's')
+        {
+            imprimir_texto(argumento->strval);
+            continue;
+        }
+
+        Valor valor = interpretarNo(argumento);
+        if (abortou)
+            return;
+
+        if (*p == 'd')
+            printf("%d", valor_como_int(valor));
+        else if (*p == 'f')
+            printf("%f", valor_como_float(valor));
+        else
+            putchar((char)valor_como_int(valor));
     }
 }
 
@@ -487,16 +718,14 @@ static int passou_do_limite(long *voltas, int linha)
     (*voltas)++;
     if (*voltas <= limite_iteracoes())
         return 0;
-    fprintf(stderr, "Erro de execucao [linha %d]: limite de %ld iteracoes excedido\n",
-            linha, limite_iteracoes());
-    erros_execucao++;
-    retornou = 1;
+    reportar_erro(FASE_EXECUCAO, linha, "limite de %ld iteracoes excedido", limite_iteracoes());
+    abortou = 1;
     return 1;
 }
 
 static void executar_comando(ASTNode *comando)
 {
-    if (comando == NULL || retornou)
+    if (comando == NULL || execucao_interrompida())
         return;
 
     switch (comando->type)
@@ -513,6 +742,8 @@ static void executar_comando(ASTNode *comando)
 
         if (expr->type == NODE_CALL && strcmp(expr->strval, "printf") == 0)
             executar_printf(expr);
+        else if (expr->type == NODE_CALL && strcmp(expr->strval, "scanf") == 0)
+            executar_scanf(expr, 0);
         else
             interpretarNo(expr);
         break;
@@ -535,7 +766,7 @@ static void executar_comando(ASTNode *comando)
     case NODE_WHILE:
     {
         long voltas = 0;
-        while (!retornou && valor_verdadeiro(interpretarNo(comando->children[0])))
+        while (!execucao_interrompida() && valor_verdadeiro(interpretarNo(comando->children[0])))
         {
             if (passou_do_limite(&voltas, comando->line))
                 break;
@@ -549,51 +780,152 @@ static void executar_comando(ASTNode *comando)
         long voltas = 0;
         if (comando->children[0] != NULL)
             interpretarNo(comando->children[0]);
-        while (!retornou && (comando->children[1] == NULL ||
-                             valor_verdadeiro(interpretarNo(comando->children[1]))))
+        while (!execucao_interrompida() && (comando->children[1] == NULL ||
+                                            valor_verdadeiro(interpretarNo(comando->children[1]))))
         {
             if (passou_do_limite(&voltas, comando->line))
                 break;
             executar_comando(comando->children[3]);
-            if (!retornou && comando->children[2] != NULL)
+            if (!execucao_interrompida() && comando->children[2] != NULL)
                 interpretarNo(comando->children[2]);
         }
         break;
     }
 
     case NODE_RETURN:
+    {
+        Valor valor = {0};
         if (comando->children[0] != NULL)
-            valor_retorno = valor_como_int(interpretarNo(comando->children[0]));
+            valor = interpretarNo(comando->children[0]);
+        if (abortou)
+            break;
+        valor_retornado = valor;
         retornou = 1;
         break;
+    }
 
     default:
         fprintf(stderr, "Erro interno [linha %d]: no %s nao suportado na execucao\n",
                 comando->line, nome_tipo_no(comando->type));
-        erros_execucao++;
-        retornou = 1;
+        contar_erro(FASE_EXECUCAO);
+        abortou = 1;
         break;
     }
 }
+
+static ASTNode *buscar_funcao(const char *nome)
+{
+    for (int i = 0; programa != NULL && i < programa->num_children; i++)
+    {
+        ASTNode *declaracao = programa->children[i];
+        if (declaracao != NULL && declaracao->type == NODE_FUNC_DECL &&
+            strcmp(declaracao->strval, nome) == 0)
+            return declaracao;
+    }
+    return NULL;
+}
+
+/* Executa o corpo da funcao num frame novo e devolve o valor do return,
+   convertido para o tipo de retorno declarado. */
+static Valor executar_funcao(ASTNode *funcao, const Valor *argumentos, int num_argumentos)
+{
+    ASTNode *parametros = funcao->children[0];
+    int base_anterior = base_frame;
+
+    entrar_escopo_exec();
+    base_frame = numero_escopos - 1;
+
+    for (int i = 0; parametros != NULL && i < parametros->num_children && i < num_argumentos; i++)
+    {
+        ASTNode *parametro = parametros->children[i];
+        definir_variavel(parametro->strval,
+                         converter_para_tipo(argumentos[i], (TipoDado)parametro->intval));
+    }
+
+    Valor zero = {0};
+    valor_retornado = zero;
+    executar_comando(funcao->children[1]);
+
+    Valor resultado = retornou ? valor_retornado : zero;
+    resultado = converter_para_tipo(resultado, (TipoDado)funcao->intval);
+    if ((TipoDado)funcao->intval == TIPO_VOID)
+        resultado.tipo = TIPO_VOID;
+
+    /* O return termina so esta funcao; um erro (abortou) continua interrompendo tudo */
+    retornou = 0;
+
+    while (numero_escopos > base_frame)
+        sair_escopo_exec();
+    base_frame = base_anterior;
+
+    return resultado;
+}
+
+static Valor chamar_funcao(ASTNode *chamada)
+{
+    Valor resultado = {0};
+    ASTNode *funcao = buscar_funcao(chamada->strval);
+    if (funcao == NULL)
+    {
+        reportar_erro(FASE_EXECUCAO, chamada->line, "funcao '%s' nao encontrada", chamada->strval);
+        abortou = 1;
+        return resultado;
+    }
+
+    if (!entrar_chamada(chamada->strval, chamada->line))
+        return resultado;
+
+    /* Os argumentos sao avaliados no escopo de quem chama, antes de abrir o frame novo */
+    Valor *argumentos = NULL;
+    if (chamada->num_children > 0)
+    {
+        argumentos = malloc(chamada->num_children * sizeof(Valor));
+        if (argumentos == NULL)
+        {
+            fprintf(stderr, "Erro: falha ao alocar argumentos da chamada\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    for (int i = 0; i < chamada->num_children; i++)
+    {
+        argumentos[i] = interpretarNo(chamada->children[i]);
+        if (abortou)
+            break;
+    }
+
+    if (!abortou)
+        resultado = executar_funcao(funcao, argumentos, chamada->num_children);
+
+    free(argumentos);
+    sair_chamada();
+    return resultado;
+}
+
 int interpretar(ASTNode *raiz)
 {
     if (raiz == NULL)
         return 0;
 
-    entrar_escopo_exec();
+    programa = raiz;
     retornou = 0;
-    valor_retorno = 0;
+    abortou = 0;
+    base_frame = 0;
+    profundidade_chamadas = 0;
 
-    for (int i = 0; i < raiz->num_children; i++)
+    /* Escopo 0: variaveis globais, definidas antes de chamar o main */
+    entrar_escopo_exec();
+    for (int i = 0; i < raiz->num_children && !abortou; i++)
     {
         ASTNode *declaracao = raiz->children[i];
-        if (declaracao != NULL && declaracao->type == NODE_FUNC_DECL &&
-            strcmp(declaracao->strval, "main") == 0)
-        {
-            executar_comando(declaracao->children[1]);
-            break;
-        }
+        if (declaracao != NULL && declaracao->type == NODE_VAR_DECL)
+            executar_declaracao_variavel(declaracao);
     }
+
+    int codigo = 0;
+    ASTNode *funcao_main = buscar_funcao("main");
+    if (funcao_main != NULL && !abortou)
+        codigo = valor_como_int(executar_funcao(funcao_main, NULL, 0));
 
     while (numero_escopos > 0)
         sair_escopo_exec();
@@ -601,5 +933,6 @@ int interpretar(ASTNode *raiz)
     free(escopos);
     escopos = NULL;
     capacidade_escopos = 0;
-    return valor_retorno;
+    programa = NULL;
+    return codigo;
 }

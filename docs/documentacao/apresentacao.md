@@ -1,35 +1,37 @@
-# 🚀 Interpretador de C — Grupo 09
+# Interpretador de C, Grupo 09
 
 ## 1. A disciplina de Compiladores 1
 
 Este projeto foi realizado por alunos da Universidade de Brasília durante a disciplina de Compiladores 1 (FGA0003), orientada pelo Prof. Dr. Sergio Antônio Andrade de Freitas.
 
-A disciplina ensina a construção de um interpretador seguindo o pipeline léxico → sintático (com construção da AST) → semântico → interpretação recursiva da AST, usando Flex e Bison. Além do código, a proposta de trabalho exige que a equipe mantenha, ao longo de todo o desenvolvimento, um registro contínuo de decisões técnicas, planejamento de sprints e problemas/soluções — já que o professor só acessa o repositório na entrega final, e essa documentação é o que garante que o trabalho realizado seja visível e defensável na entrevista.
+Na disciplina, construímos um interpretador seguindo o pipeline léxico → sintático (com construção da AST) → semântico → interpretação recursiva da AST, usando Flex e Bison. Além do código, a proposta de trabalho pede que a equipe mantenha, durante todo o desenvolvimento, um registro das decisões técnicas, do planejamento das sprints e dos problemas e soluções. Como o professor só acessa o repositório na entrega final, é essa documentação que deixa o nosso trabalho visível e nos ajuda a defendê-lo na entrevista.
 
 ## 2. O projeto: Organizador de Compras no Mercado
 
-Como estudo de caso para exercitar o núcleo da linguagem, a equipe escolheu um **organizador de compras de mercado**: o programa recebe itens e preços via `scanf` em loop, soma o total gasto e avisa se o valor ultrapassou o orçamento informado pelo usuário.
+Para o projeto ficar mais próximo de nós, decidimos juntos usar um tema do dia a dia.
 
-O interpretador cobre apenas o núcleo obrigatório da linguagem: tipos `int`/`float`/`char`, variáveis, expressões aritméticas/relacionais/lógicas com precedência, estruturas de controle (`if`/`else`, `while`, `for`), blocos com escopo, funções com parâmetros/retorno/recursão e entrada/saída básica (`printf`/`scanf`). Ponteiros, structs, pré-processador e otimizações ficam deliberadamente fora de escopo.
+Como estudo de caso para exercitar o núcleo da linguagem, escolhemos um **organizador de compras de mercado**: o programa lê os preços dos itens com `scanf` num laço, soma o total gasto e avisa se o valor passou do orçamento informado pelo usuário.
 
-Ver [Definição da Linguagem](definicao-da-linguagem.md) para o exemplo completo de código e saída esperada.
+O interpretador cobre só o núcleo obrigatório da linguagem: tipos `int`/`float`/`char`, variáveis, expressões aritméticas/relacionais/lógicas com precedência, estruturas de controle (`if`/`else`, `while`, `for`), blocos com escopo, funções com parâmetros/retorno/recursão e entrada/saída básica (`printf`/`scanf`). Deixamos de fora, de propósito, ponteiros, structs, pré-processador e otimizações.
+
+O exemplo completo de código e da saída esperada está em [Definição da Linguagem](/documentacao/definicao-da-linguagem.md), e os outros programas que usamos para validar o interpretador estão em [Estudos de Casos](/documentacao/estudos-de-casos.md).
 
 ## 3. Os Contribuidores
 
-A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
+Somos alunos da Universidade de Brasília e formamos o Grupo 09.
 
 <div class="team-container">
 
   <div class="team-card">
-    <img src="docs/assets/Mariana_perfil.jpg" alt="Mariana Martins"/>
-    <h3>Mariana Martins</h3>
-    <p class="papel">Semântico: tipos e compatibilidade</p>
+    <img src="docs/assets/Brenda_perfil.jpg" alt="Brenda Beatriz"/>
+    <h3>Brenda Beatriz</h3>
+    <p class="papel">Léxico e Sintático/AST; integração, testes e documentação; líder</p>
     <div class="social-links">
-      <a href="https://github.com/Marianamrts" target="_blank">GitHub</a>
+      <a href="https://github.com/Brwnds" target="_blank">GitHub</a>
     </div>
   </div>
 
-  <div class="team-card">
+ <div class="team-card">
     <img src="docs/assets/Eduardo_perfil.jpg" alt="Eduardo Ribeiro Xavier"/>
     <h3>Eduardo Ribeiro Xavier</h3>
     <p class="papel">Interpretação</p>
@@ -47,7 +49,7 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
     </div>
   </div>
 
-  <div class="team-card">
+   <div class="team-card">
     <img src="docs/assets/Henrique_perfil.jpg" alt="Henrique Fontenelle"/>
     <h3>Henrique Fontenelle</h3>
     <p class="papel">Scrum Master: revisão e integração; suplente do líder</p>
@@ -57,11 +59,11 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
   </div>
 
   <div class="team-card">
-    <img src="docs/assets/Brenda_perfil.jpg" alt="Brenda Beatriz"/>
-    <h3>Brenda Beatriz</h3>
-    <p class="papel">Léxico e Sintático/AST; integração, testes e documentação; líder</p>
+    <img src="docs/assets/Mariana_perfil.jpg" alt="Mariana Martins"/>
+    <h3>Mariana Martins</h3>
+    <p class="papel">Semântico: tipos e compatibilidade</p>
     <div class="social-links">
-      <a href="https://github.com/Brwnds" target="_blank">GitHub</a>
+      <a href="https://github.com/Marianamrts" target="_blank">GitHub</a>
     </div>
   </div>
 
@@ -143,3 +145,5 @@ A equipe de desenvolvimento é composta por alunos da Universidade de Brasília.
 | Data | Versão | Descrição | Autor |
 |------|--------|-----------|-------|
 | 05/09/2026 | 1.0 | Criação da página de apresentação e equipe | Brenda |
+| 23/11/2026 | 1.1 | Atualização da página de apresentação da equipe | Mariana |
+| 26/11/2026 | 1.2 | Revisão do texto | Brenda |

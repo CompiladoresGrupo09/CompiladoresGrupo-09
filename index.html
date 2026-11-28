@@ -16,14 +16,46 @@
 
   <script>
     window.$docsify = {
-      name: 'Compiladores Grupo 09',
-      repo: 'https://github.com/Marianamrts/CompiladoresGrupo-09',
+      name: 'Interpretador de C · Grupo 09',
+      repo: 'https://github.com/CompiladoresGrupo09/CompiladoresGrupo-09',
       basePath: 'docs/',
+      homepage: 'inicio.md',
       loadSidebar: '_sidebar.md',
-      subMaxLevel: 3
+      subMaxLevel: 3,
+      auto2top: true,
+      themeColor: '#3a5bd9',
+      search: {
+        placeholder: 'Buscar',
+        noData: 'Nada encontrado',
+        depth: 3
+      },
+      copyCode: {
+        buttonText: 'Copiar',
+        successText: 'Copiado!',
+        errorText: 'Erro'
+      },
+      pagination: {
+        previousText: 'Anterior',
+        nextText: 'Próxima',
+        crossChapter: true,
+        crossChapterText: true
+      },
+      plugins: [
+        // Na página inicial, esconde o menu lateral para ela funcionar como uma tela de entrada
+        function (hook, vm) {
+          hook.doneEach(function () {
+            document.body.classList.toggle('pagina-inicial', vm.route.path === '/');
+          });
+        }
+      ]
     }
   </script>
 
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-c.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
 </body>
 </html>

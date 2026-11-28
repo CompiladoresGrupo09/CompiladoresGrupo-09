@@ -1,0 +1,8 @@
+Total: 
+Erro de execucao [linha 3]: %s do printf espera um texto entre aspas
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   1 erro(s)

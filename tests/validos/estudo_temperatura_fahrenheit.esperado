@@ -1,0 +1,14 @@
+Escala de saida (C ou F): Digite as temperaturas em Celsius (-1 para terminar):
+Escala: F
+Leituras: 3
+Maior: 86.000000
+Menor: 68.000000
+Media: 77.000000
+Leituras dentro do bloco: 0
+Leituras fora do bloco: 3
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)

@@ -1,6 +1,6 @@
-# Definição da linguagem — núcleo de C interpretado
+# Definição da linguagem: núcleo de C interpretado
 
-Mesmo com cerca de um mês de prazo, C completo (ponteiros, structs, pré-processador etc.) não cabe com qualidade. Este documento fixa o escopo que a equipe decidiu manter fechado.
+Mesmo com cerca de um mês de prazo, C completo (ponteiros, structs, pré-processador etc.) não caberia com qualidade. Aqui registramos o escopo que decidimos manter fechado.
 
 ## Núcleo obrigatório (para o interpretador "rodar")
 
@@ -13,15 +13,17 @@ Mesmo com cerca de um mês de prazo, C completo (ponteiros, structs, pré-proces
 - Entrada/saída mínima: `printf` (formatos básicos `%d %f %c %s`) e `scanf`
 
 O `for` aceita expressões nas três posições (que podem ficar vazias), mas não
-declaração de variável no inicializador. Essa escolha mantém o subconjunto no
-estilo C89: declare a variável antes do laço. `for (int i = 0; ...)` é recusado
+declaração de variável no inicializador. Com essa escolha, mantivemos o subconjunto no
+estilo C89: a variável é declarada antes do laço. `for (int i = 0; ...)` é recusado
 com uma mensagem explícita.
 
-## Diferenciais — só se o núcleo fechar adiantado, nesta ordem de prioridade
+## Diferenciais: só se o núcleo fechasse adiantado, nesta ordem de prioridade
 
 1. Mensagens de erro com linha/coluna (barato: basta propagar `yylineno` do Flex pelas fases; alto retorno em robustez percebida)
-2. Testes automatizados mais extensos (cobrir mais casos-limite do núcleo — tratar como parte da qualidade do núcleo, não como "extra")
+2. Testes automatizados mais extensos (cobrir mais casos-limite do núcleo, tratando isso como parte da qualidade do núcleo, não como "extra")
 3. Vetores/arrays 1D (só se sobrar bastante tempo; exige mudanças em parser, tabela de símbolos e semântica)
+
+**O que decidimos no fim (27/11/2026):** fazer o diferencial 2, já entregue com 88 testes que comparam a saída do programa, junto com o relatório de erros unificado, feito pelo Eduardo (PR #131), em que as quatro fases reportam os erros por um único módulo. A coluna nas mensagens de erro e os vetores ficaram de fora, de propósito, para não arriscar o núcleo no dia da entrega: as mensagens mostram só a linha, e vetores continuam recusados com a mensagem "construcao fora do escopo". O motivo está em [Decisões Técnicas](/documentacao/decisoes-tecnicas.md).
 
 ## Deliberadamente fora de escopo, mesmo com um mês
 
@@ -41,11 +43,11 @@ com uma mensagem explícita.
 
 ## Aplicação escolhida: organizador de compras no mercado
 
-Para exercitar o núcleo da linguagem, a equipe escolheu como estudo de caso um **organizador de compras de mercado**: o programa lê, em loop via `scanf`, o preço de cada item comprado, soma o total gasto e avisa se o valor ultrapassou o orçamento informado pelo usuário. O tema usa apenas recursos do núcleo obrigatório (variáveis `float`/`int`, laço `while`, `if`/`else`, `scanf`/`printf`) — não depende de nenhum diferencial (arrays, strings dinâmicas etc.), o que é proposital, já que esses ficam fora de escopo.
+Para exercitar o núcleo da linguagem, escolhemos como estudo de caso um **organizador de compras de mercado**: o programa lê, num laço com `scanf`, o preço de cada item comprado, soma o total gasto e avisa se o valor passou do orçamento informado pelo usuário. O tema usa só recursos do núcleo obrigatório (variáveis `float`/`int`, laço `while`, `if`/`else`, `scanf`/`printf`) e não depende de nenhum diferencial (arrays, strings dinâmicas etc.). Fizemos isso de propósito, já que esses recursos ficam fora de escopo.
 
 ## Exemplos de programas suportados
 
-### Exemplo 1 — Organizador de compras no mercado
+### Exemplo 1: Organizador de compras no mercado
 
 Entrada (`exemplo.c`):
 
@@ -99,6 +101,19 @@ Preco do item: -1
 Itens registrados: 3
 Total gasto: 120.000000
 Atencao: voce ultrapassou o orcamento!
-```
 
-_(demais exemplos — casos dentro do orçamento, entrada inválida, etc. — serão adicionados conforme o núcleo for sendo implementado e testado)_
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
+```
+Os números aparecem na saída porque foram digitados no terminal. Com a entrada vinda de um arquivo (`./interpretador organizador_compras.c < entrada.txt`), como faz a suíte de testes, eles não aparecem e cada mensagem fica colada na seguinte. Esse caso está automatizado em `tests/validos/organizador_compras.c`, com `.entrada` e `.esperado`.
+
+Outros exemplos com entrada e saída reais estão no `README.md` (seção "Exemplos de entrada e saída") e em `demonstracao.md` (seção "Estudos de caso"), que reúne os programas usados por cada integrante para validar o interpretador.
+
+| Data | Versão | Descrição | Autor |
+|------|--------|-----------|-------|
+| 05/09/2026 | 1.0 | Criação da página Definição da Linguagem | Brenda |
+| 23/11/2026 | 1.1 | Revisão da página Definição da Linguagem | Mariana |
+| 27/11/2026 | 1.2 | Registro da decisão final sobre os diferenciais | Brenda |

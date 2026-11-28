@@ -9,6 +9,7 @@ typedef struct Simbolo {
     int linha;
     int e_funcao;
     int aridade;
+    TipoDado *tipos_parametros;
 } Simbolo;
 
 typedef struct Escopo {
@@ -31,6 +32,7 @@ void entrar_escopo(void);
 void sair_escopo(void);
 
 int inserir_simbolo(const char *nome, TipoDado tipo, int linha, int e_funcao, int aridade);
+int inserir_funcao(const char *nome, TipoDado tipo, int linha, int aridade, const TipoDado *tipos_parametros);
 Simbolo *buscar_simbolo(const char *nome);
 Simbolo *buscar_no_escopo_atual(const char *nome);
 

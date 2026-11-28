@@ -1,0 +1,11 @@
+idade: 20
+altura: 1.750000
+inicial: B
+20 1.750000 B
+nome: Maria
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
