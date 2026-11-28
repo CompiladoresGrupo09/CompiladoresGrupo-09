@@ -15,6 +15,7 @@
 * **Processo**
   * [Decisões Técnicas](documentacao/decisoes-tecnicas.md)
   * [Planejamento das Sprints](documentacao/planejamento-sprints.md)
+  * [Atas das Reuniões](documentacao/atas.md)
   * [Problemas e Soluções](documentacao/problemas-e-solucoes.md)
 
 * **Referência**
