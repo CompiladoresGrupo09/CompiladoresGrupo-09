@@ -215,7 +215,7 @@ A issue #88 (S5-02, limite de recursão, PR #120, Giovana) já está na `Dev` e 
 - [ ] Preparar a versão candidata à entrega final (repositório atualizado, README completo)
 
 **Entregue:**
-- **Estudos de caso:** em vez de testes de integração soltos, cada integrante escreveu um programa completo e validou o interpretador com ele: boletim escolar (Mariana, PR #123), calculadora de números (Eduardo, PR #125) e controle de temperatura (Brenda, PR #121). O caixa eletrônico (Giovana, issue #117) está em andamento. Os programas e os resultados estão em [Estudos de Casos](/documentacao/estudos-de-casos.md).
+- **Estudos de caso:** em vez de testes de integração soltos, cada integrante escreveu um programa completo e validou o interpretador com ele: boletim escolar (Mariana, PR #123), calculadora de números (Eduardo, PR #125), controle de temperatura (Brenda, PR #121) e caixa eletrônico (Giovana, issue #117). Os programas e os resultados estão em [Estudos de Casos](/documentacao/estudos-de-casos.md).
 - **Bug achado pelos estudos de caso:** a calculadora de números mostrou que a divisão por zero exibia o erro mas deixava o programa continuar. Corrigimos para a divisão por zero interromper a execução, como os outros erros (issue #124, PR #125).
 - **Testes mais extensos (diferencial 2):** a suíte do núcleo com saída esperada em todos os casos e a tabela de cobertura em `tests/README.md` (S5-06, PR #126), os casos-limite (S7-03, PR #129) e a lista completa de erros de execução, com o resto por zero (S6-02, PR #130). São 88 testes.
 - **Relatório de erros unificado:** as quatro fases passaram a reportar os erros por um único módulo, `erros.c`, sem mudar o texto das mensagens (S6-08, issue #97, PR #131, Eduardo).

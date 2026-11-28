@@ -193,6 +193,14 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Testes:** os casos de `tests/validos/` que dependiam de funções saíram de `pendentes.txt`. Três `.esperado` foram corrigidos: `escopo_shadowing` e `comando_for` não batiam com o `printf` do próprio programa, e `funcao_parametros_retorno` usava `%d` com uma variável `float`, comportamento indefinido em C, e passou a usar `%f`.
 * **Implementação:** issue #80.
 
+## Limite de profundidade para recursão (S5-02)
+
+* **Decisão:** o ambiente de execução mantém `profundidade_chamadas`, incrementada ao entrar em cada chamada e decrementada ao sair dela, inclusive nos caminhos que terminam por erro ou `return`.
+* **Limite padrão:** 1000 chamadas. Pode ser reduzido pela variável de ambiente `INTERPRETADOR_LIMITE_RECURSAO` ou pela opção `--limite-recursao N`. Valores maiores que 1000 são limitados ao máximo seguro de 1000 para evitar o estouro da pilha nativa do sistema, que pode travar o programa no Windows. O `main` não conta na profundidade de recursão.
+* **Erro:** ao exceder o limite, a execução para com código 5 e informa a linha, o limite configurado e o nome da função envolvida, evitando um estouro de pilha do processo.
+* **Testes:** `fatorial.c`, `fibonacci.c` e `recursao_infinita.c` cobrem recursão com retorno, chamadas ramificadas e ausência de condição de parada; `recursao_no_limite.c` e `recursao_um_alem_do_limite.c` conferem a borda do limite.
+* **Implementação:** issue #88 (PR #120).
+
 ## Formato padrão das mensagens de erro
 
 * **Decisão:** toda mensagem de erro segue o formato `Erro <fase> [linha N]: <descricao>` (por exemplo, `Erro semantico [linha 4]: ...`) e é escrita **sem acentos**.

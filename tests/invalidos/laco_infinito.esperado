@@ -1,0 +1,7 @@
+Erro de execucao [linha 4]: limite de 1000000 iteracoes excedido
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   1 erro(s)

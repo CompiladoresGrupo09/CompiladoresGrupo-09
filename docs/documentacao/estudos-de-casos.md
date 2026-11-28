@@ -9,7 +9,7 @@ O estudo de caso principal, usado na demonstração, continua sendo o **organiza
 | Estudo de caso | Responsável | O que ele valida principalmente | Situação |
 |---|---|---|---|
 | Boletim escolar (S7-08) | Mariana | `float`, `if`/`else` aninhado, função com retorno `float` | Concluído |
-| Caixa eletrônico (S7-09) | Giovana | Menu com `while`, variáveis globais, funções `void` | Em andamento |
+| Caixa eletrônico (S7-09) | Giovana | Menu com `while`, variáveis globais, funções `void` | Concluído |
 | Calculadora de números (S7-10) | Eduardo | Recursão, `for` aninhado, operador `%` | Concluído |
 | Controle de temperatura (S7-11) | Brenda | `char` e `%c`, sentinela, escopo e *shadowing* | Concluído |
 
@@ -50,7 +50,34 @@ Execucao   0 erro(s)
 
 # Caixa eletrônico (S7-09)
 
-Em andamento (issue #117). A ideia é um menu em `while` com depósito, saque e consulta de saldo, guardando o saldo numa variável global alterada por funções `void`.
+Programa em `tests/validos/estudo_caixa.c`. Ele guarda o saldo numa variável global e oferece um menu em `while` para depositar, sacar, ver o saldo ou sair. As funções `void depositar(float valor)` e `void sacar(float valor)` alteram o saldo global, e `sacar` recusa valores negativos ou acima do saldo, usando `return;` para sair antes do fim da função. A condição do laço combina o resultado do `scanf` com a opção escolhida (`&&`), e a validação do saque usa `||`.
+
+O que ele valida: variável global alterada por funções, funções `void` com `return;` sem valor, `while` com menu, `&&` e `||`, e o valor de retorno do `scanf` usado numa condição. Ele também mostra como funciona o escopo das chamadas: cada função tem o próprio frame e, fora dele, só enxerga o escopo global. Por isso `depositar` e `sacar` acessam `saldo`, mas não as variáveis `opcao` e `valor` do `main`.
+
+Rodando com a entrada de `estudo_caixa.entrada` (depósito de 100, saque de 30, ver saldo e sair):
+
+```
+$ ./interpretador ../tests/validos/estudo_caixa.c < ../tests/validos/estudo_caixa.entrada
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Deposito realizado.
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Saque realizado.
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Saldo: 70.000000
+1 Depositar, 2 Sacar, 3 Ver saldo, 0 Sair: Caixa encerrado.
+
+==== Relatorio de erros ====
+Lexica     0 erro(s)
+Sintatica  0 erro(s)
+Semantica  0 erro(s)
+Execucao   0 erro(s)
+```
+
+| Cenário | Arquivo | Resultado |
+|---|---|---|
+| Depósito de 100, saque de 30 e consulta | `validos/estudo_caixa.c` | saldo `70.000000` |
+| Depósito de 50, saque de 60 e saque de `-10` | `validos/estudo_caixa_tentativas_invalidas.c` | os dois saques são recusados e o saldo continua `50.000000` |
+| Entrada termina depois de um depósito, sem o `0` | `validos/estudo_caixa_fim_entrada.c` | o `scanf` da condição devolve fim de entrada, o laço termina e o programa encerra sem erro |
+| `sacar` chamada com dois argumentos (inválido) | `invalidos/estudo_caixa_argumentos_invalidos.c` | `Erro semantico [linha 14]: funcao 'sacar' esperava 1 argumento(s), recebeu 2`, código 4 |
+
+Os `.esperado` foram escritos à mão a partir dos cenários e conferidos pela suíte, e o caso também passou num clone limpo da branch `test/estudo-caixa`.
 
 # Calculadora de números (S7-10)
 
