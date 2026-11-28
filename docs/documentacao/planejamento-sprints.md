@@ -193,7 +193,7 @@ Parte desse trabalho ficou pronta em 08/11, mas as issues só foram fechadas em 
 
 **Pendente, e por quê:**
 - **Tabela de cobertura (S5-06, issue #92):** os testes existem e passam; falta escrever qual teste cobre cada item do núcleo. Entregue depois, na Sprint 6 (PR #126).
-- **Decisão do `scanf` (S5-04):** o que fazer no fim da entrada e com entrada inválida está implementado, mas ainda não está escrito em `decisoes-tecnicas.md`.
+- **Decisão do `scanf` (S5-04):** o que fazer no fim da entrada e com entrada inválida estava implementado, mas ainda não estava escrito. Registramos depois, em [Decisões Técnicas](/documentacao/decisoes-tecnicas.md).
 
 **Issues fechadas:**
 
@@ -204,7 +204,7 @@ Parte desse trabalho ficou pronta em 08/11, mas as issues só foram fechadas em 
 | #90 | S5-04: `scanf` com `%d`, `%f` e `%c` | PR #111 | Eduardo |
 | #91 | S5-05: Estudo de caso do organizador de compras | PR #113 | Eduardo |
 
-A issue #88 (S5-02, limite de recursão, PR #120, Giovana) já está na `Dev` e fecha quando a `Dev` for para a `main`.
+A issue #88 (S5-02, limite de recursão, PR #120, Giovana) foi concluída depois, em 26/11.
 
 ## Sprint 6: Otimizações, recursos extras e testes integrados
 

@@ -219,6 +219,17 @@ Como o fluxo funciona na prática (atualizado em 01/10/2026):
 * **Erros de execução (código 5, com o relatório):** argumento faltando para um especificador, `%s` com número e `%d`/`%f`/`%c` com texto. Antes, o argumento faltando encerrava o programa com `exit(5)` sem mostrar o relatório; agora segue o mesmo caminho dos outros erros de execução.
 * **Implementação:** issue #89.
 
+## `scanf`: leitura, fim da entrada e entrada inválida (S5-04)
+
+* **Decisão:** o `scanf` lê `%d`, `%f` e `%c`, um valor por especificador, e guarda cada valor convertido para o tipo da variável. Um espaço no formato pula os espaços e as quebras de linha da entrada, como no C.
+* **Quando a leitura falha, o comportamento depende de onde o `scanf` está:**
+  * **como comando** (`scanf("%d", &x);`): fim da entrada ou um valor que não combina com o especificador é erro de execução, com a mensagem `fim da entrada no scanf` ou `entrada invalida para %d no scanf`, e o programa para com código 5;
+  * **dentro de uma expressão** (`while (scanf("%d", &opcao) == 1 && ...)`): não é erro. O `scanf` devolve quantos valores leu, ou `-1` (EOF) se a entrada acabou antes de ler qualquer um, e o próprio programa decide o que fazer, como no C.
+* **Justificativa:** como comando, ninguém confere o retorno, e continuar com a variável sem valor faria o programa imprimir resultados errados sem aviso. Dentro de uma expressão, o programa está conferindo o retorno de propósito, que é o jeito comum de ler até o fim da entrada em C. Os estudos de caso usam os dois jeitos: o organizador de compras lê com `scanf` como comando, e o caixa eletrônico termina o menu quando a entrada acaba.
+* **Outros erros:** um especificador sem o argumento com `&` correspondente é erro de execução. Um número com ponto lido em `%d` para no ponto, como no C: com a entrada `3.5`, o `%d` lê `3`, e o próximo `%d` encontra o `.` e acusa entrada inválida.
+* **Testes:** `scanf_fim_entrada.c`, `scanf_letra_no_int.c`, `scanf_float_no_int.c`, `scanf_sinal_espacos.c`, `estudo_temperatura_entrada_invalida.c` e `estudo_caixa_fim_entrada.c`.
+* **Implementação:** issue #90 (PR #111).
+
 ## Diferenciais: testes e relatório unificado; coluna e vetores de fora (S7-01)
 
 * **Decisão:** dos três diferenciais da [Definição da Linguagem](/documentacao/definicao-da-linguagem.md), decidimos em grupo, em 27/11/2026, fazer o **diferencial 2, testes automatizados mais extensos**, que já está entregue, e, junto com ele, o **relatório de erros unificado**, feito pelo Eduardo (issue #97, PR #131), que deixa as quatro fases reportando os erros por um único módulo. A **coluna nas mensagens de erro** (diferencial 1, issue #99) e os **vetores 1D** (diferencial 3) ficaram de fora.
