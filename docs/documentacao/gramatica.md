@@ -1,6 +1,6 @@
 # Gramática do núcleo (alto nível)
 
-Especificação em BNF informal da gramática do núcleo obrigatório (ver [Definição da Linguagem](definicao-da-linguagem.md)), usada como base para o `src/parser.y` (Bison). Os tokens vêm do `src/scanner.l` (Flex).
+Especificação em BNF informal da gramática do núcleo obrigatório (ver [Definição da Linguagem](/documentacao/definicao-da-linguagem.md)), usada como base para o `src/parser.y` (Bison). Os tokens vêm do `src/scanner.l` (Flex).
 
 ## Tokens
 
@@ -15,7 +15,7 @@ Especificação em BNF informal da gramática do núcleo obrigatório (ver [Defi
 | Atribuição | `=` |
 | Delimitadores | `(` `)` `{` `}` `;` `,` `&` |
 
-`STRING_LIT` é usado como formato de `printf`/`scanf` e como valor do especificador `%s` em `printf` — a linguagem não tem tipo string para variáveis. `&ID` é usado apenas como argumento de `scanf`.
+`STRING_LIT` é usado como formato de `printf`/`scanf` e como valor do especificador `%s` em `printf`, porque a linguagem não tem tipo string para variáveis. `&ID` é usado apenas como argumento de `scanf`.
 `struct` e `union` são tokenizados como palavras reservadas para permitir um diagnóstico claro, mas structs/unions estão fora do escopo e não fazem parte das produções válidas.
 
 ## Regras de produção
@@ -95,10 +95,10 @@ argumento           → expressao | '&' ID
 
 ## Decisões de projeto
 
-- **`if`/`else` pendurado ("dangling else")**: resolvido pela precedência natural do Bison, que prefere deslocar (`shift`) o `else` para o `if` mais próximo sem `else` — é o comportamento padrão do C e não exige regra extra na gramática (o Bison emite 1 aviso de conflito shift/reduce esperado para isso).
-- **Pré-processador**: linhas começando com `#` (ex.: `#include`) são reconhecidas e ignoradas pelo scanner, sem nenhum processamento real — o núcleo não implementa pré-processador (ver [Definição da Linguagem](definicao-da-linguagem.md)).
-- **`printf`/`scanf`**: não são palavras reservadas — são reconhecidos como `ID` comuns na análise sintática, e recebem tratamento especial na análise semântica/interpretação.
-- **Inicializador de `for`**: somente expressões (ou vazio) são aceitas; uma declaração como `for (int i = 0; ...)` é recusada com diagnóstico explícito. É a decisão pelo subconjunto C89, e a variável deve ser declarada antes do laço.
+- **`if`/`else` pendurado ("dangling else")**: resolvemos pela preferência natural do Bison, que desloca (`shift`) o `else` para o `if` mais próximo sem `else`. É o comportamento padrão do C e não exige regra extra na gramática (o Bison emite 1 aviso de conflito shift/reduce, que é esperado).
+- **Pré-processador**: linhas começando com `#` (ex.: `#include`) são reconhecidas e ignoradas pelo scanner, sem nenhum processamento. O núcleo não implementa pré-processador (ver [Definição da Linguagem](/documentacao/definicao-da-linguagem.md)).
+- **`printf`/`scanf`**: não são palavras reservadas. Na análise sintática, são reconhecidos como `ID` comuns, e recebem tratamento especial na análise semântica e na interpretação.
+- **Inicializador de `for`**: só aceitamos expressões (ou nada); uma declaração como `for (int i = 0; ...)` é recusada com uma mensagem explícita. Escolhemos o subconjunto C89, em que a variável é declarada antes do laço.
 - **Fora do escopo**: declarações de ponteiro (`int *p;`), struct (`struct X {};`) e vetor (`int v[3];`) são reconhecidas apenas o bastante para reportar que a construção está fora do escopo; não são produções válidas.
 
 ### Casos explicitamente recusados

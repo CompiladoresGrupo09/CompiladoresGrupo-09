@@ -3,8 +3,6 @@
 
 #include "ast.h"
 
-extern int erros_semanticos;
-
 int analisar_semantica(ASTNode *raiz);
 
 #endif
