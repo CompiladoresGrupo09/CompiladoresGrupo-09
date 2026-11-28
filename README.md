@@ -1,5 +1,5 @@
 # Compiladores Grupo 09
-# Interpretador de C (subconjunto) — Equipe 09
+# Interpretador de C (subconjunto): Equipe 09
 
 [![Build e testes](https://github.com/CompiladoresGrupo09/CompiladoresGrupo-09/actions/workflows/build.yml/badge.svg?branch=Dev)](https://github.com/CompiladoresGrupo09/CompiladoresGrupo-09/actions/workflows/build.yml)
 
@@ -20,7 +20,7 @@ Organizador de compras no mercado: o programa recebe itens e preços via `scanf`
 ## Escopo suportado
 Núcleo obrigatório: tipos `int`/`float`/`char`, variáveis, expressões aritméticas/relacionais/lógicas com precedência, `if`/`else`/`while`/`for`, blocos com escopo, funções com parâmetros/retorno/recursão, `printf`/`scanf` básicos (`%d %f %c %s`).
 
-Diferenciais (só se sobrar tempo, nesta ordem): mensagens de erro com linha/coluna, testes automatizados mais extensos, vetores/arrays 1D.
+Diferenciais: fizemos os testes automatizados mais extensos (88 testes) e o relatório de erros unificado. A coluna nas mensagens de erro e os vetores ficaram de fora, de propósito, para não arriscar o núcleo no dia da entrega.
 
 Fora de escopo: otimizações, ponteiros, structs/unions, pré-processador, strings dinâmicas, arquivos.
 
@@ -87,16 +87,29 @@ Semantica  0 erro(s)
 Execucao   0 erro(s)
 ```
 
-Mais detalhes do estudo de caso em `docs/documentacao/definicao-da-linguagem.md`.
+Mais detalhes do estudo de caso em `docs/documentacao/definicao-da-linguagem.md`. Os outros quatro programas que usamos para validar o interpretador (boletim escolar, caixa eletrônico, calculadora de números e controle de temperatura) estão em `docs/documentacao/estudos-de-casos.md`.
 
 ## Arquitetura
 Fonte → léxico (Flex) → sintático (Bison, já construindo a AST) → semântico (tabela de símbolos, checagem de tipos/escopo) → interpretação recursiva da AST → resultado.
 
+As quatro fases reportam os erros pelo mesmo módulo (`src/erros.c`), no formato `Erro <fase> [linha N]: <descricao>`, e o relatório no fim mostra o total de erros de cada fase.
+
 ## Testes
-Casos válidos em `tests/validos/`, casos inválidos em `tests/invalidos/`.
+```
+cd src
+make test
+```
+São 88 testes: casos válidos em `tests/validos/` e casos inválidos em `tests/invalidos/`. Cada caso tem um `.esperado` com a saída correta, e os que leem do teclado têm um `.entrada`. A suíte confere o código de saída e compara a saída inteira, e a CI roda a mesma suíte em todo PR. A tabela que mostra qual teste cobre cada parte do núcleo está em `tests/README.md`.
 
 ## Decisões técnicas, planejamento e problemas/soluções
-Ver pasta `docs/`.
+Ver pasta `docs/` ou o site da documentação no GitHub Pages: decisões técnicas, planejamento das sprints, atas das reuniões, problemas e soluções, gramática e roteiro de demonstração.
 
 ## Limitações conhecidas
-Ver seção "Fora de escopo" acima e `docs/documentacao/definicao-da-linguagem.md`.
+- As mensagens de erro mostram a linha, mas não a coluna.
+- O `printf` não aceita precisão (`%.2f`), e o `%f` sempre mostra 6 casas.
+- A recursão é limitada a 1000 chamadas aninhadas.
+- A divisão de `float` por zero não é erro e imprime `inf`, como em C.
+- Uma string sem as aspas de fechamento aparece como "caractere invalido", sem mensagem própria.
+- Vetores, ponteiros, structs e unions são recusados com a mensagem "construcao fora do escopo".
+
+Ver também a seção "Fora de escopo" acima e `docs/documentacao/demonstracao.md`.
