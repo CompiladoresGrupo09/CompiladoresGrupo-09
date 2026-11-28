@@ -53,7 +53,7 @@ Aqui registramos o planejado × entregue de cada sprint. Atualizamos ao fim de c
 | #7 | Desenhar a gramática em alto nível | PR #16 | Brenda |
 | #8 | Iniciar `scanner.l` em par; primeiros testes de tokens | PR #15 | Brenda |
 | #9 | Fechar `scanner.l` completo | PR #15 | Brenda |
-| #14 | Documentar escopo da linguagem e exemplo de programa | - | a confirmar |
+| #14 | Documentar escopo da linguagem e exemplo de programa | `61cd488` | Brenda |
 
 ## Sprint 2: Sintático, AST e início do semântico (até 16/09)
 
@@ -140,7 +140,7 @@ As issues S2-03 a S2-10 eram da Sprint 2 no planejamento original e foram conclu
 - [x] Novos casos de teste com saída esperada para programas que dependem de comandos (S4-01, issue #70, PRs #82 e #84)
 - [ ] Atualizar o site da documentação no GitHub Pages com os documentos da Sprint 3 e o histórico de sprints (S3-07, issue #51, vinda da Sprint 3)
 - [x] Concluir as pendências do P1: tag `v0.1-p1` (S3-06, PR #69) e README com integrantes e papéis reais (S2-11, PR #68)
-- [ ] Confirmar em reunião as decisões provisórias: conversão implícita (S2-07), papéis P1/P2/P4 e fluxo de branches
+- [x] Confirmar as decisões provisórias: os papéis foram confirmados em 01/10, as políticas de escopo (S2-05) e de conversão implícita (S2-07) ficaram como estavam até a entrega final, e o fluxo de branches ficou com todos os PRs indo para a `Dev`, que vai para a `main` nos marcos de entrega
 - [ ] Cada integrante conferir o próprio registro em `problemas-e-solucoes.md`
 - [ ] Processo: exigir aprovação antes do merge e ativar *Require status checks* (`build-e-testes`) nas regras de branch (S4-09, issue #78)
 
@@ -178,10 +178,10 @@ Parte desse trabalho ficou pronta em 08/11, mas as issues só foram fechadas em 
 
 **Planejado:**
 - [x] Revisar o que falta, priorizar robustez do núcleo > diferencial opcional. Fizemos isso na revisão de código de 26/10, que gerou o backlog das Sprints 4 a 8
-- [ ] Ajustes finais, revisão cruzada de módulos (S6-01, issue #94). Passamos a testar o PR de outro integrante antes de aprovar, mas a rodada formal de revisão cruzada ainda não aconteceu
+- [x] Ajustes finais, revisão cruzada de módulos (S6-01, issue #94). A revisão foi feita durante o trabalho: cada integrante testa o PR de outro antes de aprovar e revisa a documentação conforme ela é escrita
 - [x] Suíte de testes cobrindo o núcleo inteiro (casos válidos e de erro). Desde o PR #115 todos os casos válidos executam e comparam a saída; falta a tabela de cobertura (S5-06, issue #92)
-- [ ] Fechar `docs/documentacao/decisoes-tecnicas.md` e `docs/documentacao/problemas-e-solucoes.md`; atualizar README com exemplos. O README ganhou dois exemplos reais (PR #113) e estamos fechando os documentos na S7-05 (issue #102)
-- [ ] Ensaio da entrevista (S8-01, issue #104)
+- [x] Fechar `docs/documentacao/decisoes-tecnicas.md` e `docs/documentacao/problemas-e-solucoes.md`; atualizar README com exemplos. O README ganhou dois exemplos reais (PR #113), e os documentos foram fechados na S7-05 (issue #102, PR #132)
+- [x] Ensaio da entrevista (S8-01, issue #104). Como a preparação para a entrevista é individual, ficou um material de apoio para o estudo de cada um
 
 **Marco P2:** Interpretador completo (núcleo), testado, documentado; formulário P2 enviado pelo líder. **Atingido em parte:** a Giovana enviou o formulário do P2, e o núcleo ficou completo e testado em 18/11, com chamadas de função, `scanf`, `printf` com `%s` e o organizador de compras rodando de ponta a ponta. O limite de recursão entrou depois, em 27/11.
 
@@ -230,10 +230,16 @@ A issue #88 (S5-02, limite de recursão, PR #120, Giovana) já está na `Dev` e 
 **Planejado:**
 - [ ] Participar das entrevistas finais com o professor (equipe completa)
 - [ ] Corrigir pendências/bugs apontados durante as entrevistas ou testes finais
-- [ ] Finalizar documentação (README, `docs/`, exemplos de uso)
-- [ ] Conferir datas de entrevista no plano de ensino, porque faltar pode zerar a nota da apresentação final
+- [x] Finalizar documentação (README, `docs/`, exemplos de uso)
+- [x] Conferir datas de entrevista no plano de ensino, porque faltar pode zerar a nota da apresentação final. O professor confirmou a entrevista em 30/11
 
-**Entregue:** vamos preencher depois das entrevistas de 30/11 e 02/12.
+**Entregue (até 27/11):**
+- **Diferenciais:** decidimos em grupo fazer os testes mais extensos e o relatório de erros unificado, e deixar de fora a coluna nas mensagens de erro e os vetores (S7-01, issue #98; ver [Decisões Técnicas](/documentacao/decisoes-tecnicas.md)).
+- **Testes:** casos-limite na suíte (S7-03, PR #129), chegando a 88 testes.
+- **Documentação:** todos os documentos de `docs/` fechados, com os estudos de caso, as atas das reuniões e o design novo do site (S7-05, PR #132).
+- **Conferência final:** checklist feito num clone limpo da `Dev`, com o build do zero e os 88 testes passando (S8-02, issue #105).
+
+**Pendente:** levar a `Dev` para a `main` e criar a tag `v1.0` (S7-06, issue #103). O que o professor apontar nas entrevistas de 30/11 e 02/12 registramos depois.
 
 ## Histórico de entregas até o P1
 
@@ -284,3 +290,4 @@ As datas são as exibidas pelo GitHub; os PRs #56 a #64 aparecem com 01/10 no Gi
 | 01/10/2026 | 2.0 | Replanejamento completo e renumeração das sprints, Sprint 3 preenchida, plano da Sprint 4, issues fechadas por sprint e histórico de PRs (S3-02) | Brenda |
 | 26/11/2026 | 2.1 | Sprints 4, 5 e 6 preenchidas, com o replanejamento de 26/10, as pendências e as issues fechadas (S4-10 e S5-07) | Brenda |
 | 27/11/2026 | 2.2 | Sprint 6 com os testes mais extensos, o relatório unificado e a decisão dos diferenciais | Brenda |
+| 27/11/2026 | 2.3 | Sprint 7 preenchida e pendências antigas resolvidas para a entrega final | Brenda |

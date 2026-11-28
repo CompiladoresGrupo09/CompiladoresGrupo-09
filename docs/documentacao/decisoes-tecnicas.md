@@ -66,7 +66,7 @@ O conflito clássico de `if (a) if (b) x; else y;` é saber a qual `if` o `else`
 * **Justificativa:** quisemos uma tipagem estrita, para os dados não serem truncados sem aviso. A promoção no sentido inverso (`int` para `float`, em operações binárias mistas ou na atribuição a variáveis `float`) continua válida.
 * **Limitação conhecida:** a linguagem não oferece conversão de `float` para `int` (não há suporte a cast na gramática). Essa limitação é intencional no escopo atual do projeto.
 * **Implementação:** PR #53 (issue #24), mesclado na `Dev`. Na verificação manual, a atribuição e a inicialização geravam mensagens diferentes para o mesmo erro; no PR #57 (issue #55) as duas foram unificadas em `atribuicao incompativel: conversao implicita de float para int nao permitida`, com os testes `tests/invalidos/erro_tipo_atribuicao.c` e `erro_tipo_inicializacao.c`.
-* **Status:** implementada e testada; segue marcada como provisória até a confirmação do grupo (ver "Pontos a decidir").
+* **Status:** implementada e testada. Mantivemos essa política sem mudanças até a entrega final.
 
 ## Atribuição formal dos papéis técnicos P1 a P4
 
@@ -96,13 +96,13 @@ Histórico do andamento de cada papel até a formalização:
 - **P4 (Interpretação), iniciada:** issue #31 (esqueleto do interpretador, `interpretarNo`); avaliação de expressões mesclada na `Dev` pelo PR #52, de @EduardoRibeiroXavier.
 - **Integração ponta a ponta (S3-01, issue #32):** `main.c` encadeando as fases, com as flags `--tokens`/`--ast`/`--tabela` e o relatório de erros, mesclado pelo PR #62 (ver seção própria abaixo).
 - **S2-05 (tabela de símbolos com escopos aninhados):** política registrada na seção própria acima.
-- **S2-07 (política de conversão implícita de tipos):** decisão registrada na seção própria acima, aguardando confirmação do grupo.
+- **S2-07 (política de conversão implícita de tipos):** decisão registrada na seção própria acima.
 
-**Pontos a decidir na próxima reunião com o time:**
-1. ~~Formalizar (ou não) a atribuição de P1 e P2 à pessoa que já entregou os dois módulos.~~ Resolvido em 01/10/2026: Brenda Beatriz (tabela acima).
-2. Confirmar a política de escopos da S2-05 e a de conversão implícita da S2-07, retirando o "Provisório".
-3. ~~Formalizar o responsável por P4, considerando que P3 e P4 formam par.~~ Resolvido em 01/10/2026: Eduardo Ribeiro Xavier (tabela acima).
-4. Combinar o fluxo de branches: hoje há PRs de documentação indo para a `main` e de código indo para a `Dev`, e as duas estão divergindo. *Atualização (01/10/2026):* desde o PR #56, todos os PRs (código e documentação) vão para a `Dev`; falta o grupo confirmar esse fluxo e combinar quando a `Dev` é mesclada na `main` (ver "Regras de branch").
+**Pontos que ficaram para decidir depois do P1 (todos resolvidos):**
+1. Formalizar (ou não) a atribuição de P1 e P2 à pessoa que já entregou os dois módulos. Resolvido em 01/10/2026: Brenda Beatriz (tabela acima).
+2. Confirmar a política de escopos da S2-05 e a de conversão implícita da S2-07. Resolvido: mantivemos as duas como estavam até a entrega final, e são elas que estão implementadas e testadas.
+3. Formalizar o responsável por P4, considerando que P3 e P4 formam par. Resolvido em 01/10/2026: Eduardo Ribeiro Xavier (tabela acima).
+4. Combinar o fluxo de branches, porque havia PRs de documentação indo para a `main` e de código indo para a `Dev`. Resolvido: desde o PR #56, todos os PRs (código e documentação) vão para a `Dev`, e a `Dev` é mesclada na `main` nos marcos de entrega, como no PR #110 e na entrega final (ver "Regras de branch").
 
 ## Testes com comparação de saída esperada (S2-09)
 
